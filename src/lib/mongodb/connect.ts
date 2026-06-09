@@ -17,6 +17,6 @@ export async function connectDB(): Promise<typeof mongoose> {
     const { MONGODB_URI } = getEnv();
     cache.promise = mongoose.connect(MONGODB_URI, { bufferCommands: false });
   }
-  cache.conn = await cache.promise;
+  if (!cache.conn) cache.conn = await cache.promise;
   return cache.conn;
 }
