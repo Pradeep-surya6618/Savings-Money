@@ -15,6 +15,9 @@
   --positive: #059669;
   --negative: #e11d48;
   --warning: #d97706;
+  /* Tooltip: a dark tone of the primary color (adapts per theme via --primary) */
+  --tooltip-bg: color-mix(in oklab, var(--primary), black 45%);
+  --tooltip-fg: #ffffff;
 }
 
 .dark {
@@ -43,6 +46,8 @@
   --color-positive: var(--positive);
   --color-negative: var(--negative);
   --color-warning: var(--warning);
+  --color-tooltip: var(--tooltip-bg);
+  --color-tooltip-foreground: var(--tooltip-fg);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -51,4 +56,14 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), system-ui, sans-serif;
+}
+
+@layer base {
+  /* All interactive buttons and links use a pointer cursor (Tailwind v4
+     ships buttons with the default arrow cursor). Disabled controls excluded. */
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  a[href] {
+    cursor: pointer;
+  }
 }

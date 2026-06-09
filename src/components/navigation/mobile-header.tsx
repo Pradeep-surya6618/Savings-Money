@@ -1,5 +1,6 @@
 import { Bell } from "lucide-react";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
+import { Tooltip } from "@/components/ui/tooltip";
 
 export function MobileHeader({ name, greeting }: { name: string; greeting: string }) {
   return (
@@ -14,12 +15,14 @@ export function MobileHeader({ name, greeting }: { name: string; greeting: strin
         </div>
       </div>
       <div className="flex items-center gap-2">
-        <button
-          aria-label="Notifications"
-          className="flex h-9 w-9 items-center justify-center rounded-full border border-border text-muted-foreground"
-        >
-          <Bell className="h-4 w-4" />
-        </button>
+        <Tooltip content="Notifications">
+          <button
+            aria-label="Notifications"
+            className="flex h-9 w-9 items-center justify-center rounded-full border border-border text-muted-foreground"
+          >
+            <Bell className="h-4 w-4" />
+          </button>
+        </Tooltip>
         <ThemeToggle />
       </div>
     </header>
