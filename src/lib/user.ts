@@ -22,14 +22,14 @@ export const getCurrentUser = cache(async (): Promise<CurrentUser> => {
   const userDoc = await User.findOneAndUpdate(
     {},
     { $setOnInsert: { name: "You" } },
-    { upsert: true, new: true, setDefaultsOnInsert: true },
+    { upsert: true, returnDocument: "after", setDefaultsOnInsert: true },
   );
   if (!userDoc) throw new Error("Failed to resolve current user");
 
   const settingsDoc = await Settings.findOneAndUpdate(
     { userId: userDoc._id },
     { $setOnInsert: { userId: userDoc._id } },
-    { upsert: true, new: true, setDefaultsOnInsert: true },
+    { upsert: true, returnDocument: "after", setDefaultsOnInsert: true },
   );
   if (!settingsDoc) throw new Error("Failed to resolve user settings");
 
