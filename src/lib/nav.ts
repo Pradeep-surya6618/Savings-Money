@@ -25,3 +25,7 @@ export const SECONDARY_NAV: NavItem[] = [
   { href: "/savings", label: "Savings", icon: PiggyBank },
   { href: "/loan", label: "Loan", icon: GraduationCap },
 ];
+
+export function isActive(pathname: string, href: string): boolean {
+  return href === "/" ? pathname === "/" : pathname.startsWith(href);
+}

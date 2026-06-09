@@ -2,12 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { PRIMARY_NAV, SECONDARY_NAV } from "@/lib/nav";
+import { PRIMARY_NAV, SECONDARY_NAV, isActive } from "@/lib/nav";
 import { cn } from "@/lib/utils";
-
-function isActive(pathname: string, href: string) {
-  return href === "/" ? pathname === "/" : pathname.startsWith(href);
-}
 
 export function Sidebar() {
   const pathname = usePathname();
