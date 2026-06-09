@@ -16,6 +16,13 @@ export async function connectDB(): Promise<typeof mongoose> {
     const { MONGODB_URI } = getEnv();
     cache.promise = mongoose.connect(MONGODB_URI, { bufferCommands: false });
   }
-  if (!cache.conn) cache.conn = await cache.promise;
+  try {
+    if (!cache.conn) cache.conn = await cache.promise;
+  } catch (error) {
+    // Clear the rejected promise so a later call (e.g. after fixing MONGODB_URI)
+    // can retry without restarting the process.
+    cache.promise = null;
+    throw error;
+  }
   return cache.conn;
 }
