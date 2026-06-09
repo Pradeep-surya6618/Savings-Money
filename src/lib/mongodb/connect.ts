@@ -4,7 +4,6 @@ import { getEnv } from "@/lib/env";
 type Cache = { conn: typeof mongoose | null; promise: Promise<typeof mongoose> | null };
 
 declare global {
-  // eslint-disable-next-line no-var
   var _mongooseCache: Cache | undefined;
 }
 

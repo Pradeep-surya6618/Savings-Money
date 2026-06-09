@@ -15,6 +15,9 @@ const OPTIONS = [
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  // next-themes has no theme during SSR; defer reading it until mounted so the
+  // active button's class doesn't cause a hydration mismatch. One-time flag.
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => setMounted(true), []);
 
   // Avoid hydration mismatch: render a stable placeholder until mounted.
