@@ -1,26 +1,54 @@
 @import "tailwindcss";
 
+/* Class-based dark mode for Tailwind v4 */
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f7f7fa;
+  --card: #ffffff;
+  --card-elevated: #f0f0f4;
+  --border: rgba(0, 0, 0, 0.08);
+  --foreground: #0b0b0f;
+  --muted-foreground: #6b7280;
+  --primary: #4f7df0;
+  --primary-end: #7c5bf0;
+  --positive: #059669;
+  --negative: #e11d48;
+  --warning: #d97706;
 }
 
-/* @theme inline {
+.dark {
+  --background: #0b0b0f;
+  --card: #16161c;
+  --card-elevated: #1e1e26;
+  --border: rgba(255, 255, 255, 0.08);
+  --foreground: #f5f5f7;
+  --muted-foreground: #a1a1aa;
+  --primary: #5b8cff;
+  --primary-end: #8a5bff;
+  --positive: #34d399;
+  --negative: #fb7185;
+  --warning: #fbbf24;
+}
+
+@theme inline {
   --color-background: var(--background);
+  --color-card: var(--card);
+  --color-card-elevated: var(--card-elevated);
+  --color-border: var(--border);
   --color-foreground: var(--foreground);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-primary: var(--primary);
+  --color-primary-end: var(--primary-end);
+  --color-positive: var(--positive);
+  --color-negative: var(--negative);
+  --color-warning: var(--warning);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-} */
-
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), system-ui, sans-serif;
 }
