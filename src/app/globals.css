@@ -68,19 +68,9 @@ body {
   background: color-mix(in oklab, var(--primary) 35%, transparent);
 }
 
-/* Theme change: circular "wave" reveal driven by the View Transitions API.
-   Disable the default cross-fade so the new theme wipes in cleanly on top. */
-::view-transition-old(root),
-::view-transition-new(root) {
-  animation: none;
-  mix-blend-mode: normal;
-}
-::view-transition-old(root) {
-  z-index: 0;
-}
-::view-transition-new(root) {
-  z-index: 1;
-}
+/* Note: the theme "wave" view-transition CSS is delivered inline in the root
+   layout (src/app/layout.tsx) so it always reaches the page regardless of the
+   CSS bundle/HMR state. */
 
 @layer base {
   /* All interactive buttons and links use a pointer cursor (Tailwind v4
