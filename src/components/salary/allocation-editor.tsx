@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { ArrowLeft } from "lucide-react";
 import { CATEGORIES, type CategoryKey } from "@/lib/categories";
 import { monthLabel } from "@/lib/month";
 import { Button } from "@/components/ui/button";
@@ -61,7 +63,16 @@ export function AllocationEditor({
   }
 
   return (
-    <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,360px)_1fr]">
+    <div className="space-y-5">
+      <Link
+        href={`/?month=${month}`}
+        className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3.5 py-2 text-sm font-medium text-muted-foreground transition hover:border-foreground/15 hover:text-foreground"
+      >
+        <ArrowLeft className="h-4 w-4" />
+        Back to dashboard
+      </Link>
+
+      <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,360px)_1fr]">
       {/* Summary panel */}
       <aside className="space-y-4 lg:sticky lg:top-8">
         <HeroSection>
@@ -121,6 +132,7 @@ export function AllocationEditor({
         <Button onClick={handleSave} disabled={disabled} className="h-12 w-full text-base shadow-lg">
           {saveLabel}
         </Button>
+      </div>
       </div>
     </div>
   );
