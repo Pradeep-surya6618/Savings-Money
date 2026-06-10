@@ -4,14 +4,14 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  --background: #f7f7fa;
+  --background: #f4f7f5;
   --card: #ffffff;
-  --card-elevated: #f0f0f4;
+  --card-elevated: #edf2ef;
   --border: rgba(0, 0, 0, 0.08);
-  --foreground: #0b0b0f;
-  --muted-foreground: #6b7280;
-  --primary: #4f7df0;
-  --primary-end: #7c5bf0;
+  --foreground: #0b1210;
+  --muted-foreground: #5f6b64;
+  --primary: #16a34a;
+  --primary-end: #15803d;
   --positive: #059669;
   --negative: #e11d48;
   --warning: #d97706;
@@ -21,15 +21,15 @@
 }
 
 .dark {
-  --background: #0b0b0f;
-  --card: #16161c;
-  --card-elevated: #1e1e26;
+  --background: #0a0f0d;
+  --card: #141a17;
+  --card-elevated: #1d241f;
   --border: rgba(255, 255, 255, 0.08);
-  --foreground: #f5f5f7;
-  --muted-foreground: #a1a1aa;
-  --primary: #5b8cff;
-  --primary-end: #8a5bff;
-  --positive: #34d399;
+  --foreground: #f2f5f3;
+  --muted-foreground: #9aa39d;
+  --primary: #10b981;
+  --primary-end: #059669;
+  --positive: #4ade80;
   --negative: #fb7185;
   --warning: #fbbf24;
 }
@@ -56,7 +56,7 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), system-ui, sans-serif;
-  /* Subtle aurora atmosphere so large dark surfaces never read as flat. */
+  /* Subtle aurora atmosphere so large surfaces never read as flat (adapts to the theme). */
   background-image:
     radial-gradient(48rem 48rem at 100% -10%, color-mix(in oklab, var(--primary) 10%, transparent), transparent 60%),
     radial-gradient(42rem 42rem at -10% 5%, color-mix(in oklab, var(--primary-end) 8%, transparent), transparent 55%);

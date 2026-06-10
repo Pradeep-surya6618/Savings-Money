@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import { Card } from "@/components/ui/card";
 import { CATEGORY_MAP, type CategoryKey } from "@/lib/categories";
 import { CATEGORY_ICONS } from "@/lib/category-icons";
@@ -28,7 +29,10 @@ export function SalaryDistribution({
             const pct = amount > 0 ? Math.round((a.amount / amount) * 100) : 0;
             return (
               <li key={a.category} className="flex items-center gap-3">
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                <span
+                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl"
+                  style={{ backgroundColor: `${cat.color}1f`, color: cat.color } as CSSProperties}
+                >
                   <Icon className="h-4 w-4" />
                 </span>
                 <div className="min-w-0 flex-1">
@@ -40,8 +44,8 @@ export function SalaryDistribution({
                   </div>
                   <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-card-elevated">
                     <div
-                      className="h-full rounded-full bg-gradient-to-r from-primary to-primary-end"
-                      style={{ width: `${pct}%` }}
+                      className="h-full rounded-full transition-[width] duration-500 ease-out"
+                      style={{ width: `${pct}%`, backgroundColor: cat.color } as CSSProperties}
                     />
                   </div>
                 </div>

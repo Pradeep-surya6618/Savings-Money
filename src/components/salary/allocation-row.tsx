@@ -1,5 +1,6 @@
 "use client";
 
+import type { CSSProperties } from "react";
 import { CATEGORY_MAP, type CategoryKey } from "@/lib/categories";
 import { CATEGORY_ICONS } from "@/lib/category-icons";
 
@@ -15,10 +16,18 @@ export function AllocationRow({
   onChange: (value: number) => void;
 }) {
   const Icon = CATEGORY_ICONS[category];
-  const label = CATEGORY_MAP[category].label;
+  const { label, color } = CATEGORY_MAP[category];
   return (
-    <label className="group flex items-center gap-3 rounded-2xl border border-border bg-card p-3 transition hover:border-primary/40 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20">
-      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-card-elevated text-muted-foreground transition group-focus-within:bg-primary/15 group-focus-within:text-primary">
+    <label
+      className="group relative flex items-center gap-3 overflow-hidden rounded-2xl border border-border bg-card p-3 transition duration-200 hover:-translate-y-0.5 hover:shadow-md focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20"
+      style={{ "--cat": color } as CSSProperties}
+    >
+      {/* category color accent rail */}
+      <span aria-hidden className="absolute inset-y-2 left-0 w-1 rounded-full" style={{ backgroundColor: color }} />
+      <span
+        className="ml-1 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl"
+        style={{ backgroundColor: `${color}1f`, color }}
+      >
         <Icon className="h-5 w-5" />
       </span>
       <span className="min-w-0 flex-1">
