@@ -31,7 +31,7 @@ export function BottomTabBar() {
   return (
     <MotionConfig reducedMotion="user">
       <nav className="fixed inset-x-0 bottom-0 z-30 flex justify-center px-4 pb-[max(1rem,env(safe-area-inset-bottom))] lg:hidden">
-        <div className="flex items-center gap-1 rounded-full border border-border bg-card/80 p-1.5 shadow-lg shadow-black/10 backdrop-blur-xl">
+        <div className="flex max-w-[calc(100vw-2rem)] items-center gap-1 rounded-full border border-border bg-card/80 p-1.5 shadow-lg shadow-black/10 backdrop-blur-xl">
           {PRIMARY_NAV.map(({ href, label, icon: Icon }) => {
             const active = isActive(pathname, href);
             return (
@@ -39,7 +39,10 @@ export function BottomTabBar() {
                 key={href}
                 href={href}
                 aria-label={label}
-                className="relative isolate flex items-center justify-center rounded-full px-3.5 py-2.5"
+                className={cn(
+                  "relative isolate flex min-w-0 items-center justify-center rounded-full px-3 py-2.5",
+                  !active && "shrink-0",
+                )}
               >
                 {active && (
                   <motion.span
@@ -55,20 +58,9 @@ export function BottomTabBar() {
                     active ? "text-white" : "text-muted-foreground",
                   )}
                 />
-                <AnimatePresence initial={false}>
-                  {active && (
-                    <motion.span
-                      key="label"
-                      initial={{ width: 0, opacity: 0, marginLeft: 0 }}
-                      animate={{ width: "auto", opacity: 1, marginLeft: 6 }}
-                      exit={{ width: 0, opacity: 0, marginLeft: 0 }}
-                      transition={SPRING}
-                      className="overflow-hidden whitespace-nowrap text-xs font-semibold text-white"
-                    >
-                      {label}
-                    </motion.span>
-                  )}
-                </AnimatePresence>
+                {active && (
+                  <span className="ml-1.5 min-w-0 truncate text-xs font-semibold text-white">{label}</span>
+                )}
               </Link>
             );
           })}
@@ -79,7 +71,10 @@ export function BottomTabBar() {
             onClick={() => setMoreOpen(true)}
             aria-label="More"
             aria-haspopup="dialog"
-            className="relative isolate flex items-center justify-center rounded-full px-3.5 py-2.5"
+            className={cn(
+              "relative isolate flex min-w-0 items-center justify-center rounded-full px-3 py-2.5",
+              !secondaryActive && "shrink-0",
+            )}
           >
             {secondaryActive && (
               <motion.span
@@ -95,20 +90,9 @@ export function BottomTabBar() {
                 secondaryActive ? "text-white" : "text-muted-foreground",
               )}
             />
-            <AnimatePresence initial={false}>
-              {secondaryActive && (
-                <motion.span
-                  key="more-label"
-                  initial={{ width: 0, opacity: 0, marginLeft: 0 }}
-                  animate={{ width: "auto", opacity: 1, marginLeft: 6 }}
-                  exit={{ width: 0, opacity: 0, marginLeft: 0 }}
-                  transition={SPRING}
-                  className="overflow-hidden whitespace-nowrap text-xs font-semibold text-white"
-                >
-                  More
-                </motion.span>
-              )}
-            </AnimatePresence>
+            {secondaryActive && (
+              <span className="ml-1.5 min-w-0 truncate text-xs font-semibold text-white">More</span>
+            )}
           </button>
         </div>
       </nav>
