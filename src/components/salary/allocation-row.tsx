@@ -15,24 +15,30 @@ export function AllocationRow({
   onChange: (value: number) => void;
 }) {
   const Icon = CATEGORY_ICONS[category];
+  const label = CATEGORY_MAP[category].label;
   return (
-    <div className="flex items-center gap-3 py-2">
-      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-card-elevated text-muted-foreground">
-        <Icon className="h-4 w-4" />
+    <label className="group flex items-center gap-3 rounded-2xl border border-border bg-card p-3 transition hover:border-primary/40 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20">
+      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-card-elevated text-muted-foreground transition group-focus-within:bg-primary/15 group-focus-within:text-primary">
+        <Icon className="h-5 w-5" />
       </span>
-      <span className="flex-1 text-sm">{CATEGORY_MAP[category].label}</span>
-      <span className="w-10 text-right text-xs text-muted-foreground">{percent}%</span>
-      <input
-        type="number"
-        inputMode="numeric"
-        min={0}
-        step={1}
-        value={amount === 0 ? "" : amount}
-        placeholder="0"
-        onChange={(e) => onChange(Math.max(0, Math.floor(Number(e.target.value) || 0)))}
-        aria-label={`${CATEGORY_MAP[category].label} amount`}
-        className="w-24 rounded-lg border border-border bg-card px-2 py-1.5 text-right text-sm outline-none focus:border-primary"
-      />
-    </div>
+      <span className="min-w-0 flex-1">
+        <span className="block truncate text-sm font-medium">{label}</span>
+        <span className="text-xs tabular-nums text-muted-foreground">{percent}% of salary</span>
+      </span>
+      <span className="flex items-center gap-0.5 rounded-xl bg-card-elevated px-2.5 py-2 ring-1 ring-inset ring-transparent transition group-focus-within:ring-primary/30">
+        <span className="text-sm text-muted-foreground">₹</span>
+        <input
+          type="number"
+          inputMode="numeric"
+          min={0}
+          step={1}
+          value={amount === 0 ? "" : amount}
+          placeholder="0"
+          onChange={(e) => onChange(Math.max(0, Math.floor(Number(e.target.value) || 0)))}
+          aria-label={`${label} amount`}
+          className="w-20 bg-transparent text-right text-sm font-medium tabular-nums outline-none placeholder:text-muted-foreground/50"
+        />
+      </span>
+    </label>
   );
 }

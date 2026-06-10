@@ -38,6 +38,12 @@ export function AllocationEditor({
 
   const allocated = Object.values(amounts).reduce((s, v) => s + v, 0);
   const over = allocated > amount;
+  const disabled = saving || over || amount <= 0;
+  const saveLabel = over
+    ? `Over by ${formatCurrency(allocated - amount)}`
+    : saving
+      ? "Saving…"
+      : "Save allocations";
 
   async function handleSave() {
     setSaving(true);
@@ -55,42 +61,65 @@ export function AllocationEditor({
   }
 
   return (
-    <div className="mx-auto max-w-xl space-y-4">
-      <HeroSection>
-        <p className="text-xs uppercase tracking-wide text-white/80">Monthly salary · {monthLabel(month)}</p>
-        <input
-          type="number"
-          inputMode="numeric"
-          min={0}
-          step={1}
-          value={amount === 0 ? "" : amount}
-          placeholder="0"
-          onChange={(e) => setAmount(Math.max(0, Math.floor(Number(e.target.value) || 0)))}
-          aria-label="Monthly salary amount"
-          className="mt-1 w-full bg-transparent text-3xl font-bold tracking-tight text-white placeholder-white/40 outline-none"
-        />
-        <div className="mt-4">
-          <RemainingMeter amount={amount} allocated={allocated} />
-        </div>
-      </HeroSection>
+    <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,360px)_1fr]">
+      {/* Summary panel */}
+      <aside className="space-y-4 lg:sticky lg:top-8">
+        <HeroSection>
+          <p className="text-xs font-medium uppercase tracking-widest text-white/70">Monthly salary</p>
+          <p className="text-xs text-white/60">{monthLabel(month)}</p>
+          <div className="mt-3 flex items-baseline gap-1.5">
+            <span className="text-2xl font-semibold text-white/80">₹</span>
+            <input
+              type="number"
+              inputMode="numeric"
+              min={0}
+              step={1}
+              value={amount === 0 ? "" : amount}
+              placeholder="0"
+              onChange={(e) => setAmount(Math.max(0, Math.floor(Number(e.target.value) || 0)))}
+              aria-label="Monthly salary amount"
+              className="w-full bg-transparent text-4xl font-bold tracking-tight tabular-nums text-white placeholder-white/30 outline-none"
+            />
+          </div>
+          <div className="mt-5">
+            <RemainingMeter amount={amount} allocated={allocated} />
+          </div>
+        </HeroSection>
 
-      <div className="rounded-2xl border border-border bg-card p-4">
-        {CATEGORIES.map((c) => (
-          <AllocationRow
-            key={c.key}
-            category={c.key}
-            amount={amounts[c.key]}
-            percent={amount > 0 ? Math.round((amounts[c.key] / amount) * 100) : 0}
-            onChange={(v) => setAmounts((prev) => ({ ...prev, [c.key]: v }))}
-          />
-        ))}
+        {error && (
+          <p className="rounded-xl border border-negative/30 bg-negative/10 px-3 py-2 text-center text-sm text-negative">
+            {error}
+          </p>
+        )}
+
+        <Button onClick={handleSave} disabled={disabled} className="hidden h-12 w-full text-base lg:flex">
+          {saveLabel}
+        </Button>
+      </aside>
+
+      {/* Category allocations */}
+      <div>
+        <div className="mb-3 flex items-center justify-between px-1">
+          <h2 className="text-sm font-semibold">Allocate across categories</h2>
+          <span className="text-xs tabular-nums text-muted-foreground">{CATEGORIES.length} categories</span>
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2">
+          {CATEGORIES.map((c) => (
+            <AllocationRow
+              key={c.key}
+              category={c.key}
+              amount={amounts[c.key]}
+              percent={amount > 0 ? Math.round((amounts[c.key] / amount) * 100) : 0}
+              onChange={(v) => setAmounts((prev) => ({ ...prev, [c.key]: v }))}
+            />
+          ))}
+        </div>
       </div>
 
-      {error && <p className="text-center text-sm text-negative">{error}</p>}
-
-      <div className="sticky bottom-24 lg:bottom-4">
-        <Button onClick={handleSave} disabled={saving || over || amount <= 0} className="w-full">
-          {over ? `Over by ${formatCurrency(allocated - amount)}` : saving ? "Saving…" : "Save allocations"}
+      {/* Mobile sticky save bar */}
+      <div className="sticky bottom-24 z-20 -mx-4 px-4 lg:hidden">
+        <Button onClick={handleSave} disabled={disabled} className="h-12 w-full text-base shadow-lg">
+          {saveLabel}
         </Button>
       </div>
     </div>
