@@ -9,21 +9,21 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
-export type NavItem = { href: string; label: string; icon: LucideIcon };
+export type NavItem = { href: string; label: string; icon: LucideIcon; color: string };
 
 /** Primary nav — these 5 appear in the mobile bottom tab bar. */
 export const PRIMARY_NAV: NavItem[] = [
-  { href: "/", label: "Home", icon: Home },
-  { href: "/transactions", label: "Transactions", icon: ArrowLeftRight },
-  { href: "/budget", label: "Budget", icon: Wallet },
-  { href: "/analytics", label: "Analytics", icon: BarChart3 },
-  { href: "/settings", label: "Settings", icon: Settings },
+  { href: "/", label: "Home", icon: Home, color: "#16a34a" },
+  { href: "/transactions", label: "Transactions", icon: ArrowLeftRight, color: "#3b82f6" },
+  { href: "/budget", label: "Budget", icon: Wallet, color: "#f59e0b" },
+  { href: "/analytics", label: "Analytics", icon: BarChart3, color: "#8b5cf6" },
+  { href: "/settings", label: "Settings", icon: Settings, color: "#64748b" },
 ];
 
 /** Secondary nav — sidebar only; reached on mobile via dashboard cards. */
 export const SECONDARY_NAV: NavItem[] = [
-  { href: "/savings", label: "Savings", icon: PiggyBank },
-  { href: "/loan", label: "Loan", icon: GraduationCap },
+  { href: "/savings", label: "Savings", icon: PiggyBank, color: "#14b8a6" },
+  { href: "/loan", label: "Loan", icon: GraduationCap, color: "#ec4899" },
 ];
 
 export function isActive(pathname: string, href: string): boolean {

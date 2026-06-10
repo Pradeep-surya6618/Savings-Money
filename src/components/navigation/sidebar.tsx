@@ -68,7 +68,7 @@ export function Sidebar() {
       )}
 
       <nav className="flex flex-col gap-1">
-        {items.map(({ href, label, icon: Icon }) => {
+        {items.map(({ href, label, icon: Icon, color }) => {
           const active = isActive(pathname, href);
           const link = (
             <Link
@@ -99,7 +99,7 @@ export function Sidebar() {
                   />
                 </>
               )}
-              <Icon className={cn("h-5 w-5 shrink-0 transition-colors duration-200", active && "text-primary")} />
+              <Icon className="h-5 w-5 shrink-0" style={{ color }} />
               {!isCollapsed && <span className="truncate">{label}</span>}
             </Link>
           );
