@@ -7,6 +7,7 @@ import { PanelLeft, PanelLeftClose } from "lucide-react";
 import { PRIMARY_NAV, SECONDARY_NAV, isActive } from "@/lib/nav";
 import { cn } from "@/lib/utils";
 import { Tooltip } from "@/components/ui/tooltip";
+import { Logo } from "@/components/brand/logo";
 
 const STORAGE_KEY = "sidebar-collapsed";
 
@@ -38,12 +39,17 @@ export function Sidebar() {
         isCollapsed ? "w-[4.5rem]" : "w-60",
       )}
     >
-      <div className={cn("mb-6 flex items-center px-1", isCollapsed ? "justify-center" : "justify-between")}>
-        {!isCollapsed && (
-          <span className="bg-gradient-to-br from-primary to-primary-end bg-clip-text px-1 text-xl font-bold text-transparent">
-            Finance
-          </span>
+      {/* Brand + collapse toggle */}
+      <div
+        className={cn(
+          "mb-6 flex px-1",
+          isCollapsed ? "flex-col items-center gap-3" : "items-center justify-between",
         )}
+      >
+        <Link href="/" className="flex items-center gap-2.5" aria-label="Surya Savings home">
+          <Logo className="h-9 w-9" />
+          {!isCollapsed && <span className="text-base font-bold tracking-tight">Surya Savings</span>}
+        </Link>
         <button
           onClick={toggle}
           aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
@@ -53,6 +59,10 @@ export function Sidebar() {
         </button>
       </div>
 
+      {!isCollapsed && (
+        <p className="mb-2 px-3 text-xs font-medium uppercase tracking-wider text-muted-foreground">Menu</p>
+      )}
+
       <nav className="flex flex-col gap-1">
         {items.map(({ href, label, icon: Icon }) => {
           const active = isActive(pathname, href);
@@ -61,14 +71,20 @@ export function Sidebar() {
               href={href}
               aria-label={label}
               className={cn(
-                "flex items-center gap-3 rounded-xl py-2 text-sm font-medium transition",
+                "relative flex items-center gap-3 rounded-xl py-2 text-sm transition",
                 isCollapsed ? "justify-center px-0" : "px-3",
                 active
-                  ? "bg-gradient-to-r from-primary to-primary-end text-white shadow-sm shadow-primary/25"
-                  : "text-muted-foreground hover:bg-card-elevated hover:text-foreground",
+                  ? "bg-primary/10 font-semibold text-foreground"
+                  : "font-medium text-muted-foreground hover:bg-card-elevated hover:text-foreground",
               )}
             >
-              <Icon className="h-5 w-5 shrink-0" />
+              {active && (
+                <span
+                  aria-hidden
+                  className="absolute -left-3 top-1/2 h-6 w-1 -translate-y-1/2 rounded-r-full bg-primary"
+                />
+              )}
+              <Icon className={cn("h-5 w-5 shrink-0", active && "text-primary")} />
               {!isCollapsed && <span className="truncate">{label}</span>}
             </Link>
           );
