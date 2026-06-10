@@ -68,6 +68,20 @@ body {
   background: color-mix(in oklab, var(--primary) 35%, transparent);
 }
 
+/* Theme change: circular "wave" reveal driven by the View Transitions API.
+   Disable the default cross-fade so the new theme wipes in cleanly on top. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+::view-transition-old(root) {
+  z-index: 0;
+}
+::view-transition-new(root) {
+  z-index: 1;
+}
+
 @layer base {
   /* All interactive buttons and links use a pointer cursor (Tailwind v4
      ships buttons with the default arrow cursor). Disabled controls excluded. */
