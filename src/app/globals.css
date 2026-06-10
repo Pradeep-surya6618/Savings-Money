@@ -56,6 +56,16 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), system-ui, sans-serif;
+  /* Subtle aurora atmosphere so large dark surfaces never read as flat. */
+  background-image:
+    radial-gradient(48rem 48rem at 100% -10%, color-mix(in oklab, var(--primary) 10%, transparent), transparent 60%),
+    radial-gradient(42rem 42rem at -10% 5%, color-mix(in oklab, var(--primary-end) 8%, transparent), transparent 55%);
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+}
+
+::selection {
+  background: color-mix(in oklab, var(--primary) 35%, transparent);
 }
 
 @layer base {
@@ -65,5 +75,16 @@ body {
   [role="button"]:not([aria-disabled="true"]),
   a[href] {
     cursor: pointer;
+  }
+
+  /* Clean money fields: no native number spinners. */
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  input[type="number"] {
+    -moz-appearance: textfield;
+    appearance: textfield;
   }
 }

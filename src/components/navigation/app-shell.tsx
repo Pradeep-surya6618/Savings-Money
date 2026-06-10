@@ -19,7 +19,9 @@ export function AppShell({
       <div className="flex min-w-0 flex-1 flex-col">
         <MobileHeader name={name} greeting={greeting} />
         <TopBar greeting={greeting} />
-        <main className="flex-1 px-4 pb-28 pt-4 lg:px-6 lg:pb-6">{children}</main>
+        <main className="mx-auto w-full max-w-6xl flex-1 px-4 pb-28 pt-5 lg:px-8 lg:pb-10 lg:pt-8">
+          {children}
+        </main>
       </div>
       <BottomTabBar />
     </div>

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { animate, useReducedMotion } from "framer-motion";
-import { formatCurrency } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 
 export function CountUp({ value, className }: { value: number; className?: string }) {
   const reduce = useReducedMotion();
@@ -19,5 +19,5 @@ export function CountUp({ value, className }: { value: number; className?: strin
   }, [value, reduce]);
 
   const shown = reduce ? value : display;
-  return <span className={className}>{formatCurrency(Math.round(shown))}</span>;
+  return <span className={cn("tabular-nums", className)}>{formatCurrency(Math.round(shown))}</span>;
 }
