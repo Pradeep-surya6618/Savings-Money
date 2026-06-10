@@ -33,6 +33,7 @@ export function TransactionForm({ initial, onDone }: { initial?: TransactionDTO;
     },
   });
 
+  // eslint-disable-next-line react-hooks/incompatible-library -- RHF watch() opts this form out of React Compiler memoization; fine for a low-frequency form.
   const type = watch("type");
 
   function chooseType(next: TxnType) {
@@ -54,9 +55,10 @@ export function TransactionForm({ initial, onDone }: { initial?: TransactionDTO;
           <button
             key={t}
             type="button"
+            disabled={isSubmitting}
             onClick={() => chooseType(t)}
             className={cn(
-              "flex-1 rounded-lg py-1.5 capitalize transition",
+              "flex-1 rounded-lg py-1.5 capitalize transition disabled:opacity-60",
               type === t ? "bg-primary text-white" : "text-muted-foreground hover:text-foreground",
             )}
           >
@@ -100,7 +102,10 @@ export function TransactionForm({ initial, onDone }: { initial?: TransactionDTO;
         {errors.date && <p className="mt-1 text-xs text-negative">{errors.date.message}</p>}
       </div>
 
-      <textarea {...register("notes")} placeholder="Notes (optional)" rows={2} className={fieldCls} />
+      <div>
+        <textarea {...register("notes")} placeholder="Notes (optional)" rows={2} className={fieldCls} />
+        {errors.notes && <p className="mt-1 text-xs text-negative">{errors.notes.message}</p>}
+      </div>
 
       {serverError && <p className="text-sm text-negative">{serverError}</p>}
 
