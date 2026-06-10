@@ -9,6 +9,7 @@ import { PRIMARY_NAV, SECONDARY_NAV, isActive } from "@/lib/nav";
 import { cn } from "@/lib/utils";
 import { Tooltip } from "@/components/ui/tooltip";
 import { Logo } from "@/components/brand/logo";
+import { Wordmark } from "@/components/brand/wordmark";
 
 const STORAGE_KEY = "sidebar-collapsed";
 const SPRING = { type: "spring", stiffness: 420, damping: 34 } as const;
@@ -50,7 +51,7 @@ export function Sidebar() {
       >
         <Link href="/" className="flex items-center gap-2.5" aria-label="FuFi home">
           <Logo className="h-9 w-9" />
-          {!isCollapsed && <span className="font-display text-lg font-bold tracking-tight">FuFi</span>}
+          {!isCollapsed && <Wordmark className="text-xl" />}
         </Link>
         <Tooltip content={isCollapsed ? "Expand sidebar" : "Collapse sidebar"} side="right">
           <button

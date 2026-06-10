@@ -2,6 +2,7 @@ import { Bell } from "lucide-react";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { Tooltip } from "@/components/ui/tooltip";
 import { Logo } from "@/components/brand/logo";
+import { Wordmark } from "@/components/brand/wordmark";
 
 export function MobileHeader({ greeting }: { greeting: string }) {
   return (
@@ -9,8 +10,8 @@ export function MobileHeader({ greeting }: { greeting: string }) {
       <div className="flex items-center gap-2.5">
         <Logo className="h-9 w-9" />
         <div className="leading-tight">
-          <p className="font-display text-sm font-bold tracking-tight">FuFi</p>
-          <p className="text-xs text-muted-foreground">{greeting}</p>
+          <Wordmark className="block text-base" />
+          <p className="mt-0.5 text-xs text-muted-foreground">{greeting}</p>
         </div>
       </div>
       <div className="flex items-center gap-2">
