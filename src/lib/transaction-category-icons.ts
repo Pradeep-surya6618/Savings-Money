@@ -2,6 +2,7 @@ import {
   Banknote,
   Briefcase,
   Bus,
+  CircleDollarSign,
   Film,
   Gift,
   GraduationCap,
@@ -30,5 +31,5 @@ export const TXN_CATEGORY_ICONS: Record<TxnCategoryKey, LucideIcon> = {
   salary_income: Banknote,
   freelance: Briefcase,
   gift: Gift,
-  other_income: TrendingUp,
+  other_income: CircleDollarSign,
 };

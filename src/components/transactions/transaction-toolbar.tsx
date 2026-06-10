@@ -1,7 +1,7 @@
 "use client";
 
 import { Search } from "lucide-react";
-import { TRANSACTION_CATEGORIES } from "@/lib/transaction-categories";
+import { TRANSACTION_CATEGORIES, categoriesForType } from "@/lib/transaction-categories";
 import { monthLabel } from "@/lib/month";
 import { cn } from "@/lib/utils";
 import type { TxnFilters, TxnSort } from "@/lib/transaction-filters";
@@ -38,7 +38,7 @@ export function TransactionToolbar({
           <button
             key={t}
             type="button"
-            onClick={() => setFilters({ ...filters, type: t })}
+            onClick={() => setFilters({ ...filters, type: t, category: "all" })}
             className={cn(
               "rounded-lg px-3 py-1 capitalize transition",
               filters.type === t ? "bg-primary text-white" : "text-muted-foreground hover:text-foreground",
@@ -54,7 +54,7 @@ export function TransactionToolbar({
         className={selectCls}
       >
         <option value="all">All categories</option>
-        {TRANSACTION_CATEGORIES.map((c) => (
+        {(filters.type === "all" ? TRANSACTION_CATEGORIES : categoriesForType(filters.type)).map((c) => (
           <option key={c.key} value={c.key}>
             {c.label}
           </option>

@@ -77,7 +77,7 @@ export function TransactionForm({ initial, onDone }: { initial?: TransactionDTO;
           type="number"
           inputMode="decimal"
           step="any"
-          min={0}
+          min={0.01}
           {...register("amount", { valueAsNumber: true })}
           placeholder="Amount (₹)"
           className={cn(fieldCls, "tabular-nums")}

@@ -26,6 +26,6 @@ export async function listTransactions(): Promise<TransactionDTO[]> {
     type: d.type as "income" | "expense",
     category: d.category,
     date: new Date(d.date).toISOString(),
-    notes: d.notes ?? null,
+    notes: d.notes || null,
   }));
 }
