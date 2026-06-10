@@ -1,6 +1,5 @@
 import type { ReactNode } from "react";
 import { AppShell } from "@/components/navigation/app-shell";
-import { getCurrentUser } from "@/lib/user";
 
 function greetingFor(date: Date): string {
   const h = date.getHours();
@@ -9,17 +8,6 @@ function greetingFor(date: Date): string {
   return "Good evening";
 }
 
-export default async function AppLayout({ children }: { children: ReactNode }) {
-  let name = "You";
-  try {
-    const { user } = await getCurrentUser();
-    name = user.name;
-  } catch {
-    // DB unavailable — render shell with defaults so the UI still loads.
-  }
-  return (
-    <AppShell name={name} greeting={greetingFor(new Date())}>
-      {children}
-    </AppShell>
-  );
+export default function AppLayout({ children }: { children: ReactNode }) {
+  return <AppShell greeting={greetingFor(new Date())}>{children}</AppShell>;
 }
