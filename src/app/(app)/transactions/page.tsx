@@ -1,6 +1,7 @@
-import { ArrowLeftRight } from "lucide-react";
-import { Placeholder } from "@/components/ui/placeholder";
+import { TransactionsView } from "@/components/transactions/transactions-view";
+import { listTransactions } from "@/services/transactions";
 
-export default function TransactionsPage() {
-  return <Placeholder icon={ArrowLeftRight} title="Transactions" phase="Phase 2" />;
+export default async function TransactionsPage() {
+  const transactions = await listTransactions();
+  return <TransactionsView transactions={transactions} />;
 }
