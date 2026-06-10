@@ -26,7 +26,7 @@ export function SummaryStrip({
         <p
           className={cn(
             "mt-1 text-base font-semibold tabular-nums sm:text-lg",
-            net >= 0 ? "text-positive" : "text-negative",
+            net > 0 ? "text-positive" : net < 0 ? "text-negative" : "text-foreground",
           )}
         >
           {formatCurrency(net)}

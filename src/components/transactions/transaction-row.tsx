@@ -24,7 +24,7 @@ export function TransactionRow({
   const color = cat?.color ?? "#64748b";
   const income = txn.type === "income";
   return (
-    <div className="group flex items-center gap-3 rounded-2xl border border-border bg-card p-3 transition hover:border-foreground/15">
+    <div className="flex items-center gap-3 rounded-2xl border border-border bg-card p-3 transition hover:border-foreground/15">
       <span
         className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl"
         style={{ backgroundColor: `${color}1f`, color }}

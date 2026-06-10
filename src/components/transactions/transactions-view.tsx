@@ -35,9 +35,16 @@ export function TransactionsView({ transactions }: { transactions: TransactionDT
       ),
     [transactions],
   );
+  // If the selected month no longer exists (e.g. its last transaction was deleted),
+  // fall back to "all" so the controlled <select> and the list stay in sync.
+  const monthFilter =
+    filters.month === "all" || months.includes(filters.month) ? filters.month : "all";
+  const activeFilters: TxnFilters = { ...filters, month: monthFilter };
   const visible = useMemo(
-    () => sortTransactions(filterTransactions(transactions, filters), sort),
-    [transactions, filters, sort],
+    () => sortTransactions(filterTransactions(transactions, activeFilters), sort),
+    // activeFilters is a derived object — listing its primitive sources is intentional
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [transactions, filters.search, filters.type, filters.category, monthFilter, sort],
   );
   const totals = useMemo(() => summarize(visible), [visible]);
 
@@ -61,7 +68,7 @@ export function TransactionsView({ transactions }: { transactions: TransactionDT
 
       <SummaryStrip income={totals.income} expense={totals.expense} net={totals.net} />
       <TransactionToolbar
-        filters={filters}
+        filters={activeFilters}
         setFilters={setFilters}
         sort={sort}
         setSort={setSort}
