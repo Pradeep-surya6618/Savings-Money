@@ -1,6 +1,6 @@
 import { connectDB } from "@/lib/mongodb/connect";
 import { getCurrentUser } from "@/lib/user";
-import { Salary } from "@/models/Salary";
+import { Salary, type AllocationDoc } from "@/models/Salary";
 import { addMonths } from "@/lib/month";
 import {
   computeStats,
@@ -19,7 +19,7 @@ export type MonthSummary = {
   insights: Insight[];
 };
 
-function toAllocations(raw: { category: string; amount: number }[] | undefined): AllocationInput[] {
+function toAllocations(raw: AllocationDoc[] | undefined): AllocationInput[] {
   return (raw ?? []).map((a) => ({ category: a.category, amount: a.amount }));
 }
 
@@ -30,12 +30,12 @@ export async function getMonthSummary(month: string): Promise<MonthSummary | nul
   const doc = await Salary.findOne({ userId: user.id, month }).lean();
   if (!doc) return null;
 
-  const allocations = toAllocations(doc.allocations as { category: string; amount: number }[]);
+  const allocations = toAllocations(doc.allocations as AllocationDoc[]);
   const stats = computeStats(doc.amount, allocations);
 
   const prevDoc = await Salary.findOne({ userId: user.id, month: addMonths(month, -1) }).lean();
   const previous = prevDoc
-    ? { amount: prevDoc.amount, stats: computeStats(prevDoc.amount, toAllocations(prevDoc.allocations as { category: string; amount: number }[])) }
+    ? { amount: prevDoc.amount, stats: computeStats(prevDoc.amount, toAllocations(prevDoc.allocations as AllocationDoc[])) }
     : null;
 
   return {
@@ -55,5 +55,5 @@ export async function getSalaryForEditor(
   const { user } = await getCurrentUser();
   const doc = await Salary.findOne({ userId: user.id, month }).lean();
   if (!doc) return null;
-  return { amount: doc.amount, allocations: toAllocations(doc.allocations as { category: string; amount: number }[]) };
+  return { amount: doc.amount, allocations: toAllocations(doc.allocations as AllocationDoc[]) };
 }

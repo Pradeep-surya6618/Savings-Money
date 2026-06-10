@@ -23,5 +23,8 @@ salarySchema.index({ userId: 1, month: 1 }, { unique: true });
 
 export type SalaryDoc = InferSchemaType<typeof salarySchema>;
 
+/** Plain shape of an embedded allocation after `.lean()`. */
+export type AllocationDoc = { category: string; amount: number };
+
 export const Salary: Model<SalaryDoc> =
   (models.Salary as Model<SalaryDoc>) ?? model<SalaryDoc>("Salary", salarySchema);
