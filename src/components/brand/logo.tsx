@@ -14,7 +14,7 @@ export function Logo({ className }: { className?: string }) {
         src="/Icons/FuFi-Logo.png"
         alt="FuFi"
         fill
-        sizes="48px"
+        sizes="128px"
         className="object-contain"
         priority
       />
