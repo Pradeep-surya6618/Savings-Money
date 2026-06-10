@@ -7,8 +7,8 @@ const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Surya Savings",
-  description: "Personal finance manager — salary, allocations, savings & more",
+  title: "FuFi — Future Financial",
+  description: "FuFi (Future Financial) — manage your salary, allocations, savings & more",
 };
 
 // Delivered inline (not via the CSS bundle) so the theme "wave" reveal always

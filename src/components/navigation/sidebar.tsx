@@ -48,9 +48,9 @@ export function Sidebar() {
           isCollapsed ? "flex-col items-center gap-3" : "items-center justify-between",
         )}
       >
-        <Link href="/" className="flex items-center gap-2.5" aria-label="Surya Savings home">
+        <Link href="/" className="flex items-center gap-2.5" aria-label="FuFi home">
           <Logo className="h-9 w-9" />
-          {!isCollapsed && <span className="text-base font-bold tracking-tight">Surya Savings</span>}
+          {!isCollapsed && <span className="text-base font-bold tracking-tight">FuFi</span>}
         </Link>
         <Tooltip content={isCollapsed ? "Expand sidebar" : "Collapse sidebar"} side="right">
           <button
