@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Wallet } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { MonthSwitcher } from "@/components/dashboard/month-switcher";
-import { HeroSection } from "@/components/dashboard/hero-section";
+import { HeroSection } from "@/components/ui/hero-section";
 import { monthLabel } from "@/lib/month";
 
 export function DashboardEmptyState({ month }: { month: string }) {

@@ -26,9 +26,11 @@ export function AllocationRow({
         type="number"
         inputMode="numeric"
         min={0}
+        step={1}
         value={amount === 0 ? "" : amount}
         placeholder="0"
-        onChange={(e) => onChange(Math.max(0, Number(e.target.value) || 0))}
+        onChange={(e) => onChange(Math.max(0, Math.floor(Number(e.target.value) || 0)))}
+        aria-label={`${CATEGORY_MAP[category].label} amount`}
         className="w-24 rounded-lg border border-border bg-card px-2 py-1.5 text-right text-sm outline-none focus:border-primary"
       />
     </div>

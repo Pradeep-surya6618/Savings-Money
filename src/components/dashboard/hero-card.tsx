@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Pencil } from "lucide-react";
 import { MonthSwitcher } from "@/components/dashboard/month-switcher";
 import { CountUp } from "@/components/dashboard/count-up";
-import { HeroSection } from "@/components/dashboard/hero-section";
+import { HeroSection } from "@/components/ui/hero-section";
 import { formatCurrency } from "@/lib/utils";
 
 export function HeroCard({

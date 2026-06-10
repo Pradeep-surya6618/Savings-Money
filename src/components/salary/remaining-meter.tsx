@@ -1,7 +1,6 @@
 "use client";
 
-import { cn } from "@/lib/utils";
-import { formatCurrency } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 
 export function RemainingMeter({ amount, allocated }: { amount: number; allocated: number }) {
   const remaining = amount - allocated;
@@ -13,7 +12,7 @@ export function RemainingMeter({ amount, allocated }: { amount: number; allocate
         <div
           className={cn(
             "h-full rounded-full",
-            over ? "bg-gradient-to-r from-negative to-negative" : "bg-gradient-to-r from-primary to-primary-end",
+            over ? "bg-negative" : "bg-gradient-to-r from-primary to-primary-end",
           )}
           style={{ width: `${over ? 100 : pct}%` }}
         />

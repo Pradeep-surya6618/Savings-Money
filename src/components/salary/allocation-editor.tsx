@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { CATEGORIES, type CategoryKey } from "@/lib/categories";
 import { monthLabel } from "@/lib/month";
 import { Button } from "@/components/ui/button";
+import { HeroSection } from "@/components/ui/hero-section";
 import { RemainingMeter } from "@/components/salary/remaining-meter";
 import { AllocationRow } from "@/components/salary/allocation-row";
 import { saveSalaryAllocations } from "@/lib/actions/salary";
@@ -55,21 +56,23 @@ export function AllocationEditor({
 
   return (
     <div className="mx-auto max-w-xl space-y-4">
-      <section className="rounded-3xl bg-gradient-to-br from-primary to-primary-end p-6 text-white shadow-lg">
+      <HeroSection>
         <p className="text-xs uppercase tracking-wide text-white/80">Monthly salary · {monthLabel(month)}</p>
         <input
           type="number"
           inputMode="numeric"
           min={0}
+          step={1}
           value={amount === 0 ? "" : amount}
           placeholder="0"
-          onChange={(e) => setAmount(Math.max(0, Number(e.target.value) || 0))}
+          onChange={(e) => setAmount(Math.max(0, Math.floor(Number(e.target.value) || 0)))}
+          aria-label="Monthly salary amount"
           className="mt-1 w-full bg-transparent text-3xl font-bold tracking-tight text-white placeholder-white/40 outline-none"
         />
         <div className="mt-4">
           <RemainingMeter amount={amount} allocated={allocated} />
         </div>
-      </section>
+      </HeroSection>
 
       <div className="rounded-2xl border border-border bg-card p-4">
         {CATEGORIES.map((c) => (
