@@ -2,14 +2,15 @@ import Link from "next/link";
 import { Wallet } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { MonthSwitcher } from "@/components/dashboard/month-switcher";
+import { HeroSection } from "@/components/dashboard/hero-section";
 import { monthLabel } from "@/lib/month";
 
 export function DashboardEmptyState({ month }: { month: string }) {
   return (
     <div className="space-y-6">
-      <section className="rounded-3xl bg-gradient-to-br from-primary to-primary-end p-6 text-white shadow-lg">
+      <HeroSection>
         <MonthSwitcher month={month} />
-      </section>
+      </HeroSection>
       <div className="flex min-h-[40vh] flex-col items-center justify-center gap-4 text-center">
         <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-card-elevated text-muted-foreground">
           <Wallet className="h-7 w-7" />

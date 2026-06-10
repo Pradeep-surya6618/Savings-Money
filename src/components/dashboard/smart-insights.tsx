@@ -13,7 +13,7 @@ export function SmartInsights({ insights }: { insights: Insight[] }) {
     <Card>
       <h3 className="mb-4 text-sm font-semibold">Smart insights</h3>
       {insights.length === 0 ? (
-        <p className="text-sm text-muted-foreground">Add a salary to see insights.</p>
+        <p className="text-sm text-muted-foreground">No insights yet.</p>
       ) : (
         <ul className="space-y-2">
           {insights.map((i) => (

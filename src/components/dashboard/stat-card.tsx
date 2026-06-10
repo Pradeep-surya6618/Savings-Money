@@ -9,14 +9,14 @@ export function StatCard({
 }: {
   label: string;
   value: number;
-  accent?: "positive" | "investment" | "loan" | "primary";
+  accent?: "positive" | "investment" | "loan" | "neutral";
 }) {
   const accentCls = {
     positive: "text-positive",
     investment: "text-primary-end",
     loan: "text-primary",
-    primary: "text-foreground",
-  }[accent ?? "primary"];
+    neutral: "text-foreground",
+  }[accent ?? "neutral"];
   return (
     <Card className="p-4">
       <p className="text-xs text-muted-foreground">{label}</p>

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Pencil } from "lucide-react";
 import { MonthSwitcher } from "@/components/dashboard/month-switcher";
 import { CountUp } from "@/components/dashboard/count-up";
+import { HeroSection } from "@/components/dashboard/hero-section";
 import { formatCurrency } from "@/lib/utils";
 
 export function HeroCard({
@@ -14,7 +15,7 @@ export function HeroCard({
   remaining: number;
 }) {
   return (
-    <section className="rounded-3xl bg-gradient-to-br from-primary to-primary-end p-6 text-white shadow-lg">
+    <HeroSection>
       <div className="flex items-center justify-between">
         <MonthSwitcher month={month} />
         <Link
@@ -29,6 +30,6 @@ export function HeroCard({
         <CountUp value={remaining} className="mt-1 block text-4xl font-bold tracking-tight" />
         <p className="mt-1 text-sm text-white/80">of {formatCurrency(amount)} monthly salary</p>
       </div>
-    </section>
+    </HeroSection>
   );
 }
