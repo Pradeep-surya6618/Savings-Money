@@ -9,7 +9,7 @@ export function MobileHeader({ greeting }: { greeting: string }) {
       <div className="flex items-center gap-2.5">
         <Logo className="h-9 w-9" />
         <div className="leading-tight">
-          <p className="text-sm font-bold tracking-tight">FuFi</p>
+          <p className="font-display text-sm font-bold tracking-tight">FuFi</p>
           <p className="text-xs text-muted-foreground">{greeting}</p>
         </div>
       </div>

@@ -19,5 +19,7 @@ export function CountUp({ value, className }: { value: number; className?: strin
   }, [value, reduce]);
 
   const shown = reduce ? value : display;
-  return <span className={cn("tabular-nums", className)}>{formatCurrency(Math.round(shown))}</span>;
+  return (
+    <span className={cn("font-display tabular-nums", className)}>{formatCurrency(Math.round(shown))}</span>
+  );
 }

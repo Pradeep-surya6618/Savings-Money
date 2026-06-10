@@ -50,7 +50,7 @@ export function Sidebar() {
       >
         <Link href="/" className="flex items-center gap-2.5" aria-label="FuFi home">
           <Logo className="h-9 w-9" />
-          {!isCollapsed && <span className="text-base font-bold tracking-tight">FuFi</span>}
+          {!isCollapsed && <span className="font-display text-lg font-bold tracking-tight">FuFi</span>}
         </Link>
         <Tooltip content={isCollapsed ? "Expand sidebar" : "Collapse sidebar"} side="right">
           <button

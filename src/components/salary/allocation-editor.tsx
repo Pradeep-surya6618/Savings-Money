@@ -89,7 +89,7 @@ export function AllocationEditor({
               placeholder="0"
               onChange={(e) => setAmount(Math.max(0, Math.floor(Number(e.target.value) || 0)))}
               aria-label="Monthly salary amount"
-              className="w-full bg-transparent text-4xl font-bold tracking-tight tabular-nums text-white placeholder-white/30 outline-none"
+              className="w-full bg-transparent font-display text-4xl font-bold tracking-tight tabular-nums text-white placeholder-white/30 outline-none"
             />
           </div>
           <div className="mt-5">

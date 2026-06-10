@@ -48,8 +48,8 @@
   --color-warning: var(--warning);
   --color-tooltip: var(--tooltip-bg);
   --color-tooltip-foreground: var(--tooltip-fg);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-jakarta);
+  --font-display: var(--font-sora);
 }
 
 body {
@@ -73,6 +73,12 @@ body {
    CSS bundle/HMR state. */
 
 @layer base {
+  /* Display font for prominent headings. */
+  h1,
+  h2 {
+    font-family: var(--font-display);
+  }
+
   /* All interactive buttons and links use a pointer cursor (Tailwind v4
      ships buttons with the default arrow cursor). Disabled controls excluded. */
   button:not(:disabled),
