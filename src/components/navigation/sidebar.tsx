@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import { PanelLeft, PanelLeftClose } from "lucide-react";
 import { PRIMARY_NAV, SECONDARY_NAV, isActive } from "@/lib/nav";
 import { cn } from "@/lib/utils";
@@ -10,6 +11,7 @@ import { Tooltip } from "@/components/ui/tooltip";
 import { Logo } from "@/components/brand/logo";
 
 const STORAGE_KEY = "sidebar-collapsed";
+const SPRING = { type: "spring", stiffness: 420, damping: 34 } as const;
 
 export function Sidebar() {
   const pathname = usePathname();
@@ -50,13 +52,15 @@ export function Sidebar() {
           <Logo className="h-9 w-9" />
           {!isCollapsed && <span className="text-base font-bold tracking-tight">Surya Savings</span>}
         </Link>
-        <button
-          onClick={toggle}
-          aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-          className="flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground transition hover:bg-card-elevated hover:text-foreground"
-        >
-          {isCollapsed ? <PanelLeft className="h-5 w-5" /> : <PanelLeftClose className="h-5 w-5" />}
-        </button>
+        <Tooltip content={isCollapsed ? "Expand sidebar" : "Collapse sidebar"} side="right">
+          <button
+            onClick={toggle}
+            aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+            className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary transition hover:bg-primary/20"
+          >
+            {isCollapsed ? <PanelLeft className="h-5 w-5" /> : <PanelLeftClose className="h-5 w-5" />}
+          </button>
+        </Tooltip>
       </div>
 
       {!isCollapsed && (
@@ -71,20 +75,31 @@ export function Sidebar() {
               href={href}
               aria-label={label}
               className={cn(
-                "relative flex items-center gap-3 rounded-xl py-2 text-sm transition",
+                "relative isolate flex items-center gap-3 rounded-xl py-2 text-sm transition-colors duration-200",
                 isCollapsed ? "justify-center px-0" : "px-3",
                 active
-                  ? "bg-primary/10 font-semibold text-foreground"
+                  ? "font-semibold text-foreground"
                   : "font-medium text-muted-foreground hover:bg-card-elevated hover:text-foreground",
               )}
             >
               {active && (
-                <span
-                  aria-hidden
-                  className="absolute -left-3 top-1/2 h-6 w-1 -translate-y-1/2 rounded-r-full bg-primary"
-                />
+                <>
+                  {/* sliding highlight + edge bar (shared layout animation) */}
+                  <motion.span
+                    layoutId="nav-active-pill"
+                    aria-hidden
+                    transition={SPRING}
+                    className="absolute inset-0 -z-10 rounded-xl bg-primary/10"
+                  />
+                  <motion.span
+                    layoutId="nav-active-bar"
+                    aria-hidden
+                    transition={SPRING}
+                    className="absolute -left-3 top-1/2 h-6 w-1 -translate-y-1/2 rounded-r-full bg-primary"
+                  />
+                </>
               )}
-              <Icon className={cn("h-5 w-5 shrink-0", active && "text-primary")} />
+              <Icon className={cn("h-5 w-5 shrink-0 transition-colors duration-200", active && "text-primary")} />
               {!isCollapsed && <span className="truncate">{label}</span>}
             </Link>
           );
