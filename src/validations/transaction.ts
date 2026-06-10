@@ -7,7 +7,10 @@ export const saveTransactionSchema = z
     amount: z.number().positive("Amount must be greater than 0"),
     type: z.enum(["income", "expense"]),
     category: z.string().min(1, "Pick a category"),
-    date: z.string().min(1, "Pick a date"),
+    date: z
+      .string()
+      .min(1, "Pick a date")
+      .refine((s) => !Number.isNaN(Date.parse(s)), "Invalid date"),
     notes: z.string().trim().max(300).optional(),
   })
   .refine(

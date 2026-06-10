@@ -22,6 +22,7 @@ export async function listTransactions(): Promise<TransactionDTO[]> {
     id: String(d._id),
     title: d.title,
     amount: d.amount,
+    // InferSchemaType widens the enum field to `string`; the cast restores the literal union.
     type: d.type as "income" | "expense",
     category: d.category,
     date: new Date(d.date).toISOString(),

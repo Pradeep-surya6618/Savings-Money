@@ -44,7 +44,8 @@ export async function deleteTransaction(id: string): Promise<Result> {
   if (!Types.ObjectId.isValid(id)) return { ok: false, error: "Invalid transaction" };
   await connectDB();
   const { user } = await getCurrentUser();
-  await Transaction.deleteOne({ _id: id, userId: user.id });
+  const res = await Transaction.deleteOne({ _id: id, userId: user.id });
+  if (res.deletedCount === 0) return { ok: false, error: "Transaction not found" };
   revalidatePath("/transactions");
   return { ok: true };
 }

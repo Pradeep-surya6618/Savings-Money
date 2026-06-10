@@ -31,4 +31,7 @@ describe("saveTransactionSchema", () => {
   it("rejects an unknown category", () => {
     expect(saveTransactionSchema.safeParse({ ...base, category: "bogus" }).success).toBe(false);
   });
+  it("rejects an invalid date", () => {
+    expect(saveTransactionSchema.safeParse({ ...base, date: "not-a-date" }).success).toBe(false);
+  });
 });
