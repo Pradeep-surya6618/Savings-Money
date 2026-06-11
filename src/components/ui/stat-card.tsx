@@ -17,7 +17,7 @@ export function StatCard({
   chart?: ReactNode; // a <MiniSparkline /> or similar
 }) {
   return (
-    <div className="rounded-2xl border border-border bg-card p-4 shadow-[var(--shadow-card)]">
+    <div className="flex h-full flex-col rounded-2xl border border-border bg-card p-4 shadow-[var(--shadow-card)]">
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
           <p className="text-xs text-muted-foreground">{label}</p>
@@ -37,7 +37,7 @@ export function StatCard({
         )}
       </div>
       {chart && (
-        <div className="mt-2" style={{ color: accentColor }}>
+        <div className="mt-auto pt-2" style={{ color: accentColor }}>
           {chart}
         </div>
       )}

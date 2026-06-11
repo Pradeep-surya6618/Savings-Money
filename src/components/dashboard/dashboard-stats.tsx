@@ -16,7 +16,7 @@ export function DashboardStats({
 }) {
   const pct = (v: number) => (salary > 0 ? Math.round((v / salary) * 100) : 0);
   return (
-    <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+    <div className="grid h-full auto-rows-fr grid-cols-2 gap-3">
       <StatCard
         label="Total Expenses"
         value={stats.expenses}

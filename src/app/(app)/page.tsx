@@ -33,18 +33,22 @@ export default async function HomePage({
   const savingsTrend = analytics.monthly.map((m) => m.net);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <div className="flex justify-end">
         <MonthPicker month={month} basePath="/" />
       </div>
-      <HeroCard month={month} amount={summary.amount} receivedDate={summary.receivedDate} />
-      <DashboardStats
-        stats={summary.stats}
-        salary={summary.amount}
-        expenseTrend={expenseTrend}
-        savingsTrend={savingsTrend}
-      />
-      <div className="grid gap-4 lg:grid-cols-2">
+      {/* Top row: salary hero + 2×2 stat grid */}
+      <div className="grid items-stretch gap-4 lg:grid-cols-[3fr_2fr]">
+        <HeroCard month={month} amount={summary.amount} receivedDate={summary.receivedDate} />
+        <DashboardStats
+          stats={summary.stats}
+          salary={summary.amount}
+          expenseTrend={expenseTrend}
+          savingsTrend={savingsTrend}
+        />
+      </div>
+      {/* Bottom row: budget allocation (wide) + smart insights */}
+      <div className="grid gap-4 lg:grid-cols-[3fr_2fr]">
         <SalaryDistribution amount={summary.amount} allocations={summary.allocations} />
         <SmartInsights insights={summary.insights} />
       </div>
