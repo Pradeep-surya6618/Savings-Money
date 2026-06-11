@@ -1,6 +1,10 @@
-import { ArrowLeftRight } from "lucide-react";
-import { Placeholder } from "@/components/ui/placeholder";
+import { TransactionsView } from "@/components/transactions/transactions-view";
+import { listTransactions } from "@/services/transactions";
 
-export default function TransactionsPage() {
-  return <Placeholder icon={ArrowLeftRight} title="Transactions" phase="Phase 2" />;
+// Read live data per request (and keep the build from prerendering against the DB).
+export const dynamic = "force-dynamic";
+
+export default async function TransactionsPage() {
+  const transactions = await listTransactions();
+  return <TransactionsView transactions={transactions} />;
 }

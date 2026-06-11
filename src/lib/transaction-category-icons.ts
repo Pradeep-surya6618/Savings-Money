@@ -1,0 +1,35 @@
+import {
+  Banknote,
+  Briefcase,
+  Bus,
+  CircleDollarSign,
+  Film,
+  Gift,
+  GraduationCap,
+  HeartHandshake,
+  MoreHorizontal,
+  PiggyBank,
+  ShoppingBag,
+  Smartphone,
+  TrendingUp,
+  UtensilsCrossed,
+  type LucideIcon,
+} from "lucide-react";
+import type { TxnCategoryKey } from "./transaction-categories";
+
+export const TXN_CATEGORY_ICONS: Record<TxnCategoryKey, LucideIcon> = {
+  family: HeartHandshake,
+  loan: GraduationCap,
+  food: UtensilsCrossed,
+  recharge: Smartphone,
+  transport: Bus,
+  shopping: ShoppingBag,
+  entertainment: Film,
+  savings: PiggyBank,
+  investments: TrendingUp,
+  misc: MoreHorizontal,
+  salary_income: Banknote,
+  freelance: Briefcase,
+  gift: Gift,
+  other_income: CircleDollarSign,
+};
