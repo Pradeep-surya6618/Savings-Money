@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import { Card } from "@/components/ui/card";
+import { SectionCard } from "@/components/ui/section-card";
 import { CATEGORY_MAP, type CategoryKey } from "@/lib/categories";
 import { CATEGORY_ICONS } from "@/lib/category-icons";
 import { formatCurrency } from "@/lib/utils";
@@ -17,8 +17,7 @@ export function SalaryDistribution({
     .sort((a, b) => b.amount - a.amount);
 
   return (
-    <Card>
-      <h3 className="mb-5 text-sm font-semibold">Salary distribution</h3>
+    <SectionCard title="Budget Allocation">
       {rows.length === 0 ? (
         <p className="text-sm text-muted-foreground">No allocations yet.</p>
       ) : (
@@ -54,6 +53,6 @@ export function SalaryDistribution({
           })}
         </ul>
       )}
-    </Card>
+    </SectionCard>
   );
 }

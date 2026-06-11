@@ -1,13 +1,11 @@
 import { HeroCard } from "@/components/dashboard/hero-card";
-import { QuickStats } from "@/components/dashboard/quick-stats";
+import { DashboardStats } from "@/components/dashboard/dashboard-stats";
 import { SalaryDistribution } from "@/components/dashboard/salary-distribution";
 import { SmartInsights } from "@/components/dashboard/smart-insights";
 import { DashboardEmptyState } from "@/components/dashboard/empty-state";
-import { SavingsCard } from "@/components/dashboard/savings-card";
-import { LoanCard } from "@/components/dashboard/loan-card";
+import { MonthPicker } from "@/components/ui/month-picker";
 import { getMonthSummary } from "@/services/salary";
-import { getSavings } from "@/services/savings";
-import { getLoan } from "@/services/loan";
+import { getAnalytics } from "@/services/analytics";
 import { currentMonth, isValidMonth } from "@/lib/month";
 
 export default async function HomePage({
@@ -19,21 +17,36 @@ export default async function HomePage({
   const month = raw && isValidMonth(raw) ? raw : currentMonth();
 
   const summary = await getMonthSummary(month);
-  if (!summary) return <DashboardEmptyState month={month} />;
+  if (!summary) {
+    return (
+      <div className="space-y-6">
+        <div className="flex justify-end">
+          <MonthPicker month={month} basePath="/" />
+        </div>
+        <DashboardEmptyState month={month} />
+      </div>
+    );
+  }
 
-  const [savings, loan] = await Promise.all([getSavings(), getLoan()]);
+  const analytics = await getAnalytics(month);
+  const expenseTrend = analytics.monthly.map((m) => m.expense);
+  const savingsTrend = analytics.monthly.map((m) => m.net);
 
   return (
     <div className="space-y-6">
-      <HeroCard month={month} amount={summary.amount} remaining={summary.stats.remaining} />
-      <QuickStats stats={summary.stats} />
+      <div className="flex justify-end">
+        <MonthPicker month={month} basePath="/" />
+      </div>
+      <HeroCard month={month} amount={summary.amount} receivedDate={summary.receivedDate} />
+      <DashboardStats
+        stats={summary.stats}
+        salary={summary.amount}
+        expenseTrend={expenseTrend}
+        savingsTrend={savingsTrend}
+      />
       <div className="grid gap-4 lg:grid-cols-2">
         <SalaryDistribution amount={summary.amount} allocations={summary.allocations} />
         <SmartInsights insights={summary.insights} />
-      </div>
-      <div className="grid gap-4 lg:grid-cols-2">
-        <SavingsCard data={savings} />
-        <LoanCard data={loan} />
       </div>
     </div>
   );
