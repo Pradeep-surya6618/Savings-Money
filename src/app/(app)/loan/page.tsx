@@ -1,6 +1,9 @@
-import { GraduationCap } from "lucide-react";
-import { Placeholder } from "@/components/ui/placeholder";
+import { LoanView } from "@/components/loan/loan-view";
+import { getLoan } from "@/services/loan";
 
-export default function LoanPage() {
-  return <Placeholder icon={GraduationCap} title="Education Loan" phase="Phase 3" />;
+export const dynamic = "force-dynamic";
+
+export default async function LoanPage() {
+  const data = await getLoan();
+  return <LoanView data={data} />;
 }

@@ -1,6 +1,9 @@
-import { PiggyBank } from "lucide-react";
-import { Placeholder } from "@/components/ui/placeholder";
+import { SavingsView } from "@/components/savings/savings-view";
+import { getSavings } from "@/services/savings";
 
-export default function SavingsPage() {
-  return <Placeholder icon={PiggyBank} title="Savings" phase="Phase 3" />;
+export const dynamic = "force-dynamic";
+
+export default async function SavingsPage() {
+  const data = await getSavings();
+  return <SavingsView data={data} />;
 }
