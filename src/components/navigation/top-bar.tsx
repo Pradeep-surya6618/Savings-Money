@@ -4,7 +4,7 @@ import { Tooltip } from "@/components/ui/tooltip";
 
 export function TopBar({ greeting, name }: { greeting: string; name: string }) {
   return (
-    <header className="hidden items-center justify-between border-b border-border px-6 py-4 lg:flex">
+    <header className="sticky top-0 z-30 hidden items-center justify-between border-b border-border bg-background/80 px-6 py-4 backdrop-blur-xl lg:flex">
       <div>
         <p className="text-lg font-bold tracking-tight">
           {greeting}, {name} <span aria-hidden>👋</span>
