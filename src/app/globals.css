@@ -37,10 +37,10 @@
 }
 
 .dark {
-  --background: #090d0b;
-  --card: #171f1b;
-  --card-elevated: #232c27;
-  --border: rgba(255, 255, 255, 0.1);
+  --background: #080c0a;
+  --card: #0e1411;
+  --card-elevated: #18211c;
+  --border: rgba(255, 255, 255, 0.12);
   --foreground: #f2f5f3;
   --muted-foreground: #9aa39d;
   --primary: #15803d;
@@ -48,8 +48,8 @@
   --positive: #4ade80;
   --negative: #fb7185;
   --warning: #fbbf24;
-  /* Dark elevation: a subtle top-edge highlight (depth comes from light, not shadow, on dark surfaces) */
-  --shadow-card: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 8px 24px rgba(0, 0, 0, 0.45);
+  /* Dark cards stay near-black; the crisp border + subtle top-edge highlight give depth */
+  --shadow-card: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 8px 24px rgba(0, 0, 0, 0.5);
   /* Darker, less-bright brand gradients for dark mode (filled surfaces + buttons).
      The 4-stop --gradient-brand stays vivid so the wordmark text keeps contrast. */
   --gradient-hero: linear-gradient(135deg, #15803d 0%, #13683a 55%, #0e4a2b 100%);
