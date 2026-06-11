@@ -20,7 +20,7 @@ export function HeroSection({ className, children, ...props }: ComponentProps<"s
         aria-hidden
         className="pointer-events-none absolute -bottom-24 -left-12 h-56 w-56 rounded-full bg-white/10 blur-3xl"
       />
-      <div className="relative">{children}</div>
+      <div className="relative h-full">{children}</div>
     </section>
   );
 }

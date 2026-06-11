@@ -39,6 +39,7 @@ export function Sidebar({ name }: { name: string }) {
     <aside
       className={cn(
         "hidden shrink-0 flex-col border-r border-border bg-card/40 p-3 transition-[width] duration-300 ease-out lg:flex",
+        "lg:sticky lg:top-0 lg:h-dvh lg:overflow-y-auto",
         isCollapsed ? "w-[4.5rem]" : "w-60",
       )}
     >
