@@ -38,10 +38,11 @@ export async function recordLoanPayment(input: QuickAmountInput): Promise<Result
   await connectDB();
   const { user } = await getCurrentUser();
   const loan = await Loan.findOne({ userId: user.id }).lean();
-  const total = loan?.totalLoan ?? 0;
-  const paid = loan?.paidAmount ?? 0;
+  // Defense-in-depth: the UI hides "Record payment" until a loan is set up, but
+  // never silently accept (and discard) a payment against a non-existent loan.
+  if (!loan || loan.totalLoan <= 0) return { ok: false, error: "Set up your loan first" };
   // Clamp so a payment never pushes paid past the loan total.
-  const newPaid = Math.min(total, paid + parsed.data.amount);
+  const newPaid = Math.min(loan.totalLoan, loan.paidAmount + parsed.data.amount);
   await Loan.updateOne({ userId: user.id }, { $set: { paidAmount: newPaid } }, { upsert: true });
 
   revalidatePath("/loan");
