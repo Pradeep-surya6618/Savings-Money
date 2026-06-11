@@ -32,7 +32,7 @@ export function StatCard({
       <div className="min-w-0 flex-1">
         <p className="text-xs text-muted-foreground">{label}</p>
         <p className="mt-1 text-lg font-bold tabular-nums sm:text-xl">{formatCurrency(value)}</p>
-        {pct != null && <p className="text-xs text-muted-foreground tabular-nums">{pct}%</p>}
+        {pct != null && <p className="mt-1.5 text-xs text-muted-foreground tabular-nums">{pct}%</p>}
       </div>
       {chart && (
         <div className="h-10 w-16 shrink-0 self-center sm:h-12 sm:w-24" style={{ color: accentColor }}>
