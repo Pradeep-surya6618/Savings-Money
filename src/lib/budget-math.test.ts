@@ -41,4 +41,11 @@ describe("reconcileBudget", () => {
     const r = reconcileBudget([{ category: "food", amount: 1000 }], {});
     expect(r.rows[0]).toMatchObject({ actual: 0, pct: 0, status: "under" });
   });
+
+  // Boundary: spending exactly to the limit is "near" (maxed), not "over" — you
+  // haven't exceeded the budget. Over requires actual > planned.
+  it("is near (not over) when actual exactly equals planned", () => {
+    const r = reconcileBudget([{ category: "food", amount: 5000 }], { food: 5000 });
+    expect(r.rows[0]).toMatchObject({ actual: 5000, remaining: 0, pct: 100, status: "near" });
+  });
 });

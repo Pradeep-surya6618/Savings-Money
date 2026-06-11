@@ -29,7 +29,7 @@ export async function getBudget(month: string): Promise<BudgetDTO | null> {
   const actualByCategory: Record<string, number> = {};
   for (const t of txns) actualByCategory[t.category] = (actualByCategory[t.category] ?? 0) + t.amount;
 
-  const allocations = (((salary.allocations as AllocationDoc[] | undefined) ?? []) as AllocationDoc[]).map((a) => ({
+  const allocations = ((salary.allocations as AllocationDoc[] | undefined) ?? []).map((a) => ({
     category: a.category,
     amount: a.amount,
   }));

@@ -25,6 +25,12 @@ describe("monthlyTotals", () => {
       { month: "2026-01", income: 0, expense: 0, net: 0 },
     ]);
   });
+  it("counts income transactions even when no salary is set for the month", () => {
+    const txns = [{ month: "2026-03", type: "income" as const, amount: 8000 }];
+    expect(monthlyTotals(["2026-03"], {}, txns)).toEqual([
+      { month: "2026-03", income: 8000, expense: 0, net: 8000 },
+    ]);
+  });
 });
 
 describe("savingsRateSeries", () => {
@@ -68,6 +74,7 @@ describe("topCategoriesAndChanges", () => {
     expect(changes.find((c) => c.category === "transport")).toMatchObject({
       delta: -1000, amount: 0, prevAmount: 1000,
     });
-    expect(changes[0].delta === 2000 || Math.abs(changes[0].delta) === 2000).toBe(true);
+    // sorted by |delta| desc; food (+2000) leads, with its direction preserved
+    expect(changes[0]).toMatchObject({ category: "food", delta: 2000 });
   });
 });
