@@ -2,16 +2,17 @@ import { Bell } from "lucide-react";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { Tooltip } from "@/components/ui/tooltip";
 import { Logo } from "@/components/brand/logo";
-import { Wordmark } from "@/components/brand/wordmark";
 
-export function MobileHeader({ greeting }: { greeting: string }) {
+export function MobileHeader({ greeting, name }: { greeting: string; name: string }) {
   return (
     <header className="sticky top-0 z-30 flex items-center justify-between border-b border-border bg-background/80 px-4 py-3 backdrop-blur-xl lg:hidden">
       <div className="flex items-center gap-2.5">
         <Logo className="h-9 w-9" />
         <div className="leading-tight">
-          <Wordmark className="block text-base" />
-          <p className="mt-0.5 text-xs text-muted-foreground">{greeting}</p>
+          <p className="text-xs text-muted-foreground">{greeting},</p>
+          <p className="text-sm font-bold">
+            {name} <span aria-hidden>👋</span>
+          </p>
         </div>
       </div>
       <div className="flex items-center gap-2">

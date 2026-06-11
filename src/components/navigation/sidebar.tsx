@@ -14,7 +14,7 @@ import { Wordmark } from "@/components/brand/wordmark";
 const STORAGE_KEY = "sidebar-collapsed";
 const SPRING = { type: "spring", stiffness: 420, damping: 34 } as const;
 
-export function Sidebar() {
+export function Sidebar({ name }: { name: string }) {
   const pathname = usePathname();
   // null = preference not read yet → SSR/first paint render expanded (no hydration mismatch).
   const [collapsed, setCollapsed] = useState<boolean | null>(null);
@@ -79,7 +79,7 @@ export function Sidebar() {
                 "relative isolate flex items-center gap-3 rounded-xl py-2 text-sm transition-colors duration-200",
                 isCollapsed ? "justify-center px-0" : "px-3",
                 active
-                  ? "font-semibold text-foreground"
+                  ? "font-semibold text-primary"
                   : "font-medium text-muted-foreground hover:bg-card-elevated hover:text-foreground",
               )}
             >
@@ -100,7 +100,7 @@ export function Sidebar() {
                   />
                 </>
               )}
-              <Icon className="h-5 w-5 shrink-0" style={{ color }} />
+              <Icon className="h-5 w-5 shrink-0" style={{ color: active ? "var(--primary)" : color }} />
               {!isCollapsed && <span className="truncate">{label}</span>}
             </Link>
           );
@@ -114,6 +114,24 @@ export function Sidebar() {
           );
         })}
       </nav>
+
+      {/* User footer */}
+      <div
+        className={cn(
+          "mt-auto flex items-center gap-3 rounded-xl px-2 py-2",
+          isCollapsed && "justify-center px-0",
+        )}
+      >
+        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-semibold text-primary">
+          {name.charAt(0).toUpperCase()}
+        </span>
+        {!isCollapsed && (
+          <div className="min-w-0 leading-tight">
+            <p className="truncate text-sm font-semibold">{name}</p>
+            <p className="text-xs text-muted-foreground">Premium Plan</p>
+          </div>
+        )}
+      </div>
     </aside>
   );
 }
