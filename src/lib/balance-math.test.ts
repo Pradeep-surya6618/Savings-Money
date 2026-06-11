@@ -18,4 +18,9 @@ describe("runningBalance", () => {
     expect(r.ledger[0].closing).toBe(-2000);
     expect(r.total).toBe(-2000);
   });
+  it("carries the balance unchanged through a zero-activity month", () => {
+    const r = runningBalance(1000, [M("2026-05", 0, 0), M("2026-06", 5000, 2000)]);
+    expect(r.ledger[0]).toMatchObject({ opening: 1000, net: 0, closing: 1000 });
+    expect(r.ledger[1]).toMatchObject({ opening: 1000, net: 3000, closing: 4000 });
+  });
 });

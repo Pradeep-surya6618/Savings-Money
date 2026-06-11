@@ -22,16 +22,20 @@ export async function setOpeningBalance(amount: number): Promise<Result> {
 }
 
 export async function resetAllData(): Promise<Result> {
-  await connectDB();
-  const { user } = await getCurrentUser();
-  await Promise.all([
-    Transaction.deleteMany({ userId: user.id }),
-    Salary.deleteMany({ userId: user.id }),
-    Savings.deleteMany({ userId: user.id }),
-    Loan.deleteMany({ userId: user.id }),
-  ]);
-  await Settings.updateOne({ userId: user.id }, { $set: { openingBalance: 0 } });
-  revalidatePath("/");
-  revalidatePath("/balance");
-  return { ok: true };
+  try {
+    await connectDB();
+    const { user } = await getCurrentUser();
+    await Promise.all([
+      Transaction.deleteMany({ userId: user.id }),
+      Salary.deleteMany({ userId: user.id }),
+      Savings.deleteMany({ userId: user.id }),
+      Loan.deleteMany({ userId: user.id }),
+    ]);
+    await Settings.updateOne({ userId: user.id }, { $set: { openingBalance: 0 } }, { upsert: true });
+    revalidatePath("/");
+    revalidatePath("/balance");
+    return { ok: true };
+  } catch {
+    return { ok: false, error: "Reset failed. Please try again." };
+  }
 }

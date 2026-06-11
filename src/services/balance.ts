@@ -17,15 +17,17 @@ export async function getBalance(): Promise<BalanceDTO> {
     Salary.find({ userId: user.id }).lean(),
   ]);
 
-  const txns = txnDocs.map((t) => ({
-    month: new Date(t.date).toISOString().slice(0, 7),
-    type: t.type as "income" | "expense",
-    amount: t.amount,
-  }));
+  const cur = currentMonth();
+  const txns = txnDocs
+    .map((t) => ({
+      month: new Date(t.date).toISOString().slice(0, 7),
+      type: t.type as "income" | "expense",
+      amount: t.amount,
+    }))
+    .filter((t) => t.month <= cur); // exclude any future-dated entries
   const salaryByMonth: Record<string, number> = {};
   for (const s of salaryDocs) salaryByMonth[s.month] = s.amount;
 
-  const cur = currentMonth();
   const dataMonths = [...txns.map((t) => t.month), ...salaryDocs.map((s) => s.month)].filter((m) => m <= cur);
   const start = dataMonths.length ? dataMonths.reduce((a, b) => (a < b ? a : b)) : cur;
   const months = monthRange(start, cur);
