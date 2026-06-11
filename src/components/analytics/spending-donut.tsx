@@ -2,13 +2,9 @@
 
 import { Card } from "@/components/ui/card";
 import { DonutChart } from "@/components/charts/donut-chart";
-import { TXN_CATEGORY_MAP, type TxnCategoryKey } from "@/lib/transaction-categories";
+import { txnCategoryMeta as meta } from "@/lib/category-meta";
 import { formatCurrency } from "@/lib/utils";
 import type { CategoryShare } from "@/lib/analytics-math";
-
-function meta(category: string): { label: string; color: string } {
-  return TXN_CATEGORY_MAP[category as TxnCategoryKey] ?? { label: category, color: "#64748b" };
-}
 
 export function SpendingDonut({ breakdown }: { breakdown: CategoryShare[] }) {
   const total = breakdown.reduce((s, b) => s + b.amount, 0);

@@ -2,13 +2,9 @@
 
 import { ArrowUp, ArrowDown } from "lucide-react";
 import { Card } from "@/components/ui/card";
-import { TXN_CATEGORY_MAP, type TxnCategoryKey } from "@/lib/transaction-categories";
+import { txnCategoryMeta as meta } from "@/lib/category-meta";
 import { formatCurrency } from "@/lib/utils";
 import type { CategoryShare, CategoryChange } from "@/lib/analytics-math";
-
-function meta(category: string): { label: string; color: string } {
-  return TXN_CATEGORY_MAP[category as TxnCategoryKey] ?? { label: category, color: "#64748b" };
-}
 
 export function TopCategories({ top, changes }: { top: CategoryShare[]; changes: CategoryChange[] }) {
   return (

@@ -6,8 +6,8 @@ import { monthLabel } from "@/lib/month";
 import { formatCurrency } from "@/lib/utils";
 import type { MonthTotal } from "@/lib/analytics-math";
 
-const INCOME = "#16a34a";
-const EXPENSE = "#64748b";
+const INCOME = "var(--primary)"; // brand green, theme-aware
+const EXPENSE = "var(--muted-foreground)"; // neutral, theme-aware
 
 export function IncomeExpenseChart({ monthly }: { monthly: MonthTotal[] }) {
   const groups = monthly.map((m) => ({
@@ -17,7 +17,9 @@ export function IncomeExpenseChart({ monthly }: { monthly: MonthTotal[] }) {
       { value: m.expense, color: EXPENSE },
     ],
   }));
-  const net = monthly.length ? monthly[monthly.length - 1].net : 0;
+  const last = monthly.length ? monthly[monthly.length - 1] : null;
+  const net = last ? last.net : 0;
+  const netLabel = last ? monthLabel(last.month).slice(0, 3) : "";
   return (
     <Card className="space-y-4">
       <div className="flex items-center justify-between">
@@ -33,7 +35,7 @@ export function IncomeExpenseChart({ monthly }: { monthly: MonthTotal[] }) {
       </div>
       <BarChart groups={groups} formatValue={formatCurrency} />
       <p className="text-sm text-muted-foreground">
-        This month net:{" "}
+        {netLabel} net:{" "}
         <span className="font-semibold tabular-nums" style={{ color: net >= 0 ? "var(--positive)" : "var(--negative)" }}>
           {formatCurrency(net)}
         </span>
