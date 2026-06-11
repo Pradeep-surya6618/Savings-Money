@@ -1,6 +1,9 @@
 "use client";
 
 import { useState, type ComponentType } from "react";
+import { useRouter } from "next/navigation";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { resetAllData } from "@/lib/actions/balance";
 import {
   SlidersHorizontal,
   Palette,
@@ -46,6 +49,24 @@ const opts = (...vals: string[]) => vals.map((v) => ({ value: v, label: v }));
 export function SettingsView({ name, settings }: { name: string; settings: Prefs }) {
   const [active, setActive] = useState<SectionKey>("general");
   const [prefs, setPrefs] = useState<Prefs>(settings);
+  const router = useRouter();
+  const [resetOpen, setResetOpen] = useState(false);
+  const [confirmText, setConfirmText] = useState("");
+  const [resetting, setResetting] = useState(false);
+
+  async function doReset() {
+    setResetting(true);
+    const res = await resetAllData();
+    if (res.ok) {
+      toast.success("All data reset");
+      setResetOpen(false);
+      setConfirmText("");
+      router.push("/");
+    } else {
+      toast.error(res.error);
+      setResetting(false);
+    }
+  }
 
   async function save(next: Prefs) {
     setPrefs(next);
@@ -166,16 +187,13 @@ export function SettingsView({ name, settings }: { name: string; settings: Prefs
           {active === "security" && (
             <Panel title="Security">
               <ActionRow
-                title="Delete Account"
-                desc="Permanently delete your account and all data."
+                title="Reset all data"
+                desc="Permanently delete all your salary, transactions, savings & loan data."
                 icon={Trash2}
                 danger
                 button={
-                  <Button
-                    onClick={() => toast.info("Account deletion arrives in a later update")}
-                    className="from-negative to-negative"
-                  >
-                    Delete
+                  <Button onClick={() => setResetOpen(true)} className="from-negative to-negative">
+                    Reset
                   </Button>
                 }
               />
@@ -193,6 +211,35 @@ export function SettingsView({ name, settings }: { name: string; settings: Prefs
           )}
         </Card>
       </div>
+
+      <Dialog open={resetOpen} onOpenChange={(o) => { if (!o) { setResetOpen(false); setConfirmText(""); } }}>
+        <DialogContent title="Reset all data">
+          <div className="space-y-3">
+            <p className="text-sm text-muted-foreground">
+              This permanently deletes your salary, transactions, savings and loan data and resets your opening
+              balance. Your login and preferences stay. This can&rsquo;t be undone.
+            </p>
+            <input
+              value={confirmText}
+              onChange={(e) => setConfirmText(e.target.value)}
+              placeholder="Type reset to confirm"
+              className="w-full rounded-xl border border-border bg-card px-3 py-2 text-sm outline-none focus:border-primary"
+            />
+            <div className="flex justify-end gap-2">
+              <Button variant="ghost" onClick={() => { setResetOpen(false); setConfirmText(""); }} disabled={resetting}>
+                Cancel
+              </Button>
+              <Button
+                onClick={doReset}
+                disabled={resetting || confirmText !== "reset"}
+                className="from-negative to-negative"
+              >
+                {resetting ? "Resetting…" : "Reset everything"}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
