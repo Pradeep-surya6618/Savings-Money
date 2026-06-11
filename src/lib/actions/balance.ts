@@ -32,8 +32,7 @@ export async function resetAllData(): Promise<Result> {
       Loan.deleteMany({ userId: user.id }),
     ]);
     await Settings.updateOne({ userId: user.id }, { $set: { openingBalance: 0 } }, { upsert: true });
-    revalidatePath("/");
-    revalidatePath("/balance");
+    revalidatePath("/", "layout"); // full wipe — invalidate every cached route
     return { ok: true };
   } catch {
     return { ok: false, error: "Reset failed. Please try again." };

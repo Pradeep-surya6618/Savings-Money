@@ -10,7 +10,7 @@ const fieldCls =
   "w-full rounded-xl border border-border bg-card px-3 py-2 text-sm outline-none focus:border-primary";
 
 export function OpeningBalanceForm({ initial, onDone }: { initial: number; onDone: () => void }) {
-  const [amount, setAmount] = useState(initial);
+  const [raw, setRaw] = useState(initial === 0 ? "" : String(initial));
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -18,14 +18,15 @@ export function OpeningBalanceForm({ initial, onDone }: { initial: number; onDon
     e.preventDefault();
     setBusy(true);
     setError(null);
+    const amount = Math.max(0, Number(raw) || 0);
     const res = await setOpeningBalance(amount);
+    setBusy(false);
     if (res.ok) {
       toast.success("Opening balance saved");
       onDone();
     } else {
       setError(res.error);
       toast.error(res.error);
-      setBusy(false);
     }
   }
 
@@ -39,9 +40,9 @@ export function OpeningBalanceForm({ initial, onDone }: { initial: number; onDon
           step="any"
           min={0}
           autoFocus
-          value={amount === 0 ? "" : amount}
+          value={raw}
           placeholder="0"
-          onChange={(e) => setAmount(Math.max(0, Number(e.target.value) || 0))}
+          onChange={(e) => setRaw(e.target.value)}
           className={cn(fieldCls, "tabular-nums")}
         />
       </label>

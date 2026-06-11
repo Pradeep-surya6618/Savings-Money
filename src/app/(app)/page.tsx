@@ -18,19 +18,20 @@ export default async function HomePage({
   const { month: raw } = await searchParams;
   const month = raw && isValidMonth(raw) ? raw : currentMonth();
 
-  const summary = await getMonthSummary(month);
+  const [summary, balance] = await Promise.all([getMonthSummary(month), getBalance()]);
   if (!summary) {
     return (
       <div className="space-y-6">
         <div className="flex justify-end">
           <MonthPicker month={month} basePath="/" />
         </div>
+        <TotalBalanceBanner total={balance.total} />
         <DashboardEmptyState month={month} />
       </div>
     );
   }
 
-  const [analytics, balance] = await Promise.all([getAnalytics(month), getBalance()]);
+  const analytics = await getAnalytics(month);
   const expenseTrend = analytics.monthly.map((m) => m.expense);
   const savingsTrend = analytics.monthly.map((m) => m.net);
 

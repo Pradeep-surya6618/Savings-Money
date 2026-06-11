@@ -212,7 +212,7 @@ export function SettingsView({ name, settings }: { name: string; settings: Prefs
         </Card>
       </div>
 
-      <Dialog open={resetOpen} onOpenChange={(o) => { if (!o) { setResetOpen(false); setConfirmText(""); } }}>
+      <Dialog open={resetOpen} onOpenChange={(o) => { if (!o && !resetting) { setResetOpen(false); setConfirmText(""); } }}>
         <DialogContent title="Reset all data">
           <div className="space-y-3">
             <p className="text-sm text-muted-foreground">
