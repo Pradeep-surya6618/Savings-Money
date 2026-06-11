@@ -39,7 +39,7 @@ export function Sidebar({ name }: { name: string }) {
     <aside
       className={cn(
         "hidden shrink-0 flex-col border-r border-border bg-card/40 p-3 transition-[width] duration-300 ease-out lg:flex",
-        "lg:sticky lg:top-0 lg:h-dvh lg:overflow-y-auto",
+        "lg:sticky lg:top-0 lg:h-dvh",
         isCollapsed ? "w-[4.5rem]" : "w-60",
       )}
     >
@@ -69,7 +69,7 @@ export function Sidebar({ name }: { name: string }) {
         <p className="mb-2 px-3 text-xs font-medium uppercase tracking-wider text-muted-foreground">Menu</p>
       )}
 
-      <nav className="flex flex-col gap-1">
+      <nav className="flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto">
         {items.map(({ href, label, icon: Icon, color }) => {
           const active = isActive(pathname, href);
           const link = (
@@ -97,7 +97,7 @@ export function Sidebar({ name }: { name: string }) {
                     layoutId="nav-active-bar"
                     aria-hidden
                     transition={SPRING}
-                    className="absolute -left-3 top-1/2 h-6 w-1 -translate-y-1/2 rounded-r-full bg-primary"
+                    className="absolute left-0 top-1/2 h-6 w-1 -translate-y-1/2 rounded-r-full bg-primary"
                   />
                 </>
               )}
