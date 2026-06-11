@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { currentMonth, isValidMonth, monthLabel, addMonths, recentMonths } from "./month";
+import { currentMonth, isValidMonth, monthLabel, addMonths, recentMonths, monthRange } from "./month";
 
 describe("month helpers", () => {
   it("currentMonth returns a valid YYYY-MM string", () => {
@@ -24,5 +24,11 @@ describe("month helpers", () => {
     expect(recentMonths("2026-06", 3)).toEqual(["2026-04", "2026-05", "2026-06"]);
     expect(recentMonths("2026-01", 2)).toEqual(["2025-12", "2026-01"]);
     expect(recentMonths("2026-06", 1)).toEqual(["2026-06"]);
+  });
+  it("monthRange lists all months inclusive, oldest first", () => {
+    expect(monthRange("2026-04", "2026-06")).toEqual(["2026-04", "2026-05", "2026-06"]);
+    expect(monthRange("2026-06", "2026-06")).toEqual(["2026-06"]);
+    expect(monthRange("2025-11", "2026-02")).toEqual(["2025-11", "2025-12", "2026-01", "2026-02"]);
+    expect(monthRange("2026-07", "2026-06")).toEqual([]);
   });
 });
