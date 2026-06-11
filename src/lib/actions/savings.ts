@@ -32,6 +32,9 @@ export async function addToSavings(input: QuickAmountInput): Promise<Result> {
 
   await connectDB();
   const { user } = await getCurrentUser();
+  // Intentionally uncapped: saving past the goal is a valid (celebrated) state.
+  // savingsStats clamps pct to 100 and reports `reached`. This is asymmetric with
+  // recordLoanPayment, which clamps to the total — you can't pay more than you owe.
   await Savings.updateOne(
     { userId: user.id },
     { $inc: { currentAmount: parsed.data.amount } },
