@@ -17,10 +17,10 @@ export function HeroCard({
     ? new Date(receivedDate).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })
     : null;
   return (
-    <HeroSection className="min-h-[12.5rem]">
+    <HeroSection>
       {/* Large faint watermark for depth */}
-      <Wallet aria-hidden className="pointer-events-none absolute -bottom-6 right-2 h-44 w-44 text-white/10" />
-      <div className="flex h-full flex-col justify-between gap-6">
+      <Wallet aria-hidden className="pointer-events-none absolute -bottom-5 right-2 h-32 w-32 text-white/10" />
+      <div className="flex flex-col gap-7">
         <div className="flex items-start justify-between gap-4">
           <p className="text-xs font-medium uppercase tracking-widest text-white/70">
             Total Salary ({monthLabel(month)})

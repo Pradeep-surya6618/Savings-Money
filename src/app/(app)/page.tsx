@@ -38,7 +38,7 @@ export default async function HomePage({
         <MonthPicker month={month} basePath="/" />
       </div>
       {/* Top row: salary hero + 2×2 stat grid */}
-      <div className="grid items-stretch gap-4 lg:grid-cols-[3fr_2fr]">
+      <div className="grid gap-4 lg:grid-cols-[3fr_2fr] lg:items-start">
         <HeroCard month={month} amount={summary.amount} receivedDate={summary.receivedDate} />
         <DashboardStats
           stats={summary.stats}
