@@ -1,13 +1,18 @@
 "use client";
 
-import { Search } from "lucide-react";
+import { Select } from "@/components/ui/select";
+import { SearchInput } from "@/components/ui/search-input";
 import { TRANSACTION_CATEGORIES, categoriesForType } from "@/lib/transaction-categories";
 import { monthLabel } from "@/lib/month";
 import { cn } from "@/lib/utils";
 import type { TxnFilters, TxnSort } from "@/lib/transaction-filters";
 
-const selectCls =
-  "rounded-xl border border-border bg-card px-3 py-2 text-sm outline-none focus:border-primary";
+const SORT_OPTIONS = [
+  { value: "date-desc", label: "Newest" },
+  { value: "date-asc", label: "Oldest" },
+  { value: "amount-desc", label: "Amount ↓" },
+  { value: "amount-asc", label: "Amount ↑" },
+];
 
 export function TransactionToolbar({
   filters,
@@ -22,17 +27,24 @@ export function TransactionToolbar({
   setSort: (s: TxnSort) => void;
   months: string[];
 }) {
+  const cats = filters.type === "all" ? TRANSACTION_CATEGORIES : categoriesForType(filters.type);
+  const categoryOptions = [
+    { value: "all", label: "All categories" },
+    ...cats.map((c) => ({ value: c.key, label: c.label })),
+  ];
+  const monthOptions = [
+    { value: "all", label: "All months" },
+    ...months.map((m) => ({ value: m, label: monthLabel(m) })),
+  ];
+
   return (
     <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
-      <div className="relative flex-1 sm:min-w-48">
-        <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-        <input
-          value={filters.search}
-          onChange={(e) => setFilters({ ...filters, search: e.target.value })}
-          placeholder="Search transactions"
-          className="w-full rounded-xl border border-border bg-card py-2 pl-9 pr-3 text-sm outline-none focus:border-primary"
-        />
-      </div>
+      <SearchInput
+        value={filters.search}
+        onChange={(v) => setFilters({ ...filters, search: v })}
+        placeholder="Search transactions"
+        className="flex-1 sm:min-w-48"
+      />
       <div className="inline-flex rounded-xl border border-border bg-card p-1 text-sm">
         {(["all", "income", "expense"] as const).map((t) => (
           <button
@@ -48,36 +60,19 @@ export function TransactionToolbar({
           </button>
         ))}
       </div>
-      <select
+      <Select
         value={filters.category}
-        onChange={(e) => setFilters({ ...filters, category: e.target.value })}
-        className={selectCls}
-      >
-        <option value="all">All categories</option>
-        {(filters.type === "all" ? TRANSACTION_CATEGORIES : categoriesForType(filters.type)).map((c) => (
-          <option key={c.key} value={c.key}>
-            {c.label}
-          </option>
-        ))}
-      </select>
-      <select
+        onValueChange={(v) => setFilters({ ...filters, category: v })}
+        options={categoryOptions}
+        ariaLabel="Filter by category"
+      />
+      <Select
         value={filters.month}
-        onChange={(e) => setFilters({ ...filters, month: e.target.value })}
-        className={selectCls}
-      >
-        <option value="all">All months</option>
-        {months.map((m) => (
-          <option key={m} value={m}>
-            {monthLabel(m)}
-          </option>
-        ))}
-      </select>
-      <select value={sort} onChange={(e) => setSort(e.target.value as TxnSort)} className={selectCls}>
-        <option value="date-desc">Newest</option>
-        <option value="date-asc">Oldest</option>
-        <option value="amount-desc">Amount ↓</option>
-        <option value="amount-asc">Amount ↑</option>
-      </select>
+        onValueChange={(v) => setFilters({ ...filters, month: v })}
+        options={monthOptions}
+        ariaLabel="Filter by month"
+      />
+      <Select value={sort} onValueChange={(v) => setSort(v as TxnSort)} options={SORT_OPTIONS} ariaLabel="Sort" />
     </div>
   );
 }

@@ -7,6 +7,8 @@ import { saveTransactionSchema, type SaveTransactionInput } from "@/validations/
 import { categoriesForType, type TxnType } from "@/lib/transaction-categories";
 import { createTransaction, updateTransaction } from "@/lib/actions/transactions";
 import { Button } from "@/components/ui/button";
+import { Select } from "@/components/ui/select";
+import { DatePicker } from "@/components/ui/date-picker";
 import { cn } from "@/lib/utils";
 import type { TransactionDTO } from "@/services/transactions";
 
@@ -35,6 +37,8 @@ export function TransactionForm({ initial, onDone }: { initial?: TransactionDTO;
 
   // eslint-disable-next-line react-hooks/incompatible-library -- RHF watch() opts this form out of React Compiler memoization; fine for a low-frequency form.
   const type = watch("type");
+  const category = watch("category");
+  const date = watch("date");
 
   function chooseType(next: TxnType) {
     setValue("type", next);
@@ -86,19 +90,19 @@ export function TransactionForm({ initial, onDone }: { initial?: TransactionDTO;
       </div>
 
       <div>
-        <select {...register("category")} className={fieldCls}>
-          <option value="">Select category</option>
-          {categoriesForType(type).map((c) => (
-            <option key={c.key} value={c.key}>
-              {c.label}
-            </option>
-          ))}
-        </select>
+        <Select
+          value={category}
+          onValueChange={(v) => setValue("category", v)}
+          options={categoriesForType(type).map((c) => ({ value: c.key, label: c.label }))}
+          placeholder="Select category"
+          className="w-full"
+          ariaLabel="Category"
+        />
         {errors.category && <p className="mt-1 text-xs text-negative">{errors.category.message}</p>}
       </div>
 
       <div>
-        <input type="date" {...register("date")} className={fieldCls} />
+        <DatePicker value={date} onChange={(v) => setValue("date", v)} />
         {errors.date && <p className="mt-1 text-xs text-negative">{errors.date.message}</p>}
       </div>
 
