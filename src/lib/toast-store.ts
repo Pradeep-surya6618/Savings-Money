@@ -12,7 +12,7 @@ type ToastState = {
 };
 
 let counter = 0;
-const DURATION = 3500;
+export const TOAST_DURATION = 3500;
 
 export const useToastStore = create<ToastState>((set) => ({
   toasts: [],
@@ -20,7 +20,7 @@ export const useToastStore = create<ToastState>((set) => ({
     counter += 1;
     const id = counter;
     set((s) => ({ toasts: [...s.toasts, { id, tone, message }] }));
-    setTimeout(() => set((s) => ({ toasts: s.toasts.filter((t) => t.id !== id) })), DURATION);
+    setTimeout(() => set((s) => ({ toasts: s.toasts.filter((t) => t.id !== id) })), TOAST_DURATION);
   },
   dismiss: (id) => set((s) => ({ toasts: s.toasts.filter((t) => t.id !== id) })),
 }));
