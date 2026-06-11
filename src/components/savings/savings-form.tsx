@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { saveSavingsSchema, type SaveSavingsInput } from "@/validations/tracker";
 import { saveSavings } from "@/lib/actions/savings";
+import { toast } from "@/lib/toast-store";
 import { Field } from "@/components/trackers/field";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -31,8 +32,13 @@ export function SavingsForm({ initial, onDone }: { initial: SavingsDTO; onDone: 
   async function onSubmit(values: SaveSavingsInput) {
     setServerError(null);
     const res = await saveSavings(values);
-    if (res.ok) onDone();
-    else setServerError(res.error);
+    if (res.ok) {
+      toast.success("Savings goal saved");
+      onDone();
+    } else {
+      setServerError(res.error);
+      toast.error(res.error);
+    }
   }
 
   return (

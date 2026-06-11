@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { saveTransactionSchema, type SaveTransactionInput } from "@/validations/transaction";
 import { categoriesForType, type TxnType } from "@/lib/transaction-categories";
 import { createTransaction, updateTransaction } from "@/lib/actions/transactions";
+import { toast } from "@/lib/toast-store";
 import { Button } from "@/components/ui/button";
 import { Select } from "@/components/ui/select";
 import { DatePicker } from "@/components/ui/date-picker";
@@ -48,8 +49,13 @@ export function TransactionForm({ initial, onDone }: { initial?: TransactionDTO;
   async function onSubmit(values: SaveTransactionInput) {
     setServerError(null);
     const res = initial ? await updateTransaction(initial.id, values) : await createTransaction(values);
-    if (res.ok) onDone();
-    else setServerError(res.error);
+    if (res.ok) {
+      toast.success(initial ? "Transaction updated" : "Transaction added");
+      onDone();
+    } else {
+      setServerError(res.error);
+      toast.error(res.error);
+    }
   }
 
   return (

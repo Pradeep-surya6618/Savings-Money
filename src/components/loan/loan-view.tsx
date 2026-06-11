@@ -97,6 +97,7 @@ export function LoanView({ data }: { data: LoanDTO }) {
         <DialogContent title="Record EMI payment">
           <AmountForm
             submitLabel="Record payment"
+            successMessage="Payment recorded"
             onSubmit={(amount) => recordLoanPayment({ amount })}
             onDone={() => setPayOpen(false)}
           />

@@ -3,6 +3,7 @@ import { Sidebar } from "./sidebar";
 import { TopBar } from "./top-bar";
 import { MobileHeader } from "./mobile-header";
 import { BottomTabBar } from "./bottom-tab-bar";
+import { Toaster } from "@/components/ui/toaster";
 
 export function AppShell({
   children,
@@ -24,6 +25,7 @@ export function AppShell({
         </main>
       </div>
       <BottomTabBar />
+      <Toaster />
     </div>
   );
 }

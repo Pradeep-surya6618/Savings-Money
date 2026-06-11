@@ -98,6 +98,7 @@ export function SavingsView({ data }: { data: SavingsDTO }) {
         <DialogContent title="Add to savings">
           <AmountForm
             submitLabel="Add to savings"
+            successMessage="Added to savings"
             onSubmit={(amount) => addToSavings({ amount })}
             onDone={() => setAddOpen(false)}
           />
