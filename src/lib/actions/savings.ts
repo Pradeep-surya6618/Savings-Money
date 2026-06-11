@@ -32,13 +32,17 @@ export async function addToSavings(input: QuickAmountInput): Promise<Result> {
 
   await connectDB();
   const { user } = await getCurrentUser();
+  // Defense-in-depth: the UI only offers "Add to savings" once a goal is set up.
+  // Guard the action too — a direct/raced call would otherwise $inc-upsert a doc
+  // missing the required target/monthly fields (and yield NaN stats).
+  const savings = await Savings.findOne({ userId: user.id }).lean();
+  if (!savings || savings.targetAmount <= 0) return { ok: false, error: "Set up your savings goal first" };
   // Intentionally uncapped: saving past the goal is a valid (celebrated) state.
   // savingsStats clamps pct to 100 and reports `reached`. This is asymmetric with
   // recordLoanPayment, which clamps to the total — you can't pay more than you owe.
   await Savings.updateOne(
     { userId: user.id },
     { $inc: { currentAmount: parsed.data.amount } },
-    { upsert: true },
   );
 
   revalidatePath("/savings");
