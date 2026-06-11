@@ -22,14 +22,14 @@ export function DashboardStats({
         value={stats.expenses}
         pct={pct(stats.expenses)}
         accentColor="#e11d48"
-        chart={<MiniSparkline points={expenseTrend} color="#e11d48" />}
+        chart={<MiniSparkline points={expenseTrend} color="#e11d48" className="h-12 w-full" />}
       />
       <StatCard
         label="Savings"
         value={stats.savings}
         pct={pct(stats.savings)}
         accentColor="#16a34a"
-        chart={<MiniSparkline points={savingsTrend} color="#16a34a" />}
+        chart={<MiniSparkline points={savingsTrend} color="#16a34a" className="h-12 w-full" />}
       />
       <StatCard label="Loan Paid" value={stats.loan} pct={pct(stats.loan)} icon={GraduationCap} accentColor="#8b5cf6" />
       <StatCard label="Remaining Balance" value={stats.remaining} pct={pct(stats.remaining)} icon={Wallet} accentColor="#f59e0b" />
