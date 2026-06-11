@@ -12,7 +12,7 @@ export function TransactionsEmptyState({
 }) {
   return (
     <div className="flex min-h-[40vh] flex-col items-center justify-center gap-4 rounded-3xl border border-dashed border-border bg-card/50 p-8 text-center">
-      <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-primary-end text-white shadow-lg shadow-primary/25">
+      <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-brand text-white shadow-lg shadow-primary/25">
         <Receipt className="h-7 w-7" />
       </div>
       <div>

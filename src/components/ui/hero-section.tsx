@@ -6,7 +6,7 @@ export function HeroSection({ className, children, ...props }: ComponentProps<"s
   return (
     <section
       className={cn(
-        "relative isolate overflow-hidden rounded-3xl bg-gradient-to-br from-primary to-primary-end p-6 text-white shadow-xl shadow-primary/25 ring-1 ring-white/15 sm:p-7",
+        "relative isolate overflow-hidden rounded-3xl bg-hero p-6 text-white shadow-xl shadow-primary/25 ring-1 ring-white/15 sm:p-7",
         className,
       )}
       {...props}

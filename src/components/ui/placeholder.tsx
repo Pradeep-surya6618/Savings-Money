@@ -11,7 +11,7 @@ export function Placeholder({
 }) {
   return (
     <div className="flex min-h-[50vh] flex-col items-center justify-center gap-3 text-center">
-      <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-primary-end text-white">
+      <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-brand text-white">
         <Icon className="h-7 w-7" />
       </div>
       <h1 className="text-xl font-semibold">{title}</h1>

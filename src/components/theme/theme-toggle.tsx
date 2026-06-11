@@ -93,7 +93,7 @@ export function ThemeToggle() {
           className={cn(
             "flex h-7 w-7 items-center justify-center rounded-full transition",
             active === value
-              ? "bg-gradient-to-br from-primary to-primary-end text-white"
+              ? "bg-brand text-white"
               : "text-muted-foreground hover:text-foreground",
           )}
         >

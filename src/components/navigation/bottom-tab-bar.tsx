@@ -49,7 +49,7 @@ export function BottomTabBar() {
                     layoutId="bottom-active-pill"
                     aria-hidden
                     transition={SPRING}
-                    className="absolute inset-0 -z-10 rounded-full bg-gradient-to-r from-primary to-primary-end shadow-sm shadow-primary/40"
+                    className="absolute inset-0 -z-10 rounded-full bg-brand shadow-sm shadow-primary/40"
                   />
                 )}
                 <Icon
@@ -81,7 +81,7 @@ export function BottomTabBar() {
                 layoutId="bottom-active-pill"
                 aria-hidden
                 transition={SPRING}
-                className="absolute inset-0 -z-10 rounded-full bg-gradient-to-r from-primary to-primary-end shadow-sm shadow-primary/40"
+                className="absolute inset-0 -z-10 rounded-full bg-brand shadow-sm shadow-primary/40"
               />
             )}
             <Ellipsis

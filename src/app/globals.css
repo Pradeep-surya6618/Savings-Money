@@ -18,6 +18,19 @@
   /* Tooltip: a dark tone of the primary color (adapts per theme via --primary) */
   --tooltip-bg: color-mix(in oklab, var(--primary), black 45%);
   --tooltip-fg: #ffffff;
+
+  /* FuFi brand palette (logo-matching) */
+  --fufi-primary: #16a34a;
+  --fufi-secondary: #22c55e;
+  --fufi-accent: #4ade80;
+  --fufi-dark: #166534;
+  --fufi-light: #dcfce7;
+
+  /* Brand gradients — theme-independent; the vivid greens read well on both themes. */
+  --gradient-brand: linear-gradient(135deg, #4ade80 0%, #22c55e 35%, #16a34a 70%, #15803d 100%);
+  --gradient-hero: linear-gradient(135deg, #16a34a 0%, #15803d 55%, #166534 100%);
+  --gradient-button: linear-gradient(135deg, #22c55e 0%, #16a34a 50%, #15803d 100%);
+  --gradient-button-hover: linear-gradient(135deg, #16a34a 0%, #15803d 50%, #166534 100%);
 }
 
 .dark {
@@ -96,5 +109,22 @@ body {
   input[type="number"] {
     -moz-appearance: textfield;
     appearance: textfield;
+  }
+}
+
+@layer components {
+  /* Brand gradient surfaces (match the FuFi logo). */
+  .bg-brand {
+    background-image: var(--gradient-brand);
+  }
+  .bg-hero {
+    background-image: var(--gradient-hero);
+  }
+  /* Primary button: gradient with a richer hover gradient. */
+  .btn-brand {
+    background-image: var(--gradient-button);
+  }
+  .btn-brand:hover {
+    background-image: var(--gradient-button-hover);
   }
 }

@@ -4,8 +4,7 @@ import { cn } from "@/lib/utils";
 type Variant = "primary" | "ghost" | "outline";
 
 const VARIANTS: Record<Variant, string> = {
-  primary:
-    "bg-gradient-to-br from-primary to-primary-end text-white shadow-sm hover:opacity-90",
+  primary: "btn-brand text-white shadow-sm",
   ghost: "text-foreground hover:bg-card-elevated",
   outline: "border border-border text-foreground hover:bg-card-elevated",
 };
