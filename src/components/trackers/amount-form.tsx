@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { quickAmountSchema, type QuickAmountInput } from "@/validations/tracker";
 import { Button } from "@/components/ui/button";
+import { toast } from "@/lib/toast-store";
 import { cn } from "@/lib/utils";
 
 type Result = { ok: true } | { ok: false; error: string };
@@ -15,10 +16,12 @@ const fieldCls =
 /** A one-field (₹ amount) form used by both quick actions. The caller wires `onSubmit`. */
 export function AmountForm({
   submitLabel,
+  successMessage,
   onSubmit,
   onDone,
 }: {
   submitLabel: string;
+  successMessage: string;
   onSubmit: (amount: number) => Promise<Result>;
   onDone: () => void;
 }) {
@@ -35,8 +38,13 @@ export function AmountForm({
   async function submit(values: QuickAmountInput) {
     setServerError(null);
     const res = await onSubmit(values.amount);
-    if (res.ok) onDone();
-    else setServerError(res.error);
+    if (res.ok) {
+      toast.success(successMessage);
+      onDone();
+    } else {
+      setServerError(res.error);
+      toast.error(res.error);
+    }
   }
 
   return (

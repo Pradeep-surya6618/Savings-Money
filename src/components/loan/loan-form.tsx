@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { saveLoanSchema, type SaveLoanInput } from "@/validations/tracker";
 import { saveLoan } from "@/lib/actions/loan";
+import { toast } from "@/lib/toast-store";
 import { Field } from "@/components/trackers/field";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -32,8 +33,13 @@ export function LoanForm({ initial, onDone }: { initial: LoanDTO; onDone: () => 
   async function onSubmit(values: SaveLoanInput) {
     setServerError(null);
     const res = await saveLoan(values);
-    if (res.ok) onDone();
-    else setServerError(res.error);
+    if (res.ok) {
+      toast.success("Loan details saved");
+      onDone();
+    } else {
+      setServerError(res.error);
+      toast.error(res.error);
+    }
   }
 
   return (

@@ -7,6 +7,7 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { TransactionToolbar } from "./transaction-toolbar";
 import { SummaryStrip } from "./summary-strip";
 import { TransactionRow } from "./transaction-row";
+import { TransactionsTable } from "./transactions-table";
 import { TransactionsEmptyState } from "./empty-state";
 import { TransactionForm } from "./transaction-form";
 import { ConfirmDelete } from "./confirm-delete";
@@ -62,7 +63,7 @@ export function TransactionsView({ transactions }: { transactions: TransactionDT
       <div className="flex items-center justify-between gap-3">
         <h1 className="text-2xl font-bold tracking-tight">Transactions</h1>
         <Button onClick={openAdd} className="gap-2">
-          <Plus className="h-4 w-4" /> Add
+          <Plus className="h-4 w-4" /> Add Transaction
         </Button>
       </div>
 
@@ -78,11 +79,18 @@ export function TransactionsView({ transactions }: { transactions: TransactionDT
       {visible.length === 0 ? (
         <TransactionsEmptyState filtered={transactions.length > 0} onAdd={openAdd} />
       ) : (
-        <div className="space-y-2">
-          {visible.map((t) => (
-            <TransactionRow key={t.id} txn={t} onEdit={() => openEdit(t)} onDelete={() => setDeleting(t)} />
-          ))}
-        </div>
+        <>
+          {/* Mobile: card list */}
+          <div className="space-y-2 lg:hidden">
+            {visible.map((t) => (
+              <TransactionRow key={t.id} txn={t} onEdit={() => openEdit(t)} onDelete={() => setDeleting(t)} />
+            ))}
+          </div>
+          {/* Desktop: table */}
+          <div className="hidden lg:block">
+            <TransactionsTable rows={visible} onEdit={openEdit} onDelete={setDeleting} />
+          </div>
+        </>
       )}
 
       <Dialog open={formOpen} onOpenChange={setFormOpen}>

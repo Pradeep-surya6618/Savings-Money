@@ -31,13 +31,16 @@
   --gradient-hero: linear-gradient(135deg, #16a34a 0%, #15803d 55%, #166534 100%);
   --gradient-button: linear-gradient(135deg, #22c55e 0%, #16a34a 50%, #15803d 100%);
   --gradient-button-hover: linear-gradient(135deg, #16a34a 0%, #15803d 50%, #166534 100%);
+
+  /* Soft card elevation (premium mockup look) */
+  --shadow-card: 0 1px 2px rgba(16, 24, 40, 0.04), 0 4px 16px rgba(16, 24, 40, 0.06);
 }
 
 .dark {
-  --background: #0a0f0d;
-  --card: #141a17;
-  --card-elevated: #1d241f;
-  --border: rgba(255, 255, 255, 0.08);
+  --background: #080c0a;
+  --card: #0e1411;
+  --card-elevated: #18211c;
+  --border: rgba(255, 255, 255, 0.12);
   --foreground: #f2f5f3;
   --muted-foreground: #9aa39d;
   --primary: #15803d;
@@ -45,6 +48,13 @@
   --positive: #4ade80;
   --negative: #fb7185;
   --warning: #fbbf24;
+  /* Dark cards stay near-black; the crisp border + subtle top-edge highlight give depth */
+  --shadow-card: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 8px 24px rgba(0, 0, 0, 0.5);
+  /* Darker, less-bright brand gradients for dark mode (filled surfaces + buttons).
+     The 4-stop --gradient-brand stays vivid so the wordmark text keeps contrast. */
+  --gradient-hero: linear-gradient(135deg, #15803d 0%, #13683a 55%, #0e4a2b 100%);
+  --gradient-button: linear-gradient(135deg, #15803d 0%, #136a33 50%, #0f5128 100%);
+  --gradient-button-hover: linear-gradient(135deg, #136a33 0%, #0f5128 50%, #0b3d20 100%);
 }
 
 @theme inline {

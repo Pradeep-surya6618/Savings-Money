@@ -11,6 +11,7 @@ import { HeroSection } from "@/components/ui/hero-section";
 import { RemainingMeter } from "@/components/salary/remaining-meter";
 import { AllocationRow } from "@/components/salary/allocation-row";
 import { saveSalaryAllocations } from "@/lib/actions/salary";
+import { toast } from "@/lib/toast-store";
 import { formatCurrency } from "@/lib/utils";
 
 type Amounts = Record<CategoryKey, number>;
@@ -55,9 +56,11 @@ export function AllocationEditor({
     );
     const res = await saveSalaryAllocations({ month, amount, allocations });
     if (res.ok) {
+      toast.success("Salary saved");
       router.push(`/?month=${month}`);
     } else {
       setError(res.error);
+      toast.error(res.error);
       setSaving(false);
     }
   }

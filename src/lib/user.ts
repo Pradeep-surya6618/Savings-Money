@@ -12,7 +12,15 @@ function toTheme(value: string): Theme {
 
 export type CurrentUser = {
   user: { id: string; name: string; email: string | null; image: string | null };
-  settings: { theme: Theme; currency: string; locale: string };
+  settings: {
+    theme: Theme;
+    currency: string;
+    locale: string;
+    language: string;
+    dateFormat: string;
+    firstDayOfWeek: string;
+    defaultView: string;
+  };
 };
 
 /** Resolves the single app user, creating it (and its settings) on first run. */
@@ -44,6 +52,10 @@ export const getCurrentUser = cache(async (): Promise<CurrentUser> => {
       theme: toTheme(settingsDoc.theme),
       currency: settingsDoc.currency,
       locale: settingsDoc.locale,
+      language: settingsDoc.language ?? "English",
+      dateFormat: settingsDoc.dateFormat ?? "DD MMM YYYY",
+      firstDayOfWeek: settingsDoc.firstDayOfWeek ?? "Monday",
+      defaultView: settingsDoc.defaultView ?? "Home",
     },
   };
 });

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { deleteTransaction } from "@/lib/actions/transactions";
+import { toast } from "@/lib/toast-store";
 import { formatCurrency } from "@/lib/utils";
 import type { TransactionDTO } from "@/services/transactions";
 
@@ -15,8 +16,13 @@ export function ConfirmDelete({ txn, onDone }: { txn: TransactionDTO; onDone: ()
     setError(null);
     try {
       const res = await deleteTransaction(txn.id);
-      if (res.ok) onDone();
-      else setError(res.error);
+      if (res.ok) {
+        toast.success("Transaction deleted");
+        onDone();
+      } else {
+        setError(res.error);
+        toast.error(res.error);
+      }
     } catch {
       setError("Something went wrong. Please try again.");
     } finally {
