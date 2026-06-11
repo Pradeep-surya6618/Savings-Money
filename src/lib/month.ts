@@ -30,3 +30,9 @@ export function addMonths(month: string, n: number): string {
   const d = new Date(y, m - 1 + n, 1);
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}`;
 }
+
+/** The `count` most recent months ending at `month`, oldest first.
+ *  recentMonths("2026-06", 3) => ["2026-04", "2026-05", "2026-06"]. */
+export function recentMonths(month: string, count: number): string[] {
+  return Array.from({ length: count }, (_, i) => addMonths(month, i - (count - 1)));
+}

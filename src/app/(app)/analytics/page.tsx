@@ -1,6 +1,16 @@
-import { BarChart3 } from "lucide-react";
-import { Placeholder } from "@/components/ui/placeholder";
+import { AnalyticsView } from "@/components/analytics/analytics-view";
+import { getAnalytics } from "@/services/analytics";
+import { currentMonth, isValidMonth } from "@/lib/month";
 
-export default function AnalyticsPage() {
-  return <Placeholder icon={BarChart3} title="Analytics" phase="Phase 4" />;
+export const dynamic = "force-dynamic";
+
+export default async function AnalyticsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ month?: string }>;
+}) {
+  const { month: raw } = await searchParams;
+  const month = raw && isValidMonth(raw) ? raw : currentMonth();
+  const data = await getAnalytics(month);
+  return <AnalyticsView data={data} month={month} />;
 }
