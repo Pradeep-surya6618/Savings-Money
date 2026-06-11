@@ -1,5 +1,3 @@
-"use client";
-
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { addMonths, currentMonth, monthLabel } from "@/lib/month";

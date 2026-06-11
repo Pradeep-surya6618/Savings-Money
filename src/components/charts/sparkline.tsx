@@ -21,7 +21,7 @@ export function Sparkline({
   const range = max - min || 1;
   const step = points.length > 1 ? width / (points.length - 1) : 0;
   const coords = points.map((p, i) => {
-    const x = i * step;
+    const x = points.length > 1 ? i * step : width / 2; // center a lone point
     const y = height - ((p - min) / range) * height;
     return [x, y] as const;
   });
