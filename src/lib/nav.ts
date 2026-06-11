@@ -29,6 +29,7 @@ export const PRIMARY_NAV: NavItem[] = [
 export const SECONDARY_NAV: NavItem[] = [
   { href: "/savings", label: "Savings", icon: PiggyBank, color: SAVINGS_COLOR },
   { href: "/loan", label: "Loan", icon: GraduationCap, color: LOAN_COLOR },
+  { href: "/balance", label: "Balance", icon: Wallet, color: "#f59e0b" },
 ];
 
 export function isActive(pathname: string, href: string): boolean {
