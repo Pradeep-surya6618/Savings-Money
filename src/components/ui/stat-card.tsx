@@ -14,30 +14,28 @@ export function StatCard({
   pct?: number;
   icon?: ComponentType<{ className?: string }>;
   accentColor?: string;
-  chart?: ReactNode; // a <MiniSparkline /> or similar
+  chart?: ReactNode; // a <MiniSparkline /> — rendered on the right
 }) {
   return (
-    <div className="flex h-full flex-col rounded-2xl border border-border bg-card p-4 shadow-[var(--shadow-card)]">
-      <div className="flex items-start justify-between gap-2">
-        <div className="min-w-0">
-          <p className="text-xs text-muted-foreground">{label}</p>
-          <p className="mt-1 text-xl font-bold tabular-nums">{formatCurrency(value)}</p>
-          {pct != null && <p className="text-xs text-muted-foreground tabular-nums">{pct}%</p>}
-        </div>
-        {Icon && (
-          <span
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl"
-            style={{
-              backgroundColor: accentColor ? `${accentColor}1f` : "var(--card-elevated)",
-              color: accentColor ?? "var(--muted-foreground)",
-            }}
-          >
-            <Icon className="h-4 w-4" />
-          </span>
-        )}
+    <div className="relative flex h-full items-center gap-2 overflow-hidden rounded-2xl border border-border bg-card p-3.5 shadow-[var(--shadow-card)] sm:p-4">
+      {Icon && (
+        <span
+          className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-xl sm:right-4 sm:top-4 sm:h-9 sm:w-9"
+          style={{
+            backgroundColor: accentColor ? `${accentColor}1f` : "var(--card-elevated)",
+            color: accentColor ?? "var(--muted-foreground)",
+          }}
+        >
+          <Icon className="h-4 w-4" />
+        </span>
+      )}
+      <div className="min-w-0 flex-1">
+        <p className="text-xs text-muted-foreground">{label}</p>
+        <p className="mt-1 text-lg font-bold tabular-nums sm:text-xl">{formatCurrency(value)}</p>
+        {pct != null && <p className="text-xs text-muted-foreground tabular-nums">{pct}%</p>}
       </div>
       {chart && (
-        <div className="mt-auto pt-2" style={{ color: accentColor }}>
+        <div className="h-10 w-16 shrink-0 self-center sm:h-12 sm:w-24" style={{ color: accentColor }}>
           {chart}
         </div>
       )}
