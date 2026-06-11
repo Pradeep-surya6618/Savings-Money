@@ -1,6 +1,21 @@
-import { Settings } from "lucide-react";
-import { Placeholder } from "@/components/ui/placeholder";
+import { SettingsView } from "@/components/settings/settings-view";
+import { getCurrentUser } from "@/lib/user";
 
-export default function SettingsPage() {
-  return <Placeholder icon={Settings} title="Settings" phase="Phase 5" />;
+export const dynamic = "force-dynamic";
+
+export default async function SettingsPage() {
+  const { user, settings } = await getCurrentUser();
+  return (
+    <SettingsView
+      name={user.name}
+      settings={{
+        language: settings.language,
+        dateFormat: settings.dateFormat,
+        firstDayOfWeek: settings.firstDayOfWeek,
+        defaultView: settings.defaultView,
+        currency: settings.currency,
+        locale: settings.locale,
+      }}
+    />
+  );
 }

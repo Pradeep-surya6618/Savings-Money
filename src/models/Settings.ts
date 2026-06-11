@@ -6,6 +6,10 @@ const settingsSchema = new Schema(
     theme: { type: String, enum: ["light", "dark", "system"], default: "system" },
     currency: { type: String, default: "INR" },
     locale: { type: String, default: "en-IN" },
+    language: { type: String, default: "English" },
+    dateFormat: { type: String, default: "DD MMM YYYY" },
+    firstDayOfWeek: { type: String, default: "Monday" },
+    defaultView: { type: String, default: "Home" },
   },
   { timestamps: true },
 );
