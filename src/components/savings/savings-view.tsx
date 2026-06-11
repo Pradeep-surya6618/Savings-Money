@@ -11,9 +11,10 @@ import { AmountForm } from "@/components/trackers/amount-form";
 import { SavingsForm } from "./savings-form";
 import { addToSavings } from "@/lib/actions/savings";
 import { formatCurrency } from "@/lib/utils";
+import { SAVINGS_COLOR } from "@/lib/nav";
 import type { SavingsDTO } from "@/services/savings";
 
-const ACCENT = "#14b8a6"; // nav teal (src/lib/nav.ts)
+const ACCENT = SAVINGS_COLOR; // teal — single source of truth in src/lib/nav.ts
 
 export function SavingsView({ data }: { data: SavingsDTO }) {
   const [editOpen, setEditOpen] = useState(false);
@@ -71,7 +72,8 @@ export function SavingsView({ data }: { data: SavingsDTO }) {
                 className="rounded-full px-3 py-1 text-xs font-medium tabular-nums"
                 style={
                   m.reached
-                    ? { backgroundColor: ACCENT, color: "#fff" }
+                    ? // Deepen the accent so white text clears WCAG AA at this small size.
+                      { backgroundColor: `color-mix(in oklab, ${ACCENT}, black 38%)`, color: "#fff" }
                     : { backgroundColor: "var(--card-elevated)", color: "var(--muted-foreground)" }
                 }
               >

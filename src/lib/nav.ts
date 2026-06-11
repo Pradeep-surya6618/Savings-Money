@@ -11,6 +11,11 @@ import {
 
 export type NavItem = { href: string; label: string; icon: LucideIcon; color: string };
 
+/** Accent colors for the trackers — the single source of truth shared by the
+ *  secondary nav, the tracker pages, and the dashboard cards. */
+export const SAVINGS_COLOR = "#14b8a6"; // teal
+export const LOAN_COLOR = "#ec4899"; // pink
+
 /** Primary nav — these 5 appear in the mobile bottom tab bar. */
 export const PRIMARY_NAV: NavItem[] = [
   { href: "/", label: "Home", icon: Home, color: "#16a34a" },
@@ -22,8 +27,8 @@ export const PRIMARY_NAV: NavItem[] = [
 
 /** Secondary nav — sidebar only; reached on mobile via dashboard cards. */
 export const SECONDARY_NAV: NavItem[] = [
-  { href: "/savings", label: "Savings", icon: PiggyBank, color: "#14b8a6" },
-  { href: "/loan", label: "Loan", icon: GraduationCap, color: "#ec4899" },
+  { href: "/savings", label: "Savings", icon: PiggyBank, color: SAVINGS_COLOR },
+  { href: "/loan", label: "Loan", icon: GraduationCap, color: LOAN_COLOR },
 ];
 
 export function isActive(pathname: string, href: string): boolean {

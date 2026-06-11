@@ -48,6 +48,7 @@ export function AmountForm({
           step="any"
           min={0.01}
           autoFocus
+          aria-label="Amount in rupees"
           {...register("amount", { valueAsNumber: true })}
           placeholder="Amount (₹)"
           className={cn(fieldCls, "tabular-nums")}
