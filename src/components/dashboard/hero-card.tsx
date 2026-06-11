@@ -17,11 +17,11 @@ export function HeroCard({
     ? new Date(receivedDate).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })
     : null;
   return (
-    <HeroSection className="min-h-[15rem]">
+    <HeroSection className="min-h-[10.5rem] lg:min-h-[15rem]">
       {/* Large watermark for depth */}
       <Wallet
         aria-hidden
-        className="pointer-events-none absolute right-6 top-1/2 h-36 w-36 -translate-y-1/2 text-white/20"
+        className="pointer-events-none absolute right-5 top-1/2 h-24 w-24 -translate-y-1/2 text-white/20 lg:right-6 lg:h-36 lg:w-36"
       />
       <div className="flex h-full flex-col justify-between gap-6">
         <div className="flex items-start justify-between gap-4">
