@@ -19,6 +19,7 @@ export function DashboardStats({
     <div className="grid h-full auto-rows-fr grid-cols-2 gap-3">
       <StatCard
         label="Total Expenses"
+        shortLabel="Expenses"
         value={stats.expenses}
         pct={pct(stats.expenses)}
         accentColor="#e11d48"
@@ -32,7 +33,14 @@ export function DashboardStats({
         chart={<MiniSparkline points={savingsTrend} color="#16a34a" className="h-full w-full" />}
       />
       <StatCard label="Loan Paid" value={stats.loan} pct={pct(stats.loan)} icon={GraduationCap} accentColor="#8b5cf6" />
-      <StatCard label="Remaining Balance" value={stats.remaining} pct={pct(stats.remaining)} icon={Wallet} accentColor="#f59e0b" />
+      <StatCard
+        label="Remaining Balance"
+        shortLabel="Balance"
+        value={stats.remaining}
+        pct={pct(stats.remaining)}
+        icon={Wallet}
+        accentColor="#f59e0b"
+      />
     </div>
   );
 }

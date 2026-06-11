@@ -3,6 +3,7 @@ import { formatCurrency } from "@/lib/utils";
 
 export function StatCard({
   label,
+  shortLabel,
   value,
   pct,
   icon: Icon,
@@ -10,6 +11,7 @@ export function StatCard({
   chart,
 }: {
   label: string;
+  shortLabel?: string; // shown on mobile (< sm); falls back to label
   value: number;
   pct?: number;
   icon?: ComponentType<{ className?: string }>;
@@ -30,7 +32,16 @@ export function StatCard({
         </span>
       )}
       <div className="min-w-0 flex-1">
-        <p className="text-xs text-muted-foreground">{label}</p>
+        <p className="text-xs text-muted-foreground">
+          {shortLabel ? (
+            <>
+              <span className="sm:hidden">{shortLabel}</span>
+              <span className="hidden sm:inline">{label}</span>
+            </>
+          ) : (
+            label
+          )}
+        </p>
         <p className="mt-1 text-lg font-bold tabular-nums sm:text-xl">{formatCurrency(value)}</p>
         {pct != null && <p className="mt-1.5 text-xs text-muted-foreground tabular-nums">{pct}%</p>}
       </div>
