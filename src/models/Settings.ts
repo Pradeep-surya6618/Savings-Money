@@ -10,6 +10,7 @@ const settingsSchema = new Schema(
     dateFormat: { type: String, default: "DD MMM YYYY" },
     firstDayOfWeek: { type: String, default: "Monday" },
     defaultView: { type: String, default: "Home" },
+    openingBalance: { type: Number, default: 0, min: 0 },
   },
   { timestamps: true },
 );
