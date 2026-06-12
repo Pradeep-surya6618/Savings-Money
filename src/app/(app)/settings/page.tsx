@@ -16,6 +16,7 @@ export default async function SettingsPage() {
         currency: settings.currency,
         locale: settings.locale,
       }}
+      notifyPrefs={settings.notifyPrefs}
     />
   );
 }

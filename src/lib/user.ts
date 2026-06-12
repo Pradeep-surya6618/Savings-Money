@@ -2,6 +2,7 @@ import { cache } from "react";
 import { connectDB } from "@/lib/mongodb/connect";
 import { User } from "@/models/User";
 import { Settings } from "@/models/Settings";
+import type { NotifyPrefs } from "@/validations/settings";
 
 const THEMES = ["light", "dark", "system"] as const;
 type Theme = (typeof THEMES)[number];
@@ -21,6 +22,7 @@ export type CurrentUser = {
     firstDayOfWeek: string;
     defaultView: string;
     openingBalance: number;
+    notifyPrefs: NotifyPrefs;
   };
 };
 
@@ -58,6 +60,11 @@ export const getCurrentUser = cache(async (): Promise<CurrentUser> => {
       firstDayOfWeek: settingsDoc.firstDayOfWeek ?? "Monday",
       defaultView: settingsDoc.defaultView ?? "Home",
       openingBalance: settingsDoc.openingBalance ?? 0,
+      notifyPrefs: {
+        salary: settingsDoc.notifyPrefs?.salary ?? true,
+        budget: settingsDoc.notifyPrefs?.budget ?? true,
+        savings: settingsDoc.notifyPrefs?.savings ?? true,
+      },
     },
   };
 });

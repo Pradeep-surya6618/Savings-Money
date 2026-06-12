@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { AppShell } from "@/components/navigation/app-shell";
 import { getCurrentUser } from "@/lib/user";
+import { getNotifications } from "@/services/notifications";
 
 function greetingFor(date: Date): string {
   const h = date.getHours();
@@ -11,8 +12,9 @@ function greetingFor(date: Date): string {
 
 export default async function AppLayout({ children }: { children: ReactNode }) {
   const { user } = await getCurrentUser();
+  const notifications = await getNotifications();
   return (
-    <AppShell greeting={greetingFor(new Date())} name={user.name}>
+    <AppShell greeting={greetingFor(new Date())} name={user.name} notifications={notifications}>
       {children}
     </AppShell>
   );
