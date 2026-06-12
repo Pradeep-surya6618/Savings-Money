@@ -187,7 +187,7 @@ export function SettingsView({
               <div className="flex items-center justify-between gap-4 py-4">
                 <div>
                   <p className="text-sm font-medium">Theme</p>
-                  <p className="mt-0.5 text-xs text-muted-foreground">Light, dark, or match your system.</p>
+                  <p className="mt-0.5 text-xs text-muted-foreground">Switch between light and dark.</p>
                 </div>
                 <ThemeToggle />
               </div>
