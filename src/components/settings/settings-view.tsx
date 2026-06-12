@@ -23,6 +23,8 @@ import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { AboutFuFi } from "@/components/settings/about-fufi";
 import { useTabParam } from "@/lib/use-tab-param";
 import { updatePreferences } from "@/lib/actions/settings";
+import { updateNotifyPrefs } from "@/lib/actions/notifications";
+import type { NotifyPrefs } from "@/validations/settings";
 import { toast } from "@/lib/toast-store";
 import { cn } from "@/lib/utils";
 
@@ -48,9 +50,18 @@ const SECTION_KEYS = SECTIONS.map((s) => s.key);
 
 const opts = (...vals: string[]) => vals.map((v) => ({ value: v, label: v }));
 
-export function SettingsView({ name, settings }: { name: string; settings: Prefs }) {
+export function SettingsView({
+  name,
+  settings,
+  notifyPrefs,
+}: {
+  name: string;
+  settings: Prefs;
+  notifyPrefs: NotifyPrefs;
+}) {
   // Active section lives in the URL (?section=) so it's deep-linkable and survives refresh.
   const [active, setActive] = useTabParam("section", SECTION_KEYS, "general");
+  const [notify, setNotify] = useState<NotifyPrefs>(notifyPrefs);
   const [prefs, setPrefs] = useState<Prefs>(settings);
   const router = useRouter();
   const [resetOpen, setResetOpen] = useState(false);
@@ -78,6 +89,17 @@ export function SettingsView({ name, settings }: { name: string; settings: Prefs
     else toast.error(res.error);
   }
   const set = (patch: Partial<Prefs>) => save({ ...prefs, ...patch });
+
+  async function saveNotify(patch: Partial<NotifyPrefs>) {
+    const next = { ...notify, ...patch };
+    setNotify(next);
+    const res = await updateNotifyPrefs(next);
+    if (res.ok) toast.success("Notification preferences saved");
+    else {
+      setNotify(notify);
+      toast.error(res.error);
+    }
+  }
 
   return (
     <div className="space-y-5">
@@ -174,11 +196,24 @@ export function SettingsView({ name, settings }: { name: string; settings: Prefs
 
           {active === "notifications" && (
             <Panel title="Notifications" description="Choose which nudges FuFi sends your way.">
-              <ToggleRow label="Salary received reminders" description="A nudge when your salary is due to land." defaultOn />
-              <ToggleRow label="Budget over-spend alerts" description="Warn me when a category goes over budget." defaultOn />
-              <ToggleRow label="EMI due reminders" description="Remind me before a loan EMI is due." />
-              <ToggleRow label="Savings goal milestones" description="Celebrate when a goal hits a milestone." defaultOn />
-              <p className="pt-4 text-xs text-muted-foreground">Notification delivery arrives in a later update.</p>
+              <ToggleRow
+                label="Salary reminders"
+                description="Nudge when this month's salary isn't logged yet."
+                checked={notify.salary}
+                onChange={(v) => saveNotify({ salary: v })}
+              />
+              <ToggleRow
+                label="Budget over-spend alerts"
+                description="Warn when a category goes over its allocation."
+                checked={notify.budget}
+                onChange={(v) => saveNotify({ budget: v })}
+              />
+              <ToggleRow
+                label="Savings goal milestones"
+                description="Celebrate when a goal crosses 25 / 50 / 75 / 100%."
+                checked={notify.savings}
+                onChange={(v) => saveNotify({ savings: v })}
+              />
             </Panel>
           )}
 
@@ -315,13 +350,14 @@ function Field({
 function ToggleRow({
   label,
   description,
-  defaultOn = false,
+  checked,
+  onChange,
 }: {
   label: string;
   description?: string;
-  defaultOn?: boolean;
+  checked: boolean;
+  onChange: (value: boolean) => void;
 }) {
-  const [on, setOn] = useState(defaultOn);
   return (
     <div className="flex items-center justify-between gap-4 border-b border-border/60 py-4 last:border-0">
       <div className="min-w-0">
@@ -331,15 +367,15 @@ function ToggleRow({
       <button
         type="button"
         role="switch"
-        aria-checked={on}
+        aria-checked={checked}
         aria-label={label}
-        onClick={() => setOn((v) => !v)}
-        className={cn("relative h-6 w-11 shrink-0 rounded-full transition", on ? "bg-primary" : "bg-card-elevated")}
+        onClick={() => onChange(!checked)}
+        className={cn("relative h-6 w-11 shrink-0 rounded-full transition", checked ? "bg-primary" : "bg-card-elevated")}
       >
         <span
           className={cn(
             "absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-all",
-            on ? "left-[1.375rem]" : "left-0.5",
+            checked ? "left-[1.375rem]" : "left-0.5",
           )}
         />
       </button>
