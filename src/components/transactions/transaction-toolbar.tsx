@@ -40,14 +40,23 @@ export function TransactionToolbar({
   ];
 
   return (
-    <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+    // Mobile: 2-col grid → Search|Category, then full-width type tabs, then Month|Sort.
+    // sm+: reverts to the original wrapping flex row.
+    <div className="grid grid-cols-2 gap-3 sm:flex sm:flex-wrap sm:items-center">
       <SearchInput
         value={filters.search}
         onChange={(v) => setFilters({ ...filters, search: v })}
         placeholder="Search transactions"
-        className="flex-1 sm:min-w-48"
+        className="w-full sm:min-w-48 sm:flex-1"
       />
-      <div className="inline-flex w-fit rounded-xl border border-border bg-card p-1 text-sm">
+      <Select
+        value={filters.category}
+        onValueChange={(v) => setFilters({ ...filters, category: v })}
+        options={categoryOptions}
+        ariaLabel="Filter by category"
+        className="w-full sm:w-auto"
+      />
+      <div className="col-span-2 inline-flex w-fit rounded-xl border border-border bg-card p-1 text-sm sm:col-span-1">
         {(["all", "income", "expense"] as const).map((t) => (
           <button
             key={t}
@@ -63,18 +72,19 @@ export function TransactionToolbar({
         ))}
       </div>
       <Select
-        value={filters.category}
-        onValueChange={(v) => setFilters({ ...filters, category: v })}
-        options={categoryOptions}
-        ariaLabel="Filter by category"
-      />
-      <Select
         value={filters.month}
         onValueChange={(v) => setFilters({ ...filters, month: v })}
         options={monthOptions}
         ariaLabel="Filter by month"
+        className="w-full sm:w-auto"
       />
-      <Select value={sort} onValueChange={(v) => setSort(v as TxnSort)} options={SORT_OPTIONS} ariaLabel="Sort" />
+      <Select
+        value={sort}
+        onValueChange={(v) => setSort(v as TxnSort)}
+        options={SORT_OPTIONS}
+        ariaLabel="Sort"
+        className="w-full sm:w-auto"
+      />
     </div>
   );
 }
