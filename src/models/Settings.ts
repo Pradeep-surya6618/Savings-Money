@@ -11,6 +11,11 @@ const settingsSchema = new Schema(
     firstDayOfWeek: { type: String, default: "Monday" },
     defaultView: { type: String, default: "Home" },
     openingBalance: { type: Number, default: 0, min: 0 },
+    notifyPrefs: {
+      salary: { type: Boolean, default: true },
+      budget: { type: Boolean, default: true },
+      savings: { type: Boolean, default: true },
+    },
   },
   { timestamps: true },
 );

@@ -10,3 +10,11 @@ export const updatePreferencesSchema = z.object({
 });
 
 export type UpdatePreferencesInput = z.infer<typeof updatePreferencesSchema>;
+
+export const updateNotifyPrefsSchema = z.object({
+  salary: z.boolean(),
+  budget: z.boolean(),
+  savings: z.boolean(),
+});
+
+export type NotifyPrefs = z.infer<typeof updateNotifyPrefsSchema>;
