@@ -51,7 +51,7 @@ export function BalanceView({ data }: { data: BalanceDTO }) {
         </Button>
       </div>
 
-      <HeroSection>
+      <HeroSection blooms={false}>
         <p className="text-xs font-medium uppercase tracking-widest text-white/70">Total Balance</p>
         <CountUp value={data.total} className="mt-2 block text-4xl font-bold tracking-tight sm:text-5xl" />
         <p className="mt-2 text-sm text-white/80">Across all months · opening {formatCurrency(data.openingBalance)}</p>
