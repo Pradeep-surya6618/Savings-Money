@@ -20,6 +20,8 @@ const TYPE_META: Record<NotificationType, { icon: LucideIcon; tint: string; colo
 };
 
 export function NotificationBell({ items: initialItems }: { items: NotificationDTO[] }) {
+  // Seeded once from server props; optimistic handlers keep it current, and each
+  // action's revalidatePath("/","layout") refreshes the props on the next navigation.
   const [items, setItems] = useState(initialItems);
   // Derive the badge from items so optimistic mark-read updates it instantly.
   const unread = items.filter((n) => n.unread).length;
@@ -33,9 +35,13 @@ export function NotificationBell({ items: initialItems }: { items: NotificationD
   async function readAll() {
     const keys = items.filter((n) => n.unread).map((n) => n.key);
     if (keys.length === 0) return;
-    setItems((prev) => prev.map((n) => ({ ...n, unread: false })));
+    const prev = items;
+    setItems((cur) => cur.map((n) => ({ ...n, unread: false })));
     const res = await markAllNotificationsRead(keys);
-    if (!res.ok) toast.error(res.error);
+    if (!res.ok) {
+      setItems(prev);
+      toast.error(res.error);
+    }
   }
 
   async function dismiss(key: string) {
