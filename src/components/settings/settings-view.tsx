@@ -2,6 +2,7 @@
 
 import { useState, type ComponentType } from "react";
 import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { resetAllData } from "@/lib/actions/balance";
 import {
@@ -37,14 +38,16 @@ type Prefs = {
   locale: string;
 };
 
+// Distinct palette — intentionally none of the dashboard nav colors
+// (green/blue/orange/violet/teal/pink/amber/slate).
 const SECTIONS = [
-  { key: "general", label: "General", icon: SlidersHorizontal },
-  { key: "appearance", label: "Appearance", icon: Palette },
-  { key: "notifications", label: "Notifications", icon: Bell },
-  { key: "currency", label: "Currency", icon: IndianRupee },
-  { key: "privacy", label: "Data & Privacy", icon: ShieldCheck },
-  { key: "security", label: "Security", icon: Lock },
-  { key: "about", label: "About FuFi", icon: Info },
+  { key: "general", label: "General", icon: SlidersHorizontal, color: "#6366f1" }, // indigo
+  { key: "appearance", label: "Appearance", icon: Palette, color: "#d946ef" }, // fuchsia
+  { key: "notifications", label: "Notifications", icon: Bell, color: "#f43f5e" }, // rose
+  { key: "currency", label: "Currency", icon: IndianRupee, color: "#84cc16" }, // lime
+  { key: "privacy", label: "Data & Privacy", icon: ShieldCheck, color: "#0ea5e9" }, // sky
+  { key: "security", label: "Security", icon: Lock, color: "#ef4444" }, // red
+  { key: "about", label: "About FuFi", icon: Info, color: "#06b6d4" }, // cyan
 ] as const;
 const SECTION_KEYS = SECTIONS.map((s) => s.key);
 
@@ -108,7 +111,7 @@ export function SettingsView({
       {/* Mobile sub-nav — horizontal-scroll pills */}
       <div className="-mx-1 overflow-x-auto scrollbar-hide lg:hidden">
         <div className="flex gap-2 px-1 pb-1">
-          {SECTIONS.map(({ key, label, icon: Icon }) => (
+          {SECTIONS.map(({ key, label, icon: Icon, color }) => (
             <button
               key={key}
               type="button"
@@ -120,7 +123,7 @@ export function SettingsView({
                   : "border-border bg-card text-muted-foreground hover:text-foreground",
               )}
             >
-              <Icon className="h-4 w-4 shrink-0" />
+              <Icon className="h-4 w-4 shrink-0" style={active === key ? undefined : { color }} />
               {label}
             </button>
           ))}
@@ -132,7 +135,7 @@ export function SettingsView({
         <Card className="hidden h-max p-2 lg:sticky lg:top-24 lg:block">
           <p className="px-3 py-2 text-xs font-medium uppercase tracking-wider text-muted-foreground">Preferences</p>
           <nav className="flex flex-col gap-0.5">
-            {SECTIONS.map(({ key, label, icon: Icon }) => (
+            {SECTIONS.map(({ key, label, icon: Icon, color }) => (
               <button
                 key={key}
                 type="button"
@@ -144,8 +147,19 @@ export function SettingsView({
                     : "text-muted-foreground hover:bg-card-elevated hover:text-foreground",
                 )}
               >
-                <Icon className="h-4 w-4 shrink-0" />
+                <Icon className="h-4 w-4 shrink-0" style={{ color }} />
                 {label}
+                {active === key && (
+                  <motion.span
+                    layoutId="settings-active-dot"
+                    transition={{ type: "spring", stiffness: 420, damping: 32 }}
+                    className="relative ml-auto flex h-2 w-2 shrink-0"
+                    aria-hidden
+                  >
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-60" />
+                    <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
+                  </motion.span>
+                )}
               </button>
             ))}
           </nav>
