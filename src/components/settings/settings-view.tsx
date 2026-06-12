@@ -106,25 +106,25 @@ export function SettingsView({ name, settings }: { name: string; settings: Prefs
         {/* Panel */}
         <Card className="space-y-6">
           {active === "general" && (
-            <Panel title="General Settings">
-              <Field label="Language">
+            <Panel title="General Settings" description="Language, formatting, and what you see first.">
+              <Field label="Language" description="The language used across the app.">
                 <Select value={prefs.language} onValueChange={(v) => set({ language: v })} options={opts("English", "Hindi")} />
               </Field>
-              <Field label="Date Format">
+              <Field label="Date Format" description="How dates appear throughout FuFi.">
                 <Select
                   value={prefs.dateFormat}
                   onValueChange={(v) => set({ dateFormat: v })}
                   options={opts("DD MMM YYYY", "DD/MM/YYYY", "MM/DD/YYYY", "YYYY-MM-DD")}
                 />
               </Field>
-              <Field label="First Day of Week">
+              <Field label="First Day of Week" description="Used by calendars and weekly views.">
                 <Select
                   value={prefs.firstDayOfWeek}
                   onValueChange={(v) => set({ firstDayOfWeek: v })}
                   options={opts("Monday", "Sunday")}
                 />
               </Field>
-              <Field label="Default View">
+              <Field label="Default View" description="The page shown when you open FuFi.">
                 <Select
                   value={prefs.defaultView}
                   onValueChange={(v) => set({ defaultView: v })}
@@ -135,11 +135,11 @@ export function SettingsView({ name, settings }: { name: string; settings: Prefs
           )}
 
           {active === "appearance" && (
-            <Panel title="Appearance">
-              <div className="flex items-center justify-between">
+            <Panel title="Appearance" description="Make FuFi feel like yours.">
+              <div className="flex items-center justify-between gap-4 py-4">
                 <div>
                   <p className="text-sm font-medium">Theme</p>
-                  <p className="text-xs text-muted-foreground">Light, dark, or match your system.</p>
+                  <p className="mt-0.5 text-xs text-muted-foreground">Light, dark, or match your system.</p>
                 </div>
                 <ThemeToggle />
               </div>
@@ -147,66 +147,72 @@ export function SettingsView({ name, settings }: { name: string; settings: Prefs
           )}
 
           {active === "notifications" && (
-            <Panel title="Notifications">
-              <ToggleRow label="Salary received reminders" defaultOn />
-              <ToggleRow label="Budget over-spend alerts" defaultOn />
-              <ToggleRow label="EMI due reminders" />
-              <ToggleRow label="Savings goal milestones" defaultOn />
-              <p className="pt-1 text-xs text-muted-foreground">Notification delivery arrives in a later update.</p>
+            <Panel title="Notifications" description="Choose which nudges FuFi sends your way.">
+              <ToggleRow label="Salary received reminders" description="A nudge when your salary is due to land." defaultOn />
+              <ToggleRow label="Budget over-spend alerts" description="Warn me when a category goes over budget." defaultOn />
+              <ToggleRow label="EMI due reminders" description="Remind me before a loan EMI is due." />
+              <ToggleRow label="Savings goal milestones" description="Celebrate when a goal hits a milestone." defaultOn />
+              <p className="pt-4 text-xs text-muted-foreground">Notification delivery arrives in a later update.</p>
             </Panel>
           )}
 
           {active === "currency" && (
-            <Panel title="Currency & Format">
-              <Field label="Currency">
+            <Panel title="Currency & Format" description="How amounts are shown across FuFi.">
+              <Field label="Currency" description="The symbol used for all amounts.">
                 <Select value={prefs.currency} onValueChange={(v) => set({ currency: v })} options={opts("INR", "USD", "EUR", "GBP")} />
               </Field>
-              <Field label="Number Locale">
+              <Field label="Number Locale" description="Controls grouping and decimal style.">
                 <Select value={prefs.locale} onValueChange={(v) => set({ locale: v })} options={opts("en-IN", "en-US", "en-GB")} />
               </Field>
             </Panel>
           )}
 
           {active === "privacy" && (
-            <Panel title="Data Management">
-              <ActionRow
-                title="Export Data"
-                desc="Download all your data as a file."
-                icon={Download}
-                button={<Button variant="outline" onClick={() => toast.info("Export arrives in a later update")}>Export</Button>}
-              />
-              <ActionRow
-                title="Import Data"
-                desc="Import transactions from a CSV."
-                icon={Upload}
-                button={<Button variant="outline" onClick={() => toast.info("Import arrives in a later update")}>Import</Button>}
-              />
+            <Panel title="Data Management" description="Take your data with you, or bring it in.">
+              <div className="space-y-3 pt-4">
+                <ActionRow
+                  title="Export Data"
+                  desc="Download all your data as a file."
+                  icon={Download}
+                  button={<Button variant="outline" onClick={() => toast.info("Export arrives in a later update")}>Export</Button>}
+                />
+                <ActionRow
+                  title="Import Data"
+                  desc="Import transactions from a CSV."
+                  icon={Upload}
+                  button={<Button variant="outline" onClick={() => toast.info("Import arrives in a later update")}>Import</Button>}
+                />
+              </div>
             </Panel>
           )}
 
           {active === "security" && (
-            <Panel title="Security">
-              <ActionRow
-                title="Reset all data"
-                desc="Permanently delete all your salary, transactions, savings & loan data."
-                icon={Trash2}
-                danger
-                button={
-                  <Button onClick={() => setResetOpen(true)} className="from-negative to-negative">
-                    Reset
-                  </Button>
-                }
-              />
+            <Panel title="Security" description="Manage access and the data stored on your account.">
+              <div className="space-y-3 pt-4">
+                <ActionRow
+                  title="Reset all data"
+                  desc="Permanently delete all your salary, transactions, savings & loan data."
+                  icon={Trash2}
+                  danger
+                  button={
+                    <Button onClick={() => setResetOpen(true)} className="from-negative to-negative">
+                      Reset
+                    </Button>
+                  }
+                />
+              </div>
             </Panel>
           )}
 
           {active === "about" && (
-            <Panel title="About FuFi">
-              <p className="text-sm">
-                <span className="font-semibold">FuFi</span> — Fund Your Future.
-              </p>
-              <p className="text-sm text-muted-foreground">A premium personal finance manager for {name}.</p>
-              <p className="text-xs text-muted-foreground">Version 1.0.0</p>
+            <Panel title="About FuFi" description="The story behind the app.">
+              <div className="space-y-2 pt-4">
+                <p className="text-sm">
+                  <span className="font-semibold">FuFi</span> — Fund Your Future.
+                </p>
+                <p className="text-sm text-muted-foreground">A premium personal finance manager for {name}.</p>
+                <p className="text-xs text-muted-foreground">Version 1.0.0</p>
+              </div>
             </Panel>
           )}
         </Card>
@@ -244,36 +250,69 @@ export function SettingsView({ name, settings }: { name: string; settings: Prefs
   );
 }
 
-function Panel({ title, children }: { title: string; children: React.ReactNode }) {
+function Panel({
+  title,
+  description,
+  children,
+}: {
+  title: string;
+  description?: string;
+  children: React.ReactNode;
+}) {
   return (
-    <div className="space-y-4">
-      <h2 className="text-base font-semibold">{title}</h2>
-      <div className="space-y-4">{children}</div>
+    <div>
+      <div className="border-b border-border pb-4">
+        <h2 className="text-base font-semibold">{title}</h2>
+        {description && <p className="mt-1 text-sm text-muted-foreground">{description}</p>}
+      </div>
+      <div className="pt-1">{children}</div>
     </div>
   );
 }
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+function Field({
+  label,
+  description,
+  children,
+}: {
+  label: string;
+  description?: string;
+  children: React.ReactNode;
+}) {
   return (
-    <label className="flex items-center justify-between gap-4">
-      <span className="text-sm font-medium">{label}</span>
-      <span className="w-48">{children}</span>
-    </label>
+    <div className="flex items-center justify-between gap-4 border-b border-border/60 py-4 last:border-0">
+      <div className="min-w-0">
+        <p className="text-sm font-medium">{label}</p>
+        {description && <p className="mt-0.5 text-xs text-muted-foreground">{description}</p>}
+      </div>
+      <div className="w-44 shrink-0">{children}</div>
+    </div>
   );
 }
 
-function ToggleRow({ label, defaultOn = false }: { label: string; defaultOn?: boolean }) {
+function ToggleRow({
+  label,
+  description,
+  defaultOn = false,
+}: {
+  label: string;
+  description?: string;
+  defaultOn?: boolean;
+}) {
   const [on, setOn] = useState(defaultOn);
   return (
-    <div className="flex items-center justify-between">
-      <span className="text-sm">{label}</span>
+    <div className="flex items-center justify-between gap-4 border-b border-border/60 py-4 last:border-0">
+      <div className="min-w-0">
+        <p className="text-sm font-medium">{label}</p>
+        {description && <p className="mt-0.5 text-xs text-muted-foreground">{description}</p>}
+      </div>
       <button
         type="button"
         role="switch"
         aria-checked={on}
         aria-label={label}
         onClick={() => setOn((v) => !v)}
-        className={cn("relative h-6 w-11 rounded-full transition", on ? "bg-primary" : "bg-card-elevated")}
+        className={cn("relative h-6 w-11 shrink-0 rounded-full transition", on ? "bg-primary" : "bg-card-elevated")}
       >
         <span
           className={cn(
