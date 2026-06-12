@@ -11,18 +11,18 @@ export function SavingsChip({ amount }: { amount: number }) {
     <Link
       href="/savings"
       aria-label="Total savings"
-      className="flex items-center gap-2 rounded-full border border-border bg-card px-2.5 py-1.5 shadow-[var(--shadow-card)] transition hover:border-foreground/15 hover:bg-card-elevated"
+      className="flex flex-col gap-0.5 rounded-xl border border-border bg-card px-3 py-1.5 shadow-[var(--shadow-card)] transition hover:border-foreground/15 hover:bg-card-elevated"
     >
-      <span
-        className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full"
-        style={{ backgroundColor: `${SAVINGS_COLOR}24`, color: SAVINGS_COLOR }}
-      >
-        <PiggyBank className="h-3.5 w-3.5" />
+      <span className="flex items-center gap-1.5 leading-none">
+        <span
+          className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full"
+          style={{ backgroundColor: `${SAVINGS_COLOR}24`, color: SAVINGS_COLOR }}
+        >
+          <PiggyBank className="h-2.5 w-2.5" />
+        </span>
+        <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Savings</span>
       </span>
-      <span className="flex flex-col leading-none">
-        <span className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground">Savings</span>
-        <CountUp value={amount} className="mt-0.5 text-sm font-semibold" />
-      </span>
+      <CountUp value={amount} className="text-sm font-bold leading-none" />
     </Link>
   );
 }
