@@ -13,7 +13,9 @@ const SPRING = { type: "spring", stiffness: 420, damping: 36 } as const;
 export function BottomTabBar() {
   const pathname = usePathname();
   const [moreOpen, setMoreOpen] = useState(false);
-  const secondaryActive = SECONDARY_NAV.some((n) => isActive(pathname, n.href));
+  // The active secondary item (Savings/Loan/Balance), if any — the "More" button morphs into it.
+  const activeSecondary = SECONDARY_NAV.find((n) => isActive(pathname, n.href));
+  const MoreIcon = activeSecondary?.icon ?? Ellipsis;
 
   useEffect(() => {
     if (!moreOpen) return;
@@ -32,7 +34,7 @@ export function BottomTabBar() {
     <MotionConfig reducedMotion="user">
       <nav className="fixed inset-x-0 bottom-0 z-30 flex justify-center px-4 pb-[max(1rem,env(safe-area-inset-bottom))] lg:hidden">
         <div className="flex max-w-[calc(100vw-2rem)] items-center gap-1 rounded-full border border-border bg-card/80 p-1.5 shadow-lg shadow-black/10 backdrop-blur-xl">
-          {[...PRIMARY_NAV, SETTINGS_NAV].map(({ href, label, icon: Icon }) => {
+          {[...PRIMARY_NAV, SETTINGS_NAV].map(({ href, label, icon: Icon, color }) => {
             const active = isActive(pathname, href);
             return (
               <Link
@@ -53,10 +55,8 @@ export function BottomTabBar() {
                   />
                 )}
                 <Icon
-                  className={cn(
-                    "h-5 w-5 shrink-0 transition-colors duration-200",
-                    active ? "text-white" : "text-muted-foreground",
-                  )}
+                  className={cn("h-5 w-5 shrink-0 transition-colors duration-200", active && "text-white")}
+                  style={active ? undefined : { color }}
                 />
                 {active && (
                   <span className="ml-1.5 min-w-0 truncate text-xs font-semibold text-white">{label}</span>
@@ -65,18 +65,19 @@ export function BottomTabBar() {
             );
           })}
 
-          {/* More — opens a sheet with the secondary nav (Savings, Loan) */}
+          {/* More — opens the sheet (Savings/Loan/Balance). When one is active it morphs
+              into that item (its icon + label) instead of showing the ellipsis. */}
           <button
             type="button"
             onClick={() => setMoreOpen(true)}
-            aria-label="More"
+            aria-label={activeSecondary ? activeSecondary.label : "More"}
             aria-haspopup="dialog"
             className={cn(
               "relative isolate flex min-w-0 items-center justify-center rounded-full px-3 py-2.5",
-              !secondaryActive && "shrink-0",
+              !activeSecondary && "shrink-0",
             )}
           >
-            {secondaryActive && (
+            {activeSecondary && (
               <motion.span
                 layoutId="bottom-active-pill"
                 aria-hidden
@@ -84,14 +85,14 @@ export function BottomTabBar() {
                 className="absolute inset-0 -z-10 rounded-full bg-brand shadow-sm shadow-primary/40"
               />
             )}
-            <Ellipsis
+            <MoreIcon
               className={cn(
                 "h-5 w-5 shrink-0 transition-colors duration-200",
-                secondaryActive ? "text-white" : "text-muted-foreground",
+                activeSecondary ? "text-white" : "text-muted-foreground",
               )}
             />
-            {secondaryActive && (
-              <span className="ml-1.5 min-w-0 truncate text-xs font-semibold text-white">More</span>
+            {activeSecondary && (
+              <span className="ml-1.5 min-w-0 truncate text-xs font-semibold text-white">{activeSecondary.label}</span>
             )}
           </button>
         </div>
