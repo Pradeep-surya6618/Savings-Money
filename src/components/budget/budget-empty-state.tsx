@@ -6,8 +6,10 @@ import { monthLabel } from "@/lib/month";
 
 export function BudgetEmptyState({ month }: { month: string }) {
   return (
-    <Card className="flex flex-col items-center gap-3 py-10 text-center">
-      <Wallet className="h-10 w-10 text-muted-foreground" />
+    <Card className="flex flex-col items-center gap-4 py-10 text-center">
+      <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-brand text-white shadow-lg shadow-primary/25">
+        <Wallet className="h-7 w-7" />
+      </div>
       <div>
         <p className="font-semibold">No salary set for {monthLabel(month)}</p>
         <p className="text-sm text-muted-foreground">Set your salary and allocation to see the budget.</p>
