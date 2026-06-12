@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Pencil, Wallet } from "lucide-react";
+import { Pencil, Banknote } from "lucide-react";
 import { CountUp } from "@/components/dashboard/count-up";
 import { Card } from "@/components/ui/card";
 import { monthLabel } from "@/lib/month";
@@ -18,7 +18,7 @@ export function HeroCard({
     : null;
   return (
     <Card className="relative min-h-[10.5rem] overflow-hidden lg:min-h-[15rem]">
-      <Wallet
+      <Banknote
         aria-hidden
         className="pointer-events-none absolute right-5 top-1/2 h-24 w-24 -translate-y-1/2 text-muted-foreground/10 lg:right-6 lg:h-36 lg:w-36"
       />
