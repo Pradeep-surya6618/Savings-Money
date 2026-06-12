@@ -22,7 +22,7 @@ export const BALANCE_COLOR = "#f59e0b"; // amber
 export const PRIMARY_NAV: NavItem[] = [
   { href: "/", label: "Home", icon: Home, color: "#16a34a" },
   { href: "/transactions", label: "Transactions", icon: ArrowLeftRight, color: "#3b82f6" },
-  { href: "/budget", label: "Budget", icon: Wallet, color: "#f59e0b" },
+  { href: "/budget", label: "Budget", icon: Wallet, color: "#f97316" }, // orange (distinct from Balance's amber)
   { href: "/analytics", label: "Analytics", icon: BarChart3, color: "#8b5cf6" },
 ];
 
