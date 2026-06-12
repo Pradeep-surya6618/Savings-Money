@@ -59,7 +59,46 @@ export function BalanceView({ data }: { data: BalanceDTO }) {
 
       <div>
         <h2 className="mb-3 text-sm font-semibold">Monthly ledger</h2>
-        <DataTable columns={columns} rows={rows} rowKey={(r) => r.month} empty="No activity yet." />
+        {/* Desktop: table */}
+        <div className="hidden lg:block">
+          <DataTable columns={columns} rows={rows} rowKey={(r) => r.month} empty="No activity yet." />
+        </div>
+        {/* Mobile: card list */}
+        <div className="space-y-2 lg:hidden">
+          {rows.length === 0 ? (
+            <div className="rounded-2xl border border-border bg-card px-4 py-10 text-center text-sm text-muted-foreground shadow-[var(--shadow-card)]">
+              No activity yet.
+            </div>
+          ) : (
+            rows.map((r) => (
+              <div key={r.month} className="rounded-2xl border border-border bg-card p-4 shadow-[var(--shadow-card)]">
+                <div className="flex items-center justify-between gap-3">
+                  <p className="font-semibold">{monthLabel(r.month)}</p>
+                  <div className="text-right">
+                    <p className="text-[11px] uppercase tracking-wide text-muted-foreground">Closing</p>
+                    <p className={cn("font-semibold tabular-nums", r.closing < 0 && "text-negative")}>
+                      {formatCurrency(r.closing)}
+                    </p>
+                  </div>
+                </div>
+                <div className="mt-3 grid grid-cols-3 gap-2 border-t border-border/60 pt-3">
+                  <div>
+                    <p className="text-[11px] uppercase tracking-wide text-muted-foreground">Opening</p>
+                    <p className="text-sm tabular-nums">{formatCurrency(r.opening)}</p>
+                  </div>
+                  <div>
+                    <p className="text-[11px] uppercase tracking-wide text-muted-foreground">Income</p>
+                    <p className="text-sm tabular-nums text-positive">+{formatCurrency(r.income)}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-[11px] uppercase tracking-wide text-muted-foreground">Expenses</p>
+                    <p className="text-sm tabular-nums text-muted-foreground">−{formatCurrency(r.expense)}</p>
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
       </div>
 
       <Dialog open={editOpen} onOpenChange={setEditOpen}>
