@@ -2,16 +2,15 @@
 
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
-import { Monitor, Moon, Sun } from "lucide-react";
+import { Moon, Sun } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { updateTheme } from "@/lib/actions/settings";
 
-type ThemeValue = "light" | "dark" | "system";
+type ThemeValue = "light" | "dark";
 
 const OPTIONS = [
   { value: "light", icon: Sun, label: "Light" },
   { value: "dark", icon: Moon, label: "Dark" },
-  { value: "system", icon: Monitor, label: "System" },
 ] as const;
 
 type ViewTransitionDocument = Document & {
@@ -42,10 +41,7 @@ export function ThemeToggle() {
     }
 
     const root = document.documentElement;
-    const resolvedDark =
-      value === "system"
-        ? window.matchMedia("(prefers-color-scheme: dark)").matches
-        : value === "dark";
+    const resolvedDark = value === "dark";
 
     const x = event.clientX;
     const y = event.clientY;

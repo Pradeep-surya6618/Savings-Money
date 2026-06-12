@@ -8,7 +8,7 @@ import { updatePreferencesSchema, type UpdatePreferencesInput } from "@/validati
 
 type Result = { ok: true } | { ok: false; error: string };
 
-export async function updateTheme(theme: "light" | "dark" | "system"): Promise<void> {
+export async function updateTheme(theme: "light" | "dark"): Promise<void> {
   await connectDB();
   const { user } = await getCurrentUser();
   await Settings.updateOne({ userId: user.id }, { $set: { theme } }, { upsert: true });

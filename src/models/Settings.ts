@@ -3,7 +3,7 @@ import { Schema, model, models, type InferSchemaType, type Model } from "mongoos
 const settingsSchema = new Schema(
   {
     userId: { type: Schema.Types.ObjectId, ref: "User", required: true, unique: true },
-    theme: { type: String, enum: ["light", "dark", "system"], default: "system" },
+    theme: { type: String, enum: ["light", "dark"], default: "dark" },
     currency: { type: String, default: "INR" },
     locale: { type: String, default: "en-IN" },
     language: { type: String, default: "English" },
