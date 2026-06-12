@@ -25,7 +25,7 @@ export default async function HomePage({
         <div className="flex justify-end">
           <MonthPicker month={month} basePath="/" />
         </div>
-        <TotalBalanceBanner total={balance.total} />
+        <TotalBalanceBanner total={balance.total} opening={balance.openingBalance} />
         <DashboardEmptyState month={month} />
       </div>
     );
@@ -40,7 +40,7 @@ export default async function HomePage({
       <div className="flex justify-end">
         <MonthPicker month={month} basePath="/" />
       </div>
-      <TotalBalanceBanner total={balance.total} />
+      <TotalBalanceBanner total={balance.total} opening={balance.openingBalance} />
       {/* Top row: salary hero + 2×2 stat grid */}
       <div className="grid gap-4 lg:grid-cols-[3fr_2fr] lg:items-start">
         <HeroCard month={month} amount={summary.amount} receivedDate={summary.receivedDate} />
