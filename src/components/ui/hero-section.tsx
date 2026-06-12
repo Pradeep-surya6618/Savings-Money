@@ -1,8 +1,17 @@
 import type { ComponentProps } from "react";
 import { cn } from "@/lib/utils";
 
-/** Shared premium aurora hero surface (dashboard hero, editor summary, empty state). */
-export function HeroSection({ className, children, ...props }: ComponentProps<"section">) {
+/**
+ * Shared premium hero surface (dashboard hero, editor summary, empty state).
+ * `blooms` (default true) paints ambient white aurora glows over the gradient;
+ * pass `blooms={false}` for the clean, even gradient used on the About card.
+ */
+export function HeroSection({
+  className,
+  children,
+  blooms = true,
+  ...props
+}: ComponentProps<"section"> & { blooms?: boolean }) {
   return (
     <section
       className={cn(
@@ -12,14 +21,18 @@ export function HeroSection({ className, children, ...props }: ComponentProps<"s
       {...props}
     >
       {/* ambient blooms for depth */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -right-16 -top-24 h-56 w-56 rounded-full bg-white/25 blur-3xl"
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -bottom-24 -left-12 h-56 w-56 rounded-full bg-white/10 blur-3xl"
-      />
+      {blooms && (
+        <>
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -right-16 -top-24 h-56 w-56 rounded-full bg-white/25 blur-3xl"
+          />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -bottom-24 -left-12 h-56 w-56 rounded-full bg-white/10 blur-3xl"
+          />
+        </>
+      )}
       <div className="relative h-full">{children}</div>
     </section>
   );

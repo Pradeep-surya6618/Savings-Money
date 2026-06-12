@@ -7,7 +7,7 @@ import { formatCurrency } from "@/lib/utils";
 export function TotalBalanceBanner({ total, opening }: { total: number; opening: number }) {
   return (
     <Link href="/balance" className="block">
-      <HeroSection className="min-h-[9rem] transition hover:brightness-105">
+      <HeroSection blooms={false} className="min-h-[9rem] transition hover:brightness-105">
         <Coins
           aria-hidden
           className="pointer-events-none absolute right-5 top-1/2 h-24 w-24 -translate-y-1/2 text-white/15 lg:right-6 lg:h-32 lg:w-32"
