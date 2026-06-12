@@ -104,8 +104,8 @@ export function SettingsView({ name, settings }: { name: string; settings: Prefs
       </div>
 
       <div className="grid gap-4 lg:grid-cols-[230px_1fr]">
-        {/* Desktop sub-nav */}
-        <Card className="hidden h-max p-2 lg:block">
+        {/* Desktop sub-nav — sticky; right panel scrolls with the page */}
+        <Card className="hidden h-max p-2 lg:sticky lg:top-24 lg:block">
           <p className="px-3 py-2 text-xs font-medium uppercase tracking-wider text-muted-foreground">Preferences</p>
           <nav className="flex flex-col gap-0.5">
             {SECTIONS.map(({ key, label, icon: Icon }) => (
