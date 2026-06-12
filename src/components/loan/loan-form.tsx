@@ -8,6 +8,7 @@ import { saveLoan } from "@/lib/actions/loan";
 import { toast } from "@/lib/toast-store";
 import { Field } from "@/components/trackers/field";
 import { Button } from "@/components/ui/button";
+import { DatePicker } from "@/components/ui/date-picker";
 import { cn } from "@/lib/utils";
 import type { LoanDTO } from "@/services/loan";
 
@@ -19,6 +20,8 @@ export function LoanForm({ initial, onDone }: { initial: LoanDTO; onDone: () => 
   const {
     register,
     handleSubmit,
+    watch,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<SaveLoanInput>({
     resolver: zodResolver(saveLoanSchema),
@@ -29,6 +32,9 @@ export function LoanForm({ initial, onDone }: { initial: LoanDTO; onDone: () => 
       startDate: (initial.startDate ?? new Date().toISOString()).slice(0, 10),
     },
   });
+
+  // eslint-disable-next-line react-hooks/incompatible-library -- RHF watch() opts this form out of React Compiler memoization; fine for a low-frequency form.
+  const startDate = watch("startDate");
 
   async function onSubmit(values: SaveLoanInput) {
     setServerError(null);
@@ -75,7 +81,7 @@ export function LoanForm({ initial, onDone }: { initial: LoanDTO; onDone: () => 
         />
       </Field>
       <Field label="Start date" error={errors.startDate?.message}>
-        <input type="date" {...register("startDate")} className={fieldCls} />
+        <DatePicker value={startDate} onChange={(v) => setValue("startDate", v)} />
       </Field>
       {serverError && <p className="text-sm text-negative">{serverError}</p>}
       <Button type="submit" disabled={isSubmitting} className="w-full">
