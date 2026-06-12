@@ -1,6 +1,7 @@
 import {
   ArrowLeftRight,
   BarChart3,
+  Coins,
   GraduationCap,
   Home,
   PiggyBank,
@@ -15,6 +16,7 @@ export type NavItem = { href: string; label: string; icon: LucideIcon; color: st
  *  secondary nav, the tracker pages, and the dashboard cards. */
 export const SAVINGS_COLOR = "#14b8a6"; // teal
 export const LOAN_COLOR = "#ec4899"; // pink
+export const BALANCE_COLOR = "#f59e0b"; // amber
 
 /** Primary nav — these 5 appear in the mobile bottom tab bar. */
 export const PRIMARY_NAV: NavItem[] = [
@@ -29,6 +31,7 @@ export const PRIMARY_NAV: NavItem[] = [
 export const SECONDARY_NAV: NavItem[] = [
   { href: "/savings", label: "Savings", icon: PiggyBank, color: SAVINGS_COLOR },
   { href: "/loan", label: "Loan", icon: GraduationCap, color: LOAN_COLOR },
+  { href: "/balance", label: "Balance", icon: Coins, color: BALANCE_COLOR },
 ];
 
 export function isActive(pathname: string, href: string): boolean {

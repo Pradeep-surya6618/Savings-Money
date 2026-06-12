@@ -20,6 +20,7 @@ export type CurrentUser = {
     dateFormat: string;
     firstDayOfWeek: string;
     defaultView: string;
+    openingBalance: number;
   };
 };
 
@@ -56,6 +57,7 @@ export const getCurrentUser = cache(async (): Promise<CurrentUser> => {
       dateFormat: settingsDoc.dateFormat ?? "DD MMM YYYY",
       firstDayOfWeek: settingsDoc.firstDayOfWeek ?? "Monday",
       defaultView: settingsDoc.defaultView ?? "Home",
+      openingBalance: settingsDoc.openingBalance ?? 0,
     },
   };
 });

@@ -36,3 +36,15 @@ export function addMonths(month: string, n: number): string {
 export function recentMonths(month: string, count: number): string[] {
   return Array.from({ length: count }, (_, i) => addMonths(month, i - (count - 1)));
 }
+
+/** Every "YYYY-MM" from start to end inclusive, oldest first. Empty if start > end. */
+export function monthRange(start: string, end: string): string[] {
+  if (start > end) return [];
+  const out: string[] = [];
+  let m = start;
+  while (m <= end) {
+    out.push(m);
+    m = addMonths(m, 1);
+  }
+  return out;
+}
