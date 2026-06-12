@@ -19,7 +19,13 @@ const TYPE_META: Record<NotificationType, { icon: LucideIcon; tint: string; colo
   savings: { icon: PiggyBank, tint: "bg-[#14b8a6]/15", color: "#14b8a6" },
 };
 
-export function NotificationBell({ items: initialItems }: { items: NotificationDTO[] }) {
+export function NotificationBell({
+  items: initialItems,
+  align = "end",
+}: {
+  items: NotificationDTO[];
+  align?: "center" | "end";
+}) {
   // Seeded once from server props; optimistic handlers keep it current, and each
   // action's revalidatePath("/","layout") refreshes the props on the next navigation.
   const [items, setItems] = useState(initialItems);
@@ -72,7 +78,8 @@ export function NotificationBell({ items: initialItems }: { items: NotificationD
       <Popover.Portal>
         <Popover.Content
           sideOffset={8}
-          align="end"
+          align={align}
+          collisionPadding={12}
           className="z-50 w-[min(360px,calc(100vw-1.5rem))] overflow-hidden rounded-2xl border border-border bg-card shadow-[var(--shadow-card)]"
         >
           <div className="flex items-center justify-between border-b border-border px-4 py-3">

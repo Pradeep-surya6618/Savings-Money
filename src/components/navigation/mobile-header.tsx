@@ -24,7 +24,7 @@ export function MobileHeader({
         </div>
       </div>
       <div className="flex items-center gap-2">
-        <NotificationBell items={notifications.items} />
+        <NotificationBell items={notifications.items} align="center" />
         <ThemeToggle />
       </div>
     </header>
