@@ -20,6 +20,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Select } from "@/components/ui/select";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
+import { AboutFuFi } from "@/components/settings/about-fufi";
 import { updatePreferences } from "@/lib/actions/settings";
 import { toast } from "@/lib/toast-store";
 import { cn } from "@/lib/utils";
@@ -79,9 +80,32 @@ export function SettingsView({ name, settings }: { name: string; settings: Prefs
   return (
     <div className="space-y-5">
       <h1 className="text-2xl font-bold tracking-tight">Settings</h1>
+
+      {/* Mobile sub-nav — horizontal-scroll pills */}
+      <div className="-mx-1 overflow-x-auto scrollbar-hide lg:hidden">
+        <div className="flex gap-2 px-1 pb-1">
+          {SECTIONS.map(({ key, label, icon: Icon }) => (
+            <button
+              key={key}
+              type="button"
+              onClick={() => setActive(key)}
+              className={cn(
+                "flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full border px-4 py-2 text-sm font-medium transition",
+                active === key
+                  ? "border-transparent bg-brand text-white shadow-sm shadow-primary/25"
+                  : "border-border bg-card text-muted-foreground hover:text-foreground",
+              )}
+            >
+              <Icon className="h-4 w-4 shrink-0" />
+              {label}
+            </button>
+          ))}
+        </div>
+      </div>
+
       <div className="grid gap-4 lg:grid-cols-[230px_1fr]">
-        {/* Sub-nav */}
-        <Card className="h-max p-2">
+        {/* Desktop sub-nav */}
+        <Card className="hidden h-max p-2 lg:block">
           <p className="px-3 py-2 text-xs font-medium uppercase tracking-wider text-muted-foreground">Preferences</p>
           <nav className="flex flex-col gap-0.5">
             {SECTIONS.map(({ key, label, icon: Icon }) => (
@@ -206,12 +230,8 @@ export function SettingsView({ name, settings }: { name: string; settings: Prefs
 
           {active === "about" && (
             <Panel title="About FuFi" description="The story behind the app.">
-              <div className="space-y-2 pt-4">
-                <p className="text-sm">
-                  <span className="font-semibold">FuFi</span> — Fund Your Future.
-                </p>
-                <p className="text-sm text-muted-foreground">A premium personal finance manager for {name}.</p>
-                <p className="text-xs text-muted-foreground">Version 1.0.0</p>
+              <div className="pt-4">
+                <AboutFuFi name={name} />
               </div>
             </Panel>
           )}
