@@ -21,6 +21,7 @@ import { Button } from "@/components/ui/button";
 import { Select } from "@/components/ui/select";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { AboutFuFi } from "@/components/settings/about-fufi";
+import { useTabParam } from "@/lib/use-tab-param";
 import { updatePreferences } from "@/lib/actions/settings";
 import { toast } from "@/lib/toast-store";
 import { cn } from "@/lib/utils";
@@ -43,12 +44,13 @@ const SECTIONS = [
   { key: "security", label: "Security", icon: Lock },
   { key: "about", label: "About FuFi", icon: Info },
 ] as const;
-type SectionKey = (typeof SECTIONS)[number]["key"];
+const SECTION_KEYS = SECTIONS.map((s) => s.key);
 
 const opts = (...vals: string[]) => vals.map((v) => ({ value: v, label: v }));
 
 export function SettingsView({ name, settings }: { name: string; settings: Prefs }) {
-  const [active, setActive] = useState<SectionKey>("general");
+  // Active section lives in the URL (?section=) so it's deep-linkable and survives refresh.
+  const [active, setActive] = useTabParam("section", SECTION_KEYS, "general");
   const [prefs, setPrefs] = useState<Prefs>(settings);
   const router = useRouter();
   const [resetOpen, setResetOpen] = useState(false);

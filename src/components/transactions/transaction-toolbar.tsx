@@ -17,12 +17,14 @@ const SORT_OPTIONS = [
 export function TransactionToolbar({
   filters,
   setFilters,
+  onTypeChange,
   sort,
   setSort,
   months,
 }: {
   filters: TxnFilters;
   setFilters: (f: TxnFilters) => void;
+  onTypeChange: (t: TxnFilters["type"]) => void;
   sort: TxnSort;
   setSort: (s: TxnSort) => void;
   months: string[];
@@ -45,12 +47,12 @@ export function TransactionToolbar({
         placeholder="Search transactions"
         className="flex-1 sm:min-w-48"
       />
-      <div className="inline-flex rounded-xl border border-border bg-card p-1 text-sm">
+      <div className="inline-flex w-fit rounded-xl border border-border bg-card p-1 text-sm">
         {(["all", "income", "expense"] as const).map((t) => (
           <button
             key={t}
             type="button"
-            onClick={() => setFilters({ ...filters, type: t, category: "all" })}
+            onClick={() => onTypeChange(t)}
             className={cn(
               "rounded-lg px-3 py-1 capitalize transition",
               filters.type === t ? "bg-primary text-white" : "text-muted-foreground hover:text-foreground",

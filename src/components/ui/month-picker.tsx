@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import * as Popover from "@radix-ui/react-popover";
 import { Calendar, ChevronLeft, ChevronRight } from "lucide-react";
 import { currentMonth, monthLabel } from "@/lib/month";
@@ -12,9 +12,17 @@ const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "
 /** `June 2026` control: popover with year stepper + 12-month grid; navigates `?month=`. */
 export function MonthPicker({ month, basePath }: { month: string; basePath: string }) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [yr, setYr] = useState(Number(month.slice(0, 4)));
   const cur = currentMonth();
   const maxYear = Number(cur.slice(0, 4));
+
+  // Preserve other query params (e.g. ?tab=) when changing the month.
+  function goToMonth(m: string) {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("month", m);
+    router.push(`${basePath}?${params.toString()}`);
+  }
 
   return (
     <Popover.Root>
@@ -59,7 +67,7 @@ export function MonthPicker({ month, basePath }: { month: string; basePath: stri
                   <button
                     type="button"
                     disabled={disabled}
-                    onClick={() => router.push(`${basePath}?month=${m}`)}
+                    onClick={() => goToMonth(m)}
                     className={cn(
                       "rounded-lg py-2 text-sm transition disabled:opacity-30",
                       active ? "bg-primary text-white" : "hover:bg-card-elevated",

@@ -18,12 +18,16 @@ import {
   type TxnFilters,
   type TxnSort,
 } from "@/lib/transaction-filters";
+import { useTabParam } from "@/lib/use-tab-param";
 import type { TransactionDTO } from "@/services/transactions";
 
 const DEFAULT_FILTERS: TxnFilters = { search: "", type: "all", category: "all", month: "all" };
+const TYPE_VALUES = ["all", "income", "expense"] as const;
 
 export function TransactionsView({ transactions }: { transactions: TransactionDTO[] }) {
   const [filters, setFilters] = useState<TxnFilters>(DEFAULT_FILTERS);
+  // The All/Income/Expense tab lives in the URL (?type=) so it's deep-linkable.
+  const [type, setType] = useTabParam("type", TYPE_VALUES, "all");
   const [sort, setSort] = useState<TxnSort>("date-desc");
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState<TransactionDTO | null>(null);
@@ -40,14 +44,20 @@ export function TransactionsView({ transactions }: { transactions: TransactionDT
   // fall back to "all" so the controlled <select> and the list stay in sync.
   const monthFilter =
     filters.month === "all" || months.includes(filters.month) ? filters.month : "all";
-  const activeFilters: TxnFilters = { ...filters, month: monthFilter };
+  const activeFilters: TxnFilters = { ...filters, type, month: monthFilter };
   const visible = useMemo(
     () => sortTransactions(filterTransactions(transactions, activeFilters), sort),
     // activeFilters is a derived object — listing its primitive sources is intentional
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [transactions, filters.search, filters.type, filters.category, monthFilter, sort],
+    [transactions, filters.search, type, filters.category, monthFilter, sort],
   );
   const totals = useMemo(() => summarize(visible), [visible]);
+
+  // Switching type resets the category filter (income/expense categories differ).
+  function changeType(t: TxnFilters["type"]) {
+    setType(t);
+    setFilters((f) => ({ ...f, category: "all" }));
+  }
 
   function openAdd() {
     setEditing(null);
@@ -71,6 +81,7 @@ export function TransactionsView({ transactions }: { transactions: TransactionDT
       <TransactionToolbar
         filters={activeFilters}
         setFilters={setFilters}
+        onTypeChange={changeType}
         sort={sort}
         setSort={setSort}
         months={months}

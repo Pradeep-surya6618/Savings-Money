@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import { TrendingDown, TrendingUp } from "lucide-react";
 import { Card } from "@/components/ui/card";
@@ -16,13 +15,19 @@ import { TopCategories } from "./top-categories";
 import { IncomeExpenseChart } from "./income-expense-chart";
 import { monthLabel } from "@/lib/month";
 import { cn, formatCurrency } from "@/lib/utils";
+import { useTabParam } from "@/lib/use-tab-param";
 import { LOAN_COLOR } from "@/lib/nav";
 import type { HealthBand } from "@/lib/health-score";
 import type { AnalyticsDTO } from "@/services/analytics";
 import type { LoanDTO } from "@/services/loan";
 
-const TABS = ["Overview", "Spending", "Savings", "Loan"] as const;
-type Tab = (typeof TABS)[number];
+const TABS = [
+  { key: "overview", label: "Overview" },
+  { key: "spending", label: "Spending" },
+  { key: "savings", label: "Savings" },
+  { key: "loan", label: "Loan" },
+] as const;
+const TAB_KEYS = TABS.map((t) => t.key);
 
 function momPct(cur: number, prev: number): number {
   return prev > 0 ? Math.round(((cur - prev) / prev) * 100) : 0;
@@ -52,7 +57,8 @@ export function AnalyticsView({
   health: { score: number; band: HealthBand };
   loan: LoanDTO;
 }) {
-  const [tab, setTab] = useState<Tab>("Overview");
+  // Active analytics tab lives in the URL (?tab=) so it's deep-linkable.
+  const [tab, setTab] = useTabParam("tab", TAB_KEYS, "overview");
 
   const monthly = data.monthly;
   const last = monthly.length ? monthly[monthly.length - 1] : null;
@@ -70,23 +76,25 @@ export function AnalyticsView({
       </div>
 
       {/* Tabs */}
-      <div className="inline-flex rounded-xl border border-border bg-card p-1 text-sm shadow-[var(--shadow-card)]">
-        {TABS.map((t) => (
-          <button
-            key={t}
-            type="button"
-            onClick={() => setTab(t)}
-            className={cn(
-              "rounded-lg px-3.5 py-1.5 font-medium transition",
-              tab === t ? "bg-primary text-white" : "text-muted-foreground hover:text-foreground",
-            )}
-          >
-            {t}
-          </button>
-        ))}
+      <div className="-mx-1 overflow-x-auto scrollbar-hide sm:mx-0">
+        <div className="inline-flex w-fit rounded-xl border border-border bg-card p-1 text-sm shadow-[var(--shadow-card)]">
+          {TABS.map((t) => (
+            <button
+              key={t.key}
+              type="button"
+              onClick={() => setTab(t.key)}
+              className={cn(
+                "whitespace-nowrap rounded-lg px-3.5 py-1.5 font-medium transition",
+                tab === t.key ? "bg-primary text-white" : "text-muted-foreground hover:text-foreground",
+              )}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
       </div>
 
-      {tab === "Overview" && (
+      {tab === "overview" && (
         <div className="grid gap-4 lg:grid-cols-2">
           <Card className="space-y-3">
             <div className="flex items-baseline justify-between">
@@ -115,21 +123,21 @@ export function AnalyticsView({
         </div>
       )}
 
-      {tab === "Spending" && (
+      {tab === "spending" && (
         <div className="grid gap-4 lg:grid-cols-2">
           <SpendingDonut breakdown={data.breakdown} />
           <TopCategories top={data.top} changes={data.changes} />
         </div>
       )}
 
-      {tab === "Savings" && (
+      {tab === "savings" && (
         <div className="grid gap-4 lg:grid-cols-2">
           <SavingsRateTrend savingsRate={data.savingsRate} />
           <IncomeExpenseChart monthly={data.monthly} />
         </div>
       )}
 
-      {tab === "Loan" && (
+      {tab === "loan" && (
         <Card className="flex flex-col items-center gap-4 py-8">
           <h2 className="self-start font-semibold">Loan Repayment</h2>
           {loan.totalLoan > 0 ? (
