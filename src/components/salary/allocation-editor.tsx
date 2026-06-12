@@ -78,7 +78,7 @@ export function AllocationEditor({
       <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,360px)_1fr]">
       {/* Summary panel */}
       <aside className="space-y-4 lg:sticky lg:top-8">
-        <HeroSection>
+        <HeroSection blooms={false}>
           <p className="text-xs font-medium uppercase tracking-widest text-white/70">Monthly salary</p>
           <p className="text-xs text-white/60">{monthLabel(month)}</p>
           <div className="mt-3 flex items-baseline gap-1.5">
