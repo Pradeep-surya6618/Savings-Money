@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { PanelLeft, PanelLeftClose } from "lucide-react";
-import { PRIMARY_NAV, SECONDARY_NAV, isActive } from "@/lib/nav";
+import { PRIMARY_NAV, SECONDARY_NAV, SETTINGS_NAV, isActive } from "@/lib/nav";
 import { cn } from "@/lib/utils";
 import { Tooltip } from "@/components/ui/tooltip";
 import { Logo } from "@/components/brand/logo";
@@ -33,7 +33,7 @@ export function Sidebar({ name }: { name: string }) {
   }
 
   const isCollapsed = collapsed === true;
-  const items = [...PRIMARY_NAV, ...SECONDARY_NAV];
+  const items = [...PRIMARY_NAV, ...SECONDARY_NAV, SETTINGS_NAV];
 
   return (
     <aside
