@@ -362,21 +362,21 @@ function ActionRow({
 }) {
   return (
     <div className="flex items-center justify-between gap-4 rounded-xl border border-border bg-card-elevated/50 p-3.5">
-      <div className="flex items-center gap-3">
+      <div className="flex min-w-0 items-center gap-3">
         <span
           className={cn(
-            "flex h-9 w-9 items-center justify-center rounded-lg",
+            "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg",
             danger ? "bg-negative/10 text-negative" : "bg-primary/10 text-primary",
           )}
         >
-          <Icon className="h-4 w-4" />
+          <Icon className="h-4 w-4 shrink-0" />
         </span>
-        <div>
+        <div className="min-w-0">
           <p className={cn("text-sm font-medium", danger && "text-negative")}>{title}</p>
           <p className="text-xs text-muted-foreground">{desc}</p>
         </div>
       </div>
-      {button}
+      <div className="shrink-0">{button}</div>
     </div>
   );
 }
