@@ -1,6 +1,7 @@
 import {
   ArrowLeftRight,
   BarChart3,
+  Coins,
   GraduationCap,
   Home,
   PiggyBank,
@@ -30,7 +31,7 @@ export const PRIMARY_NAV: NavItem[] = [
 export const SECONDARY_NAV: NavItem[] = [
   { href: "/savings", label: "Savings", icon: PiggyBank, color: SAVINGS_COLOR },
   { href: "/loan", label: "Loan", icon: GraduationCap, color: LOAN_COLOR },
-  { href: "/balance", label: "Balance", icon: Wallet, color: BALANCE_COLOR },
+  { href: "/balance", label: "Balance", icon: Coins, color: BALANCE_COLOR },
 ];
 
 export function isActive(pathname: string, href: string): boolean {
