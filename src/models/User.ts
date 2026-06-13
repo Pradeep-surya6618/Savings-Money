@@ -8,6 +8,9 @@ const userSchema = new Schema(
     providers: { type: [String], default: [] }, // linked sign-in methods, e.g. ["google"]
     emailVerified: { type: Boolean, default: false },
     image: { type: String },
+    dateOfBirth: { type: Date },
+    bio: { type: String },
+    avatarUpdatedAt: { type: Date },
   },
   { timestamps: true },
 );
