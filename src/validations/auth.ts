@@ -21,3 +21,12 @@ export type CompleteSignupInput = z.infer<typeof completeSignupSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;
 export type RequestResetInput = z.infer<typeof requestResetSchema>;
 export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>;
+
+export const setPasswordSchema = z.object({ password: passwordSchema });
+export const changePasswordSchema = z.object({
+  current: z.string().min(1, "Enter your current password"),
+  password: passwordSchema,
+});
+
+export type SetPasswordInput = z.infer<typeof setPasswordSchema>;
+export type ChangePasswordInput = z.infer<typeof changePasswordSchema>;
