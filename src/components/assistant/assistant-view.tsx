@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport, type UIMessage } from "ai";
 import { Sparkles, Send, Plus, Trash2, MessagesSquare } from "lucide-react";
@@ -37,9 +37,11 @@ export function AssistantView({
   configured: boolean;
 }) {
   const router = useRouter();
+  const urlChat = useSearchParams().get("c");
   const [conversationId, setConversationId] = useState<string | null>(null);
   const [input, setInput] = useState("");
   const [listOpen, setListOpen] = useState(false);
+  const [pendingDelete, setPendingDelete] = useState<string | null>(null);
 
   const { messages, sendMessage, setMessages, status, stop } = useChat({
     transport: new DefaultChatTransport({ api: "/api/assistant" }),
@@ -47,6 +49,23 @@ export function AssistantView({
   });
 
   const busy = status === "submitted" || status === "streaming";
+
+  // The open conversation is driven by the `?c=<id>` URL param. `loadedRef` tracks
+  // which conversation's messages are currently loaded so we don't reload (and clobber)
+  // the active chat — including the one we just created for a brand-new message.
+  const loadedRef = useRef<string | null>(null);
+  useEffect(() => {
+    if (urlChat === loadedRef.current) return;
+    loadedRef.current = urlChat;
+    setConversationId(urlChat);
+    if (!urlChat) {
+      setMessages([]);
+      return;
+    }
+    void getConversationMessages(urlChat).then((turns) => {
+      setMessages(turns.map((t) => ({ id: t.id, role: t.role, parts: [{ type: "text", text: t.content }] })));
+    });
+  }, [urlChat, setMessages]);
 
   if (!configured) {
     return (
@@ -68,37 +87,42 @@ export function AssistantView({
     const trimmed = text.trim();
     if (!trimmed || busy) return;
     setInput("");
-    // New chat: create the conversation up front so the route persists turns
-    // against a real id and the request body carries the right scope.
+    // New chat: create the conversation up front so the route persists turns against
+    // a real id, reflect it in the URL, and pin loadedRef so the sync effect won't reload it.
     let id = conversationId;
     if (!id) {
       id = await createConversation(trimmed);
+      loadedRef.current = id;
       setConversationId(id);
+      router.replace(`/assistant?c=${id}`);
     }
     await sendMessage({ text: trimmed }, { body: { conversationId: id } });
   }
 
   function newChat() {
     if (busy) return;
-    setConversationId(null);
-    setMessages([]);
     setInput("");
     setListOpen(false);
+    router.push("/assistant");
   }
 
-  async function openConversation(id: string) {
+  function openConversation(id: string) {
     if (busy) return;
     setListOpen(false);
-    const turns = await getConversationMessages(id);
-    setConversationId(id);
-    setMessages(
-      turns.map((t) => ({ id: t.id, role: t.role, parts: [{ type: "text", text: t.content }] })),
-    );
+    router.push(`/assistant?c=${id}`);
   }
 
-  async function removeConversation(id: string) {
+  function requestDelete(id: string) {
+    setListOpen(false);
+    setPendingDelete(id);
+  }
+
+  async function confirmDelete() {
+    const id = pendingDelete;
+    setPendingDelete(null);
+    if (!id) return;
     await deleteConversation(id);
-    if (id === conversationId) newChat();
+    if (id === conversationId) router.push("/assistant");
     router.refresh();
   }
 
@@ -132,7 +156,7 @@ export function AssistantView({
               activeId={conversationId}
               onNew={newChat}
               onOpen={openConversation}
-              onDelete={removeConversation}
+              onDelete={requestDelete}
             />
           </div>
         </aside>
@@ -272,8 +296,27 @@ export function AssistantView({
             activeId={conversationId}
             onNew={newChat}
             onOpen={openConversation}
-            onDelete={removeConversation}
+            onDelete={requestDelete}
           />
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete confirmation */}
+      <Dialog open={pendingDelete !== null} onOpenChange={(o) => { if (!o) setPendingDelete(null); }}>
+        <DialogContent title="Delete chat?">
+          <div className="space-y-4">
+            <p className="text-sm text-muted-foreground">
+              This permanently deletes this conversation and all its messages. This can&rsquo;t be undone.
+            </p>
+            <div className="flex justify-end gap-2">
+              <Button variant="outline" onClick={() => setPendingDelete(null)}>
+                Cancel
+              </Button>
+              <Button onClick={() => void confirmDelete()} className="from-negative to-negative">
+                Delete
+              </Button>
+            </div>
+          </div>
         </DialogContent>
       </Dialog>
     </div>
