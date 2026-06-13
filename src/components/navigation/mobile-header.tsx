@@ -19,7 +19,7 @@ export function MobileHeader({
         <div className="leading-tight">
           <p className="text-xs text-muted-foreground">{greeting},</p>
           <p className="text-sm font-bold">
-            {name} <span aria-hidden>👋</span>
+            {name.split(" ")[0]} <span aria-hidden>👋</span>
           </p>
         </div>
       </div>
