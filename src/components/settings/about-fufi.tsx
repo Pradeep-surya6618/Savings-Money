@@ -184,6 +184,14 @@ export function AboutFuFi({ name }: { name: string }) {
         <Heart className="h-3.5 w-3.5 fill-negative text-negative" />
         for {name} · Version 1.0.0
       </motion.p>
+
+      {/* Copyright */}
+      <motion.p
+        variants={item}
+        className="border-t border-border/60 pt-4 text-center text-xs text-muted-foreground"
+      >
+        © {new Date().getFullYear()} FuFi. All rights reserved.
+      </motion.p>
     </motion.div>
   );
 }
