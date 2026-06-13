@@ -1,15 +1,19 @@
+import Link from "next/link";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { Logo } from "@/components/brand/logo";
 import { NotificationBell } from "@/components/notifications/notification-bell";
+import { UserAvatar } from "@/components/ui/user-avatar";
 import type { NotificationsResult } from "@/services/notifications";
 
 export function MobileHeader({
   greeting,
   name,
+  image,
   notifications,
 }: {
   greeting: string;
   name: string;
+  image: string | null;
   notifications: NotificationsResult;
 }) {
   return (
@@ -26,6 +30,9 @@ export function MobileHeader({
       <div className="flex items-center gap-2">
         <NotificationBell items={notifications.items} align="center" />
         <ThemeToggle />
+        <Link href="/profile" aria-label="Your profile">
+          <UserAvatar name={name} imageUrl={image} className="h-8 w-8 text-xs" />
+        </Link>
       </div>
     </header>
   );
