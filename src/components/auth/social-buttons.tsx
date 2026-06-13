@@ -1,7 +1,5 @@
 "use client";
 
-import { toast } from "@/lib/toast-store";
-
 function GoogleMark() {
   return (
     <svg className="h-4 w-4" viewBox="0 0 24 24" aria-hidden>
@@ -14,17 +12,20 @@ function GoogleMark() {
 }
 
 export function SocialButtons() {
-  const soon = () => toast.info("Social sign-in is coming soon");
+  const cls =
+    "flex items-center justify-center gap-2 rounded-xl border border-border bg-card py-2.5 text-sm font-medium transition hover:bg-card-elevated";
   return (
     <div className="space-y-3">
       <div className="flex items-center gap-3 text-xs text-muted-foreground">
         <span className="h-px flex-1 bg-border" /> or continue with <span className="h-px flex-1 bg-border" />
       </div>
       <div className="grid grid-cols-2 gap-3">
-        <button type="button" onClick={soon} className="flex items-center justify-center gap-2 rounded-xl border border-border bg-card py-2.5 text-sm font-medium transition hover:bg-card-elevated">
+        {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+        <a href="/api/auth/google" className={cls}>
           <GoogleMark /> Google
-        </button>
-        <button type="button" onClick={soon} className="flex items-center justify-center gap-2 rounded-xl border border-border bg-card py-2.5 text-sm font-medium transition hover:bg-card-elevated">
+        </a>
+        {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+        <a href="/api/auth/microsoft" className={cls}>
           <svg className="h-4 w-4" viewBox="0 0 24 24" aria-hidden>
             <rect x="1.5" y="1.5" width="9.5" height="9.5" fill="#F25022" />
             <rect x="13" y="1.5" width="9.5" height="9.5" fill="#7FBA00" />
@@ -32,7 +33,7 @@ export function SocialButtons() {
             <rect x="13" y="13" width="9.5" height="9.5" fill="#FFB900" />
           </svg>
           Microsoft
-        </button>
+        </a>
       </div>
     </div>
   );

@@ -2,6 +2,7 @@
 
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 import bcrypt from "bcryptjs";
 import { connectDB } from "@/lib/mongodb/connect";
 import { User } from "@/models/User";
@@ -9,7 +10,7 @@ import { Session } from "@/models/Session";
 import { Settings } from "@/models/Settings";
 import { Savings } from "@/models/Savings";
 import { VerificationToken } from "@/models/VerificationToken";
-import { createSession, destroySession } from "@/lib/auth/session";
+import { createSession, destroySession, getSession } from "@/lib/auth/session";
 import { generateOtp, generateToken, hashSecret, verifySecret, isExpired } from "@/lib/auth/tokens";
 import { sendMail } from "@/lib/email/mailer";
 import { otpEmail, resetEmail } from "@/lib/email/templates";
@@ -20,12 +21,16 @@ import {
   loginSchema,
   requestResetSchema,
   resetPasswordSchema,
+  setPasswordSchema,
+  changePasswordSchema,
   type SendOtpInput,
   type VerifyOtpInput,
   type CompleteSignupInput,
   type LoginInput,
   type RequestResetInput,
   type ResetPasswordInput,
+  type SetPasswordInput,
+  type ChangePasswordInput,
 } from "@/validations/auth";
 
 type Result = { ok: true } | { ok: false; error: string };
@@ -138,7 +143,11 @@ export async function login(input: LoginInput): Promise<Result> {
   try {
     await connectDB();
     const user = await User.findOne({ email: parsed.data.email });
-    if (!user || !(await bcrypt.compare(parsed.data.password, user.passwordHash))) {
+    if (!user) return { ok: false, error: "Invalid email or password" };
+    if (!user.passwordHash) {
+      return { ok: false, error: "This account uses social sign-in — continue with Google or Microsoft." };
+    }
+    if (!(await bcrypt.compare(parsed.data.password, user.passwordHash))) {
       return { ok: false, error: "Invalid email or password" };
     }
     userId = String(user._id);
@@ -195,5 +204,45 @@ export async function resetPassword(input: ResetPasswordInput): Promise<Result> 
     return { ok: true };
   } catch {
     return { ok: false, error: "Couldn't reset your password. Please try again." };
+  }
+}
+
+export async function setPassword(input: SetPasswordInput): Promise<Result> {
+  const parsed = setPasswordSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, error: parsed.error.issues[0]?.message ?? "Invalid password" };
+  try {
+    const session = await getSession();
+    if (!session) return { ok: false, error: "You're not signed in." };
+    await connectDB();
+    const user = await User.findById(session.userId);
+    if (!user) return { ok: false, error: "You're not signed in." };
+    if (user.passwordHash) return { ok: false, error: "You already have a password — use Change password." };
+    user.passwordHash = await bcrypt.hash(parsed.data.password, 12);
+    await user.save();
+    revalidatePath("/settings");
+    return { ok: true };
+  } catch {
+    return { ok: false, error: "Couldn't set your password. Please try again." };
+  }
+}
+
+export async function changePassword(input: ChangePasswordInput): Promise<Result> {
+  const parsed = changePasswordSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, error: parsed.error.issues[0]?.message ?? "Invalid password" };
+  try {
+    const session = await getSession();
+    if (!session) return { ok: false, error: "You're not signed in." };
+    await connectDB();
+    const user = await User.findById(session.userId);
+    if (!user || !user.passwordHash) return { ok: false, error: "No password set — use Set a password." };
+    if (!(await bcrypt.compare(parsed.data.current, user.passwordHash))) {
+      return { ok: false, error: "Your current password is incorrect." };
+    }
+    user.passwordHash = await bcrypt.hash(parsed.data.password, 12);
+    await user.save();
+    revalidatePath("/settings");
+    return { ok: true };
+  } catch {
+    return { ok: false, error: "Couldn't change your password. Please try again." };
   }
 }

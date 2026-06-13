@@ -14,7 +14,7 @@ function toTheme(value: string): Theme {
 }
 
 export type CurrentUser = {
-  user: { id: string; name: string; email: string | null; image: string | null };
+  user: { id: string; name: string; email: string | null; image: string | null; hasPassword: boolean };
   settings: {
     theme: Theme;
     currency: string;
@@ -50,6 +50,7 @@ export const getCurrentUser = cache(async (): Promise<CurrentUser> => {
       name: userDoc.name,
       email: userDoc.email ?? null,
       image: userDoc.image ?? null,
+      hasPassword: Boolean(userDoc.passwordHash),
     },
     settings: {
       theme: toTheme(settingsDoc.theme),

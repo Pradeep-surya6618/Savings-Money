@@ -8,6 +8,7 @@ export default async function SettingsPage() {
   return (
     <SettingsView
       name={user.name}
+      hasPassword={user.hasPassword}
       settings={{
         language: settings.language,
         dateFormat: settings.dateFormat,
