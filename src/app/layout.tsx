@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Plus_Jakarta_Sans, Sora } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme/theme-provider";
@@ -9,6 +9,16 @@ const display = Sora({ variable: "--font-sora", subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "FuFi — Future Financial",
   description: "FuFi (Future Financial) — manage your salary, allocations, savings & more",
+  applicationName: "FuFi",
+  appleWebApp: { capable: true, title: "FuFi", statusBarStyle: "black-translucent" },
+  icons: { apple: "/icons/apple-touch-icon.png" },
+};
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f4f7f5" },
+    { media: "(prefers-color-scheme: dark)", color: "#080c0a" },
+  ],
 };
 
 // Delivered inline (not via the CSS bundle) so the theme "wave" reveal always
