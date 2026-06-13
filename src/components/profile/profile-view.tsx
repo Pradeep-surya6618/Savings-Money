@@ -116,7 +116,7 @@ export function ProfileView({ profile }: { profile: ProfileData }) {
               >
                 {avatarBusy ? "Uploading…" : "Change photo"}
               </Button>
-              {profile.imageUrl && !preview && (
+              {profile.hasAvatar && !preview && (
                 <Button
                   type="button"
                   variant="ghost"

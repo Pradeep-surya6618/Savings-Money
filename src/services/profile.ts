@@ -8,6 +8,7 @@ export type ProfileData = {
   dateOfBirth: string | null; // yyyy-mm-dd
   bio: string;
   imageUrl: string | null;
+  hasAvatar: boolean; // true only for an uploaded avatar (not an OAuth photo)
 };
 
 export async function getProfile(): Promise<ProfileData | null> {
@@ -23,5 +24,6 @@ export async function getProfile(): Promise<ProfileData | null> {
     dateOfBirth: u.dateOfBirth ? new Date(u.dateOfBirth).toISOString().slice(0, 10) : null,
     bio: u.bio ?? "",
     imageUrl: updatedAt ? `/api/profile/avatar?v=${updatedAt.getTime()}` : (u.image ?? null),
+    hasAvatar: Boolean(updatedAt),
   };
 }
