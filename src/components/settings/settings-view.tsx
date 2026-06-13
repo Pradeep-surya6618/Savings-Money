@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { resetAllData } from "@/lib/actions/balance";
+import { logout } from "@/lib/actions/auth";
 import {
   SlidersHorizontal,
   Palette,
@@ -16,6 +17,7 @@ import {
   Download,
   Upload,
   Trash2,
+  LogOut,
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -264,6 +266,16 @@ export function SettingsView({
           {active === "security" && (
             <Panel title="Security" description="Manage access and the data stored on your account.">
               <div className="space-y-3 pt-4">
+                <ActionRow
+                  title="Log out"
+                  desc="Sign out of your FuFi account on this device."
+                  icon={LogOut}
+                  button={
+                    <Button variant="outline" onClick={() => logout()}>
+                      Log out
+                    </Button>
+                  }
+                />
                 <ActionRow
                   title="Reset all data"
                   desc="Permanently delete all your salary, transactions, savings & loan data."

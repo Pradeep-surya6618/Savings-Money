@@ -1,14 +1,16 @@
 import { cache } from "react";
+import { redirect } from "next/navigation";
 import { connectDB } from "@/lib/mongodb/connect";
 import { User } from "@/models/User";
 import { Settings } from "@/models/Settings";
+import { getSession } from "@/lib/auth/session";
 import type { NotifyPrefs } from "@/validations/settings";
 
-const THEMES = ["light", "dark", "system"] as const;
+const THEMES = ["light", "dark"] as const;
 type Theme = (typeof THEMES)[number];
 
 function toTheme(value: string): Theme {
-  return (THEMES as readonly string[]).includes(value) ? (value as Theme) : "system";
+  return (THEMES as readonly string[]).includes(value) ? (value as Theme) : "dark";
 }
 
 export type CurrentUser = {
@@ -26,16 +28,14 @@ export type CurrentUser = {
   };
 };
 
-/** Resolves the single app user, creating it (and its settings) on first run. */
+/** The logged-in user (+ settings). Redirects to /login when there is no valid session. */
 export const getCurrentUser = cache(async (): Promise<CurrentUser> => {
   await connectDB();
+  const session = await getSession();
+  if (!session) redirect("/login");
 
-  const userDoc = await User.findOneAndUpdate(
-    {},
-    { $setOnInsert: { name: "You" } },
-    { upsert: true, returnDocument: "after", setDefaultsOnInsert: true },
-  );
-  if (!userDoc) throw new Error("Failed to resolve current user");
+  const userDoc = await User.findById(session.userId);
+  if (!userDoc) redirect("/login");
 
   const settingsDoc = await Settings.findOneAndUpdate(
     { userId: userDoc._id },

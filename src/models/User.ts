@@ -3,7 +3,9 @@ import { Schema, model, models, type InferSchemaType, type Model } from "mongoos
 const userSchema = new Schema(
   {
     name: { type: String, required: true },
-    email: { type: String },
+    email: { type: String, required: true, unique: true, lowercase: true, trim: true },
+    passwordHash: { type: String, required: true },
+    emailVerified: { type: Boolean, default: false },
     image: { type: String },
   },
   { timestamps: true },
