@@ -1,5 +1,6 @@
 import Image from "next/image";
-import { ReceiptText, PieChart, PiggyBank, Target, ShieldCheck } from "lucide-react";
+import { ReceiptText, PieChart, PiggyBank, Target, Sparkles, ShieldCheck } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { AuthIllustration } from "./auth-illustration";
 
 const FEATURES = [
@@ -7,6 +8,7 @@ const FEATURES = [
   { icon: PieChart, label: "Plan your budget wisely" },
   { icon: PiggyBank, label: "Save more, worry less" },
   { icon: Target, label: "Achieve your financial goals" },
+  { icon: Sparkles, label: "Ask FuFi's AI about your money", highlight: true },
 ];
 
 /**
@@ -44,9 +46,22 @@ export function BrandPanel({
         <h2 className="text-2xl font-bold leading-snug text-[#0b1210] xl:text-3xl">{title}</h2>
         {showFeatures && (
           <ul className="space-y-2.5">
-            {FEATURES.map(({ icon: Icon, label }) => (
-              <li key={label} className="flex items-center gap-2.5 text-sm text-[#3f4a44]">
-                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-primary/12 text-primary">
+            {FEATURES.map(({ icon: Icon, label, highlight }) => (
+              <li
+                key={label}
+                className={cn(
+                  "flex items-center gap-2.5 text-sm",
+                  highlight ? "font-semibold text-primary" : "text-[#3f4a44]",
+                )}
+              >
+                <span
+                  className={cn(
+                    "flex h-7 w-7 shrink-0 items-center justify-center rounded-lg",
+                    highlight
+                      ? "bg-gradient-to-br from-primary to-primary-end text-white shadow-sm shadow-primary/30"
+                      : "bg-primary/12 text-primary",
+                  )}
+                >
                   <Icon className="h-4 w-4" />
                 </span>
                 {label}
