@@ -49,7 +49,9 @@ export const getCurrentUser = cache(async (): Promise<CurrentUser> => {
       id: String(userDoc._id),
       name: userDoc.name,
       email: userDoc.email ?? null,
-      image: userDoc.image ?? null,
+      image: userDoc.avatarUpdatedAt
+        ? `/api/profile/avatar?v=${new Date(userDoc.avatarUpdatedAt).getTime()}`
+        : (userDoc.image ?? null),
       hasPassword: Boolean(userDoc.passwordHash),
     },
     settings: {
