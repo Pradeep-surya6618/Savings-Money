@@ -4,15 +4,10 @@ import { connectDB } from "@/lib/mongodb/connect";
 import { getSession } from "@/lib/auth/session";
 import { Conversation } from "@/models/Conversation";
 import { Message } from "@/models/Message";
+import { deriveTitle } from "@/services/derive-title";
 
 export type ChatTurn = { id: string; role: "user" | "assistant"; content: string };
 export type ConversationSummary = { id: string; title: string; updatedAt: string };
-
-export function deriveTitle(firstMessage: string): string {
-  const t = firstMessage.trim();
-  if (!t) return "New chat";
-  return t.length > 48 ? `${t.slice(0, 47)}…` : t;
-}
 
 async function requireUserId(): Promise<string | null> {
   const session = await getSession();
@@ -61,6 +56,16 @@ export async function appendTurn(
   }
   await Message.create({ conversationId: convo._id, userId, role, content });
   await Conversation.updateOne({ _id: convo._id }, { $set: { updatedAt: new Date() } });
+  return String(convo._id);
+}
+
+/** Create a fresh conversation owned by the current user, titled from the first message.
+ *  Returns the new conversation id. */
+export async function createConversation(firstMessage: string): Promise<string> {
+  const userId = await requireUserId();
+  if (!userId) throw new Error("unauthorized");
+  await connectDB();
+  const convo = await Conversation.create({ userId, title: deriveTitle(firstMessage) });
   return String(convo._id);
 }
 

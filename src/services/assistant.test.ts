@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { deriveTitle } from "@/services/assistant";
+import { deriveTitle } from "@/services/derive-title";
 
 describe("deriveTitle", () => {
   it("uses the trimmed first message", () => {
