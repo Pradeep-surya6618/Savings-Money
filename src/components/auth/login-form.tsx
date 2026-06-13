@@ -58,7 +58,7 @@ export function LoginForm() {
         </div>
         <PasswordField value={password} onChange={setPassword} />
       </div>
-      <Button type="submit" disabled={busy} className="h-11 w-full">{busy ? "Logging in…" : "Login"}</Button>
+      <Button type="submit" disabled={busy || !email.trim() || !password} className="h-11 w-full">{busy ? "Logging in…" : "Login"}</Button>
       <SocialButtons />
       <p className="text-center text-sm text-muted-foreground">
         Don&rsquo;t have an account? <Link href="/signup" className="font-semibold text-primary hover:underline">Sign up</Link>

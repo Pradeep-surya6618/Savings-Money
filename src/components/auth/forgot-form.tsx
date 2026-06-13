@@ -42,7 +42,7 @@ export function ForgotForm() {
             <span className="text-sm font-medium">Email</span>
             <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" autoComplete="email" className={inputCls} />
           </label>
-          <Button type="submit" disabled={busy} className="h-11 w-full">{busy ? "Sending…" : "Send Reset Link"}</Button>
+          <Button type="submit" disabled={busy || !email.trim()} className="h-11 w-full">{busy ? "Sending…" : "Send Reset Link"}</Button>
         </>
       )}
       <p className="text-center text-sm text-muted-foreground">
