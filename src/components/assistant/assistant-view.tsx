@@ -127,9 +127,9 @@ export function AssistantView({
   }
 
   return (
-    <div className="space-y-5">
-      {/* Header */}
-      <div className="flex items-center gap-3">
+    <div className="space-y-5 lg:-mx-8 lg:-mt-8 lg:-mb-10 lg:h-[calc(100dvh-5.25rem)] lg:space-y-0">
+      {/* Header — mobile only; desktop shows the brand at the top of the sidebar */}
+      <div className="flex items-center gap-3 lg:hidden">
         <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-primary-end text-white shadow-lg shadow-primary/30">
           <Sparkles className="h-5 w-5" />
         </span>
@@ -140,17 +140,28 @@ export function AssistantView({
         <Button
           variant="outline"
           onClick={() => setListOpen(true)}
-          className="ml-auto h-9 px-3 lg:hidden"
+          className="ml-auto h-9 px-3"
           aria-label="Conversations"
         >
           <MessagesSquare className="h-4 w-4" />
         </Button>
       </div>
 
-      <div className="grid gap-5 lg:grid-cols-[280px_1fr] lg:items-start">
-        {/* Conversation list — sticky desktop sidebar */}
-        <aside className="hidden lg:sticky lg:top-24 lg:block">
-          <div className="flex h-[calc(100dvh-14rem)] flex-col rounded-3xl border border-border bg-card/60 p-3 shadow-sm backdrop-blur-xl">
+      <div className="grid gap-5 lg:h-full lg:grid-cols-[300px_1fr] lg:items-stretch lg:gap-0">
+        {/* Conversation list — full-height desktop sidebar with the brand on top */}
+        <aside className="hidden lg:flex lg:h-full lg:flex-col lg:overflow-hidden lg:border-r lg:border-border lg:bg-card/40">
+          <div className="flex items-center gap-3 border-b border-border px-4 py-4">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary-end text-white shadow-sm shadow-primary/30">
+              <Sparkles className="h-5 w-5" />
+            </span>
+            <div className="min-w-0">
+              <p className="font-display text-base font-extrabold tracking-tight">FuFi&rsquo;s AI</p>
+              <p className="text-[11px] leading-snug text-muted-foreground">
+                Ask about your money — grounded in your own data.
+              </p>
+            </div>
+          </div>
+          <div className="flex min-h-0 flex-1 flex-col p-3">
             <ConversationList
               conversations={conversations}
               activeId={conversationId}
@@ -162,7 +173,7 @@ export function AssistantView({
         </aside>
 
         {/* Chat column */}
-        <div className="flex h-[calc(100dvh-14rem)] flex-col overflow-hidden rounded-3xl border border-border bg-card shadow-sm">
+        <div className="flex h-[calc(100dvh-14rem)] flex-col overflow-hidden rounded-3xl border border-border bg-card shadow-sm lg:h-full lg:rounded-none lg:border-0 lg:shadow-none">
           <div className="flex-1 space-y-5 overflow-y-auto p-4 sm:p-6">
             {messages.length === 0 ? (
               <div className="flex h-full flex-col items-center justify-center gap-6 text-center">
