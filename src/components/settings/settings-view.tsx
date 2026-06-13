@@ -24,6 +24,7 @@ import { Button } from "@/components/ui/button";
 import { Select } from "@/components/ui/select";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { AboutFuFi } from "@/components/settings/about-fufi";
+import { PasswordRow } from "@/components/settings/password-row";
 import { useTabParam } from "@/lib/use-tab-param";
 import { updatePreferences } from "@/lib/actions/settings";
 import { updateNotifyPrefs } from "@/lib/actions/notifications";
@@ -57,10 +58,12 @@ const opts = (...vals: string[]) => vals.map((v) => ({ value: v, label: v }));
 
 export function SettingsView({
   name,
+  hasPassword,
   settings,
   notifyPrefs,
 }: {
   name: string;
+  hasPassword: boolean;
   settings: Prefs;
   notifyPrefs: NotifyPrefs;
 }) {
@@ -266,6 +269,7 @@ export function SettingsView({
           {active === "security" && (
             <Panel title="Security" description="Manage access and the data stored on your account.">
               <div className="space-y-3 pt-4">
+                <PasswordRow hasPassword={hasPassword} />
                 <ActionRow
                   title="Log out"
                   desc="Sign out of your FuFi account on this device."
