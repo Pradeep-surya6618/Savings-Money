@@ -1,6 +1,6 @@
 "use server";
 
-import { cookies, headers } from "next/headers";
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import bcrypt from "bcryptjs";
 import { connectDB } from "@/lib/mongodb/connect";
@@ -34,15 +34,17 @@ const OTP_TTL = 10 * 60 * 1000;
 const TICKET_TTL = 15 * 60 * 1000;
 const RESET_TTL = 60 * 60 * 1000;
 const MAX_OTP_ATTEMPTS = 5;
+const RESEND_COOLDOWN = 60 * 1000;
 const SIGNUP_COOKIE = "fufi_signup";
 const isProd = process.env.NODE_ENV === "production";
 
-async function originUrl(): Promise<string> {
-  if (process.env.APP_URL) return process.env.APP_URL;
-  const h = await headers();
-  const host = h.get("host") ?? "localhost:3000";
-  const proto = h.get("x-forwarded-proto") ?? "http";
-  return `${proto}://${host}`;
+/**
+ * Build absolute URLs (the reset link) from APP_URL only — never the request
+ * `Host` header, which is attacker-controllable and would allow a reset-link
+ * hijack. Falls back to localhost for dev; set APP_URL in production.
+ */
+function originUrl(): string {
+  return process.env.APP_URL ?? "http://localhost:3000";
 }
 
 export async function sendOtp(input: SendOtpInput): Promise<Result> {
@@ -53,6 +55,12 @@ export async function sendOtp(input: SendOtpInput): Promise<Result> {
     await connectDB();
     if (await User.findOne({ email }).lean()) {
       return { ok: false, error: "This email is already registered. Log in instead." };
+    }
+    // Resend cooldown: refuse a fresh code if one was issued < 60s ago. Stops the
+    // attempts counter from being reset-spammed and prevents email bombing.
+    const existing = await VerificationToken.findOne({ email, purpose: "signup" }).lean();
+    if (existing && existing.expiresAt.getTime() - OTP_TTL > Date.now() - RESEND_COOLDOWN) {
+      return { ok: false, error: "Please wait a moment before requesting another code." };
     }
     const code = generateOtp();
     await VerificationToken.findOneAndUpdate(
@@ -159,7 +167,7 @@ export async function requestReset(input: RequestResetInput): Promise<Result> {
         { $set: { secretHash: hashSecret(token), verified: false, ticketHash: null, attempts: 0, expiresAt: new Date(Date.now() + RESET_TTL) } },
         { upsert: true },
       );
-      const link = `${await originUrl()}/reset-password?token=${token}`;
+      const link = `${originUrl()}/reset-password?token=${token}`;
       const mail = resetEmail(link);
       await sendMail(email, mail.subject, mail.html, mail.text);
     }
