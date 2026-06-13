@@ -134,7 +134,7 @@ export function AssistantView({
           <Sparkles className="h-5 w-5" />
         </span>
         <div className="min-w-0">
-          <h1 className="font-display text-xl font-extrabold tracking-tight">Assistant</h1>
+          <h1 className="font-display text-xl font-extrabold tracking-tight">FuFi&rsquo;s AI</h1>
           <p className="text-xs text-muted-foreground">Ask about your money — grounded in your own data.</p>
         </div>
         <Button
@@ -378,7 +378,7 @@ function ConversationList({
                   type="button"
                   onClick={() => onDelete(c.id)}
                   aria-label="Delete conversation"
-                  className="flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-lg text-muted-foreground opacity-0 transition hover:bg-negative/10 hover:text-negative group-hover:opacity-100"
+                  className="flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-lg text-muted-foreground opacity-100 transition hover:bg-negative/10 hover:text-negative lg:opacity-0 lg:group-hover:opacity-100"
                 >
                   <Trash2 className="h-3.5 w-3.5" />
                 </button>

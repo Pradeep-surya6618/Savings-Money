@@ -12,6 +12,7 @@ import {
   ShieldCheck,
   LockKeyhole,
   Smartphone,
+  Sparkles,
 } from "lucide-react";
 
 const FEATURES = [
@@ -119,6 +120,24 @@ export function AboutFuFi({ name }: { name: string }) {
         <p className="relative mt-4 max-w-md text-sm leading-relaxed text-white/85">
           A premium personal finance manager that brings your salary, spending, savings, loans and
           running balance into one calm, beautiful place.
+        </p>
+      </motion.div>
+
+      {/* FuFi's AI highlight */}
+      <motion.div variants={item} className="rounded-2xl border border-border bg-card-elevated/50 p-4">
+        <div className="flex items-center gap-3">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary-end text-white shadow-sm shadow-primary/30">
+            <Sparkles className="h-5 w-5" />
+          </span>
+          <div className="min-w-0">
+            <p className="text-sm font-semibold">FuFi&rsquo;s AI</p>
+            <p className="text-xs text-muted-foreground">Your built-in money assistant.</p>
+          </div>
+        </div>
+        <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+          Ask about your money in plain language — &ldquo;How much did I spend last month?&rdquo;, &ldquo;Can I
+          afford a ₹40k trip?&rdquo;, &ldquo;Where can I cut back?&rdquo; Answers are grounded in your own data. It&rsquo;s
+          read-only (it never changes anything), and your conversations stay private to your account.
         </p>
       </motion.div>
 
