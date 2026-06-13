@@ -11,15 +11,19 @@ export function AuthShell({
   children: ReactNode;
 }) {
   return (
-    <div className="grid min-h-dvh lg:grid-cols-2">
+    // Fixed to the viewport — the window itself never scrolls; only a column
+    // scrolls internally (via min-h-full + justify-center) if its content is tall.
+    <div className="grid h-dvh overflow-hidden lg:grid-cols-2">
       <BrandPanel slot={slot} />
-      <div className="flex flex-col items-center justify-center bg-background px-6 py-10 sm:px-10">
-        {/* Mobile brand header (the brand panel is desktop-only) */}
-        <div className="mb-8 flex items-center gap-2.5 lg:hidden">
-          <Image src="/Icons/FuFi-Logo-Transperent.png" alt="FuFi" width={36} height={36} priority className="h-9 w-9 object-contain" />
-          <span className="font-display text-xl font-extrabold tracking-tight">FuFi</span>
+      <div className="overflow-y-auto bg-background">
+        <div className="flex min-h-full flex-col items-center justify-center px-6 py-10 sm:px-10">
+          {/* Mobile brand header (the brand panel is desktop-only) */}
+          <div className="mb-8 flex items-center gap-2.5 lg:hidden">
+            <Image src="/Icons/FuFi-Logo-Transperent.png" alt="FuFi" width={36} height={36} priority className="h-9 w-9 object-contain" />
+            <span className="font-display text-xl font-extrabold tracking-tight">FuFi</span>
+          </div>
+          <div className="w-full max-w-md">{children}</div>
         </div>
-        <div className="w-full max-w-md">{children}</div>
       </div>
     </div>
   );
