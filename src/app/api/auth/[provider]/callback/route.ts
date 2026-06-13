@@ -29,7 +29,13 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ prov
   try {
     const client = p === "google" ? getGoogleClient() : getMicrosoftClient();
     const tokens = await client.validateAuthorizationCode(code, verifier);
-    const profile = await fetchOAuthProfile(p, tokens.accessToken());
+    let idToken: string | null = null;
+    try {
+      idToken = tokens.idToken();
+    } catch {
+      idToken = null;
+    }
+    const profile = await fetchOAuthProfile(p, { accessToken: tokens.accessToken(), idToken });
     const userId = await linkOrCreateOAuthUser(profile, p);
     const { token, expiresAt } = await createSessionToken(userId);
 

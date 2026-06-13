@@ -34,7 +34,7 @@ button → GET /api/auth/google → (state+PKCE cookies) → Google consent
 
 ### Next 16 / arctic notes
 - `arctic` is not yet installed (Task 1 adds it). Its exact API (class names, `createAuthorizationURL`/`validateAuthorizationCode` signatures, scopes) must be confirmed against the installed version at implementation time. Expected: `new Google(clientId, clientSecret, redirectURI)` and `new MicrosoftEntraId(tenant, clientId, clientSecret, redirectURI)`; Google uses PKCE.
-- Userinfo: Google `https://openidconnect.googleapis.com/v1/userinfo`; Microsoft `https://graph.microsoft.com/oidc/userinfo` — fetched with the access token. Email + `email_verified` + name read from the response (Google returns `email_verified`; for Microsoft, treat a successfully returned account email as verified per Entra, but check the field if present).
+- Identity source: **Google** — fetch userinfo `https://openidconnect.googleapis.com/v1/userinfo` with the access token; trust its `email_verified`. **Microsoft** — the Graph userinfo does NOT return `email_verified`, and the Entra `email` claim is mutable/unverified (the "nOAuth" takeover vector). So read the **id_token** instead and only treat the email as verified when the `xms_edov` ("email domain owner verified") optional claim is `true`; a missing/false claim → unverified → reject. (The user must add the `xms_edov` optional claim to the Azure app registration.)
 
 ## Data model changes (`src/models/User.ts`)
 
