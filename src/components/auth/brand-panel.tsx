@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Check, ShieldCheck } from "lucide-react";
+import { SquareCheckBig, ShieldCheck } from "lucide-react";
 import { AuthIllustration } from "./auth-illustration";
 
 const FEATURES = [
@@ -46,9 +46,7 @@ export function BrandPanel({
           <ul className="space-y-2.5">
             {FEATURES.map((f) => (
               <li key={f} className="flex items-center gap-2.5 text-sm text-[#3f4a44]">
-                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-primary/15 text-primary">
-                  <Check className="h-3.5 w-3.5" />
-                </span>
+                <SquareCheckBig className="h-5 w-5 shrink-0 text-primary" />
                 {f}
               </li>
             ))}
