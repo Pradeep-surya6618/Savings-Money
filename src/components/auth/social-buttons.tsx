@@ -25,8 +25,13 @@ export function SocialButtons() {
           <GoogleMark /> Google
         </button>
         <button type="button" onClick={soon} className="flex items-center justify-center gap-2 rounded-xl border border-border bg-card py-2.5 text-sm font-medium transition hover:bg-card-elevated">
-          <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden><path d="M16.37 12.62c-.03-2.6 2.12-3.85 2.22-3.91-1.21-1.77-3.1-2.01-3.77-2.04-1.6-.16-3.13.94-3.94.94-.81 0-2.07-.92-3.4-.9-1.75.03-3.36 1.02-4.26 2.59-1.82 3.15-.47 7.81 1.3 10.37.86 1.25 1.89 2.66 3.24 2.61 1.3-.05 1.79-.84 3.36-.84 1.57 0 2.01.84 3.39.81 1.4-.02 2.29-1.28 3.15-2.54.99-1.46 1.4-2.87 1.42-2.94-.03-.01-2.72-1.05-2.75-4.15ZM13.9 4.7c.72-.87 1.2-2.08 1.07-3.28-1.03.04-2.28.69-3.02 1.55-.66.77-1.24 2-1.09 3.18 1.15.09 2.32-.58 3.04-1.45Z" /></svg>
-          Apple
+          <svg className="h-4 w-4" viewBox="0 0 24 24" aria-hidden>
+            <rect x="1.5" y="1.5" width="9.5" height="9.5" fill="#F25022" />
+            <rect x="13" y="1.5" width="9.5" height="9.5" fill="#7FBA00" />
+            <rect x="1.5" y="13" width="9.5" height="9.5" fill="#00A4EF" />
+            <rect x="13" y="13" width="9.5" height="9.5" fill="#FFB900" />
+          </svg>
+          Microsoft
         </button>
       </div>
     </div>
