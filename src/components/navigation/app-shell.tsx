@@ -5,6 +5,7 @@ import { MobileHeader } from "./mobile-header";
 import { BottomTabBar } from "./bottom-tab-bar";
 import { Toaster } from "@/components/ui/toaster";
 import { SignInToast } from "@/components/auth/signin-toast";
+import { InstallBanner } from "@/components/pwa/install-banner";
 import type { NotificationsResult } from "@/services/notifications";
 
 export function AppShell({
@@ -33,6 +34,7 @@ export function AppShell({
       <BottomTabBar />
       <Toaster />
       <SignInToast />
+      <InstallBanner />
     </div>
   );
 }

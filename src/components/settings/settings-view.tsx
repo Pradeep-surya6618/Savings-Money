@@ -24,6 +24,7 @@ import { Button } from "@/components/ui/button";
 import { Select } from "@/components/ui/select";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { AboutFuFi } from "@/components/settings/about-fufi";
+import { InstallRow } from "@/components/pwa/install-row";
 import { PasswordRow } from "@/components/settings/password-row";
 import { useTabParam } from "@/lib/use-tab-param";
 import { updatePreferences } from "@/lib/actions/settings";
@@ -297,7 +298,8 @@ export function SettingsView({
 
           {active === "about" && (
             <Panel title="About FuFi" description="The story behind the app.">
-              <div className="pt-4">
+              <div className="space-y-4 pt-4">
+                <InstallRow />
                 <AboutFuFi name={name} />
               </div>
             </Panel>
