@@ -27,15 +27,15 @@ export function BrandPanel({
 }) {
   return (
     <div className="relative hidden h-full flex-col overflow-hidden bg-gradient-to-b from-[#eaf9ef] via-[#d8f1e2] to-[#b3e6c6] p-8 lg:flex xl:p-10">
-      {/* Brand lockup */}
-      <div className="flex shrink-0 items-center gap-3">
-        <Image src="/Icons/FuFi-Logo-Transperent.png" alt="FuFi" width={56} height={56} priority className="h-14 w-14 object-contain" />
+      {/* Brand lockup — centered */}
+      <div className="flex shrink-0 items-center justify-center gap-3.5">
+        <Image src="/Icons/FuFi-Logo-Transperent.png" alt="FuFi" width={72} height={72} priority className="h-[4.5rem] w-[4.5rem] object-contain" />
         <div className="leading-none">
-          <p className="font-display text-3xl font-extrabold tracking-tight">
+          <p className="font-display text-[2.75rem] font-extrabold leading-none tracking-tight">
             <span className="text-[#0b1210]">Fu</span>
             <span className="text-primary">Fi</span>
           </p>
-          <p className="mt-1.5 text-sm font-medium text-[#5f7a68]">Fund Your Future</p>
+          <p className="mt-2 text-base font-medium text-[#5f7a68]">Fund Your Future</p>
         </div>
       </div>
 
