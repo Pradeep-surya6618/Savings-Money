@@ -16,6 +16,7 @@
     "@radix-ui/react-popover": "^1.1.16",
     "@radix-ui/react-select": "^2.3.0",
     "@radix-ui/react-tooltip": "^1.2.9",
+    "arctic": "^3.7.0",
     "bcryptjs": "^3.0.3",
     "clsx": "^2.1.1",
     "framer-motion": "^12.40.0",
