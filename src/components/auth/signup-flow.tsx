@@ -13,6 +13,7 @@ const inputCls = "h-11 w-full rounded-xl border border-border bg-card px-3.5 tex
 
 export function SignupFlow() {
   const [step, setStep] = useState<"email" | "otp" | "password">("email");
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
   const [password, setPassword] = useState("");
@@ -23,7 +24,7 @@ export function SignupFlow() {
   async function submitEmail(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true); setError(null);
-    const res = await sendOtp({ email });
+    const res = await sendOtp({ name, email });
     setBusy(false);
     if (res.ok) setStep("otp");
     else setError(res.error);
@@ -58,11 +59,15 @@ export function SignupFlow() {
             <p className="mt-1 text-sm text-muted-foreground">Sign up to start managing your finances</p>
           </div>
           <label className="block space-y-1.5">
+            <span className="text-sm font-medium">Full name</span>
+            <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Your name" autoComplete="name" className={inputCls} />
+          </label>
+          <label className="block space-y-1.5">
             <span className="text-sm font-medium">Email</span>
             <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" autoComplete="email" className={inputCls} />
           </label>
           {error && <p className="text-sm text-negative">{error}</p>}
-          <Button type="submit" disabled={busy} className="h-11 w-full">{busy ? "Sending…" : "Send OTP"}</Button>
+          <Button type="submit" disabled={busy || !name.trim() || !email.trim()} className="h-11 w-full">{busy ? "Sending…" : "Send OTP"}</Button>
           <SocialButtons />
           <p className="text-center text-sm text-muted-foreground">
             Already have an account? <Link href="/login" className="font-semibold text-primary hover:underline">Login</Link>

@@ -1,14 +1,10 @@
-import { Card } from "@/components/ui/card";
-import { BrandPanel } from "@/components/auth/brand-panel";
+import { AuthShell } from "@/components/auth/auth-shell";
 import { LoginForm } from "@/components/auth/login-form";
 
 export default function LoginPage() {
   return (
-    <>
-      <BrandPanel slot="wallet" />
-      <Card className="flex flex-col justify-center">
-        <LoginForm />
-      </Card>
-    </>
+    <AuthShell slot="wallet">
+      <LoginForm />
+    </AuthShell>
   );
 }

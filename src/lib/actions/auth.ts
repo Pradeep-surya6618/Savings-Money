@@ -50,7 +50,7 @@ function originUrl(): string {
 export async function sendOtp(input: SendOtpInput): Promise<Result> {
   const parsed = sendOtpSchema.safeParse(input);
   if (!parsed.success) return { ok: false, error: parsed.error.issues[0]?.message ?? "Invalid email" };
-  const { email } = parsed.data;
+  const { name, email } = parsed.data;
   try {
     await connectDB();
     if (await User.findOne({ email }).lean()) {
@@ -65,7 +65,7 @@ export async function sendOtp(input: SendOtpInput): Promise<Result> {
     const code = generateOtp();
     await VerificationToken.findOneAndUpdate(
       { email, purpose: "signup" },
-      { $set: { secretHash: hashSecret(code), verified: false, ticketHash: null, attempts: 0, expiresAt: new Date(Date.now() + OTP_TTL) } },
+      { $set: { name, secretHash: hashSecret(code), verified: false, ticketHash: null, attempts: 0, expiresAt: new Date(Date.now() + OTP_TTL) } },
       { upsert: true },
     );
     const mail = otpEmail(code);
@@ -117,7 +117,8 @@ export async function completeSignup(input: CompleteSignupInput): Promise<Result
     if (await User.findOne({ email: token.email }).lean()) return { ok: false, error: "This email is already registered. Log in instead." };
 
     const passwordHash = await bcrypt.hash(parsed.data.password, 12);
-    const user = await User.create({ email: token.email, passwordHash, emailVerified: true, name: token.email.split("@")[0] });
+    const name = token.name?.trim() || token.email.split("@")[0];
+    const user = await User.create({ email: token.email, passwordHash, emailVerified: true, name });
     await Settings.create({ userId: user._id });
     await Savings.create({ userId: user._id });
     await VerificationToken.deleteOne({ _id: token._id });

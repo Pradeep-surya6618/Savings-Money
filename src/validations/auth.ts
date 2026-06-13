@@ -2,7 +2,10 @@ import { z } from "zod";
 import { emailSchema } from "@/lib/auth/email-schema";
 import { passwordSchema } from "@/lib/auth/password";
 
-export const sendOtpSchema = z.object({ email: emailSchema });
+export const sendOtpSchema = z.object({
+  name: z.string().trim().min(1, "Enter your name").max(60),
+  email: emailSchema,
+});
 export const verifyOtpSchema = z.object({
   email: emailSchema,
   code: z.string().regex(/^\d{6}$/, "Enter the 6-digit code"),

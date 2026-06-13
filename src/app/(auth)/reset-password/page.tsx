@@ -1,5 +1,4 @@
-import { Card } from "@/components/ui/card";
-import { BrandPanel } from "@/components/auth/brand-panel";
+import { AuthShell } from "@/components/auth/auth-shell";
 import { ResetForm } from "@/components/auth/reset-form";
 
 export default async function ResetPasswordPage({
@@ -9,11 +8,8 @@ export default async function ResetPasswordPage({
 }) {
   const { token } = await searchParams;
   return (
-    <>
-      <BrandPanel slot="lock" />
-      <Card className="flex flex-col justify-center">
-        <ResetForm token={token ?? ""} />
-      </Card>
-    </>
+    <AuthShell slot="lock">
+      <ResetForm token={token ?? ""} />
+    </AuthShell>
   );
 }
