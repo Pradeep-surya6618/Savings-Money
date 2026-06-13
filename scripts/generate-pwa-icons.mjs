@@ -2,7 +2,7 @@ import sharp from "sharp";
 import { mkdir } from "node:fs/promises";
 
 const SRC = "public/Icons/FuFi-Logo-BlackBG.png";
-const OUT = "public/icons";
+const OUT = "public/Icons"; // capital — matches the folder all runtime refs use (case-sensitive prod)
 const BLACK = { r: 0, g: 0, b: 0, alpha: 1 };
 
 await mkdir(OUT, { recursive: true });
