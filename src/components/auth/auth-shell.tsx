@@ -27,7 +27,7 @@ export function AuthShell({
           {/* Mobile brand header (the brand panel is desktop-only): logo + name + small illustration */}
           <div className="mb-6 flex flex-col items-center lg:hidden">
             <div className="flex items-center gap-2.5">
-              <Image src="/Icons/FuFi-Logo-Transperent.png" alt="FuFi" width={56} height={56} priority className="h-14 w-14 object-contain" />
+              <Image src="/Icons/FuFi-Logo-Transperent.png" alt="FuFi" width={80} height={80} priority className="h-20 w-20 object-contain" />
               <div className="leading-none">
                 <p className="font-display text-2xl font-extrabold tracking-tight">
                   <span className="text-foreground">Fu</span>
