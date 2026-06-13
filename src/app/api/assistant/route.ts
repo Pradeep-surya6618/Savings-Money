@@ -39,5 +39,10 @@ export async function POST(req: Request) {
     },
   });
 
-  return result.toUIMessageStreamResponse();
+  return result.toUIMessageStreamResponse({
+    onError: (error) => {
+      console.error("[assistant] stream error", error);
+      return "Something went wrong. Please try again.";
+    },
+  });
 }

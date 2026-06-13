@@ -185,6 +185,14 @@ export function AssistantView({
                 </div>
               </div>
             )}
+
+            {status === "error" && (
+              <div className="flex justify-start">
+                <div className="rounded-2xl border border-negative/30 bg-negative/10 px-3.5 py-2.5 text-sm text-negative">
+                  Something went wrong. Please check your AI key or try again.
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Composer */}
