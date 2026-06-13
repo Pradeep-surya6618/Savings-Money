@@ -13,9 +13,10 @@ export async function fetchOAuthProfile(provider: OAuthProvider, accessToken: st
   if (!res.ok) throw new Error("oauth_userinfo_failed");
   const data = (await res.json()) as UserInfo;
   const email = (data.email ?? "").toLowerCase();
-  // Google returns email_verified; Microsoft Entra returns only verified account emails
-  // (no field), so treat a present email as verified there.
-  const emailVerified = provider === "google" ? data.email_verified === true : email.length > 0;
+  // Prefer the provider's explicit email_verified claim; Microsoft Entra often omits it
+  // and only returns an email for verified accounts, so fall back to a present email.
+  const emailVerified =
+    data.email_verified === true || (data.email_verified === undefined && email.length > 0);
   const name = data.name ?? data.given_name ?? email.split("@")[0] ?? "";
   return { email, emailVerified, name };
 }

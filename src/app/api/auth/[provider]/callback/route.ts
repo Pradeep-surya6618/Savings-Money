@@ -11,6 +11,9 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ prov
   const { provider } = await params;
   const origin = req.nextUrl.origin;
   const fail = NextResponse.redirect(new URL("/login?error=oauth_failed", origin));
+  // Always clear the short-lived OAuth handshake cookies, including on failure.
+  fail.cookies.set("fufi_oauth_state", "", { path: "/", maxAge: 0 });
+  fail.cookies.set("fufi_oauth_verifier", "", { path: "/", maxAge: 0 });
 
   if (!PROVIDERS.includes(provider as OAuthProvider)) {
     return NextResponse.json({ error: "Unknown provider" }, { status: 404 });
