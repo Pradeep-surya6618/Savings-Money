@@ -36,7 +36,7 @@ export function AuthShell({
                 <p className="mt-1 text-xs font-medium text-muted-foreground">Fund Your Future</p>
               </div>
             </div>
-            <AuthIllustration slot={slot} className="mt-4 h-24 w-auto" />
+            <AuthIllustration slot={slot} className="mt-4 h-20 w-auto" />
           </div>
           <div className="w-full max-w-md">{children}</div>
         </div>

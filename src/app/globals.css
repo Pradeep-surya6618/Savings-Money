@@ -185,3 +185,19 @@ body {
     background-color: var(--scrollbar-thumb-hover);
   }
 }
+
+/* Neutralize the browser autofill tint (no blue/yellow) — paint the input's own
+   background via an inset shadow and keep the theme text color. */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active,
+textarea:-webkit-autofill,
+select:-webkit-autofill {
+  -webkit-text-fill-color: var(--foreground);
+  -webkit-box-shadow: 0 0 0 1000px var(--card) inset;
+  box-shadow: 0 0 0 1000px var(--card) inset;
+  caret-color: var(--foreground);
+  border-radius: inherit;
+  transition: background-color 9999s ease-in-out 0s;
+}
