@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   description: "FuFi (Future Financial) — manage your salary, allocations, savings & more",
   applicationName: "FuFi",
   appleWebApp: { capable: true, title: "FuFi", statusBarStyle: "black-translucent" },
-  icons: { apple: "/icons/apple-touch-icon.png" },
+  icons: { apple: "/Icons/apple-touch-icon.png" },
 };
 
 export const viewport: Viewport = {
