@@ -1,12 +1,12 @@
 import Image from "next/image";
-import { SquareCheckBig, ShieldCheck } from "lucide-react";
+import { ReceiptText, PieChart, PiggyBank, Target, ShieldCheck } from "lucide-react";
 import { AuthIllustration } from "./auth-illustration";
 
 const FEATURES = [
-  "Track your salary & expenses",
-  "Plan your budget wisely",
-  "Save more, worry less",
-  "Achieve your financial goals",
+  { icon: ReceiptText, label: "Track your salary & expenses" },
+  { icon: PieChart, label: "Plan your budget wisely" },
+  { icon: PiggyBank, label: "Save more, worry less" },
+  { icon: Target, label: "Achieve your financial goals" },
 ];
 
 /**
@@ -44,10 +44,12 @@ export function BrandPanel({
         <h2 className="text-2xl font-bold leading-snug text-[#0b1210] xl:text-3xl">{title}</h2>
         {showFeatures && (
           <ul className="space-y-2.5">
-            {FEATURES.map((f) => (
-              <li key={f} className="flex items-center gap-2.5 text-sm text-[#3f4a44]">
-                <SquareCheckBig className="h-5 w-5 shrink-0 text-primary" />
-                {f}
+            {FEATURES.map(({ icon: Icon, label }) => (
+              <li key={label} className="flex items-center gap-2.5 text-sm text-[#3f4a44]">
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-primary/12 text-primary">
+                  <Icon className="h-4 w-4" />
+                </span>
+                {label}
               </li>
             ))}
           </ul>
