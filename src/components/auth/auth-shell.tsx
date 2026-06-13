@@ -22,7 +22,8 @@ export function AuthShell({
     // scrolls internally (via min-h-full + justify-center) if its content is tall.
     <div className="grid h-dvh overflow-hidden lg:grid-cols-[4fr_8fr]">
       <BrandPanel title={title} slot={slot} showFeatures={showFeatures} showFooter={showFooter} />
-      <div className="overflow-y-auto bg-background">
+      {/* Dark mode: near-black with a soft primary-green glow (matches the app's dark theme, not pure black). */}
+      <div className="overflow-y-auto bg-background dark:bg-[radial-gradient(130%_90%_at_82%_-8%,rgba(34,197,94,0.13),transparent_56%)]">
         <div className="flex min-h-full flex-col items-center justify-center px-6 py-10 sm:px-10">
           {/* Mobile brand header (the brand panel is desktop-only): logo + name + small illustration */}
           <div className="mb-6 flex flex-col items-center lg:hidden">
