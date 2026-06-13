@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Plus_Jakarta_Sans, Sora } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme/theme-provider";
+import { SwRegister } from "@/components/pwa/sw-register";
 
 const sans = Plus_Jakarta_Sans({ variable: "--font-jakarta", subsets: ["latin"] });
 const display = Sora({ variable: "--font-sora", subsets: ["latin"] });
@@ -39,6 +40,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       className={`${sans.variable} ${display.variable} h-full antialiased`}
     >
       <body className="min-h-full bg-background text-foreground">
+        <SwRegister />
         <style href="view-transition-theme" precedence="high">
           {VIEW_TRANSITION_CSS}
         </style>
