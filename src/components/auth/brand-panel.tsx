@@ -55,7 +55,7 @@ export function BrandPanel({
             ))}
           </ul>
         )}
-        <AuthIllustration slot={slot} className="mx-auto aspect-[3/5] w-32 mix-blend-multiply xl:w-36" />
+        <AuthIllustration slot={slot} className="mx-auto aspect-[3/5] w-44 mix-blend-multiply xl:w-52" />
       </div>
 
       {/* Footer */}

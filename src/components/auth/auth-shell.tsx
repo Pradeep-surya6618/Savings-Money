@@ -19,7 +19,7 @@ export function AuthShell({
   return (
     // Fixed to the viewport — the window itself never scrolls; only a column
     // scrolls internally (via min-h-full + justify-center) if its content is tall.
-    <div className="grid h-dvh overflow-hidden lg:grid-cols-2">
+    <div className="grid h-dvh overflow-hidden lg:grid-cols-[4fr_8fr]">
       <BrandPanel title={title} slot={slot} showFeatures={showFeatures} showFooter={showFooter} />
       <div className="overflow-y-auto bg-background">
         <div className="flex min-h-full flex-col items-center justify-center px-6 py-10 sm:px-10">
