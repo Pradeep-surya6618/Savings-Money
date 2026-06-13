@@ -12,7 +12,14 @@ export const metadata: Metadata = {
   description: "FuFi (Future Financial) — manage your salary, allocations, savings & more",
   applicationName: "FuFi",
   appleWebApp: { capable: true, title: "FuFi", statusBarStyle: "black-translucent" },
-  icons: { apple: "/Icons/apple-touch-icon.png" },
+  icons: {
+    icon: [
+      { url: "/Icons/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/Icons/icon-512.png", sizes: "512x512", type: "image/png" },
+    ],
+    shortcut: "/Icons/icon-192.png",
+    apple: "/Icons/apple-touch-icon.png",
+  },
 };
 
 export const viewport: Viewport = {
