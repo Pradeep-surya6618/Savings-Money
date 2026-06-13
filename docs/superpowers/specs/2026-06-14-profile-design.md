@@ -62,15 +62,16 @@ Avatar { userId: ObjectId (unique, indexed), data: Buffer, contentType: String }
 
 **Shared `src/components/ui/user-avatar.tsx`** (new): renders the photo when `imageUrl` is set, else the name initial in the primary-tinted circle. Sized via prop. Used by the sidebar, the app bar, and the profile page. **Use a plain `<img>` (not `next/image`)** — the avatar route is session-protected, and the `next/image` optimizer fetches the source server-side without the user's cookie (→ 401); a same-origin `<img>` sends the cookie and works.
 
-**Entry points / nav to `/profile`:**
-- **Sidebar** user footer → wrap in a `Link` to `/profile`, using `<UserAvatar>` (shows photo). 
-- **App bar:** desktop `TopBar` gets a small `<UserAvatar>` button (right side) linking to `/profile`; `MobileHeader` shows a small `<UserAvatar>` (right side) linking to `/profile` (so mobile users can reach it).
-- `AppShell` threads `image` (avatar URL) from `getCurrentUser` down to the sidebar / app bar.
+**Entry points to `/profile` — NO separate nav item (not in the sidebar nav, not in the bottom bar):**
+- **Desktop:** the **sidebar user block** (avatar + name, at the bottom of the sidebar) is wrapped in a `Link` to `/profile`, using `<UserAvatar>` (shows the photo). Clicking the avatar/name opens `/profile`.
+- **Mobile:** `MobileHeader` shows a small `<UserAvatar>` on the right linking to `/profile` (the sidebar isn't visible on mobile, so this is the mobile entry).
+- The desktop `TopBar` is left as-is (no added avatar — the sidebar block is the desktop entry).
+- `AppShell` threads `image` (avatar URL) from `getCurrentUser` down to the sidebar + mobile header.
 
 ## Files
 
 **New:** `src/models/Avatar.ts`, `src/app/api/profile/avatar/route.ts`, `src/services/profile.ts`, `src/lib/actions/profile.ts`, `src/validations/profile.ts`, `src/app/(app)/profile/page.tsx`, `src/components/profile/profile-view.tsx`, `src/components/ui/user-avatar.tsx`.
-**Modified:** `src/models/User.ts`, `src/lib/user.ts` (image resolution), `src/components/navigation/app-shell.tsx` (+ `sidebar.tsx`, `top-bar.tsx`, `mobile-header.tsx`) to thread + show the avatar and link to `/profile`.
+**Modified:** `src/models/User.ts`, `src/lib/user.ts` (image resolution), `src/components/navigation/app-shell.tsx` (+ `sidebar.tsx`, `mobile-header.tsx`) to thread + show the avatar and link to `/profile`. (`nav.ts` is NOT touched — no `/profile` nav/bottom-bar item.)
 
 ## Testing
 
@@ -86,4 +87,4 @@ Avatar { userId: ObjectId (unique, indexed), data: Buffer, contentType: String }
 
 ## Out of scope (YAGNI)
 
-Image cropping/rotation UI, multiple photos, public/shareable profiles, changing email, password change (already in Settings), and a `/profile` primary nav item (reached via the avatar instead).
+Image cropping/rotation UI, multiple photos, public/shareable profiles, changing email, password change (already in Settings), and any `/profile` entry in the sidebar nav or bottom bar (reached only via the avatar/name).
