@@ -12,20 +12,22 @@ export function AppShell({
   children,
   greeting,
   name,
+  image,
   notifications,
   savingsTotal,
 }: {
   children: ReactNode;
   greeting: string;
   name: string;
+  image: string | null;
   notifications: NotificationsResult;
   savingsTotal: number;
 }) {
   return (
     <div className="flex min-h-dvh">
-      <Sidebar name={name} />
+      <Sidebar name={name} image={image} />
       <div className="flex min-w-0 flex-1 flex-col">
-        <MobileHeader greeting={greeting} name={name} notifications={notifications} />
+        <MobileHeader greeting={greeting} name={name} image={image} notifications={notifications} />
         <TopBar greeting={greeting} name={name} notifications={notifications} savingsTotal={savingsTotal} />
         <main className="mx-auto w-full max-w-6xl flex-1 px-4 pb-28 pt-5 lg:px-8 lg:pb-10 lg:pt-8">
           {children}

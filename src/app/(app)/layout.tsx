@@ -18,6 +18,7 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
     <AppShell
       greeting={greetingFor(new Date())}
       name={user.name}
+      image={user.image}
       notifications={notifications}
       savingsTotal={savings.currentAmount}
     >

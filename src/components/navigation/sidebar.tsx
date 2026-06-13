@@ -9,13 +9,14 @@ import { PRIMARY_NAV, SECONDARY_NAV, SETTINGS_NAV, isActive } from "@/lib/nav";
 import { logout } from "@/lib/actions/auth";
 import { cn } from "@/lib/utils";
 import { Tooltip } from "@/components/ui/tooltip";
+import { UserAvatar } from "@/components/ui/user-avatar";
 import { Logo } from "@/components/brand/logo";
 import { Wordmark } from "@/components/brand/wordmark";
 
 const STORAGE_KEY = "sidebar-collapsed";
 const SPRING = { type: "spring", stiffness: 420, damping: 34 } as const;
 
-export function Sidebar({ name }: { name: string }) {
+export function Sidebar({ name, image }: { name: string; image: string | null }) {
   const pathname = usePathname();
   // null = preference not read yet → SSR/first paint render expanded (no hydration mismatch).
   const [collapsed, setCollapsed] = useState<boolean | null>(null);
@@ -134,21 +135,30 @@ export function Sidebar({ name }: { name: string }) {
 
       {/* User footer + logout */}
       <div className="mt-auto flex flex-col gap-1 border-t border-border/60 pt-3">
-        <div
-          className={cn(
-            "flex items-center gap-3 rounded-xl px-2 py-2",
-            isCollapsed && "justify-center px-0",
-          )}
-        >
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-semibold text-primary">
-            {name.charAt(0).toUpperCase()}
-          </span>
-          {!isCollapsed && (
+        {isCollapsed ? (
+          <Tooltip content="Profile" side="right">
+            <Link
+              href="/profile"
+              aria-label="Your profile"
+              className={cn(
+                "flex items-center justify-center rounded-xl py-2 transition-colors hover:bg-card-elevated",
+              )}
+            >
+              <UserAvatar name={name} imageUrl={image} className="h-9 w-9 text-sm" />
+            </Link>
+          </Tooltip>
+        ) : (
+          <Link
+            href="/profile"
+            aria-label="Your profile"
+            className="flex items-center gap-3 rounded-xl px-2 py-2 transition-colors hover:bg-card-elevated"
+          >
+            <UserAvatar name={name} imageUrl={image} className="h-9 w-9 text-sm" />
             <div className="min-w-0 leading-tight">
               <p className="truncate text-sm font-semibold">{name}</p>
             </div>
-          )}
-        </div>
+          </Link>
+        )}
         {isCollapsed ? (
           <Tooltip content="Log out" side="right">
             {logoutButton}
