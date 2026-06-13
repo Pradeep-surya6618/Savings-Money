@@ -4,9 +4,22 @@ import { useState } from "react";
 import * as Popover from "@radix-ui/react-popover";
 import { Calendar, ChevronLeft, ChevronRight } from "lucide-react";
 import { monthGrid } from "@/lib/calendar";
+import { Select, type SelectOption } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 
 const WD = ["M", "T", "W", "T", "F", "S", "S"];
+
+const MONTH_OPTIONS: SelectOption[] = [
+  "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December",
+].map((label, i) => ({ value: String(i + 1), label }));
+
+// Year range covering births (≈100 years back) through a few years ahead.
+const NOW_YEAR = new Date().getFullYear();
+const YEAR_OPTIONS: SelectOption[] = Array.from({ length: 106 }, (_, i) => {
+  const y = NOW_YEAR + 5 - i; // newest first
+  return { value: String(y), label: String(y) };
+});
 
 function fmt(iso: string): string {
   if (!iso) return "Pick a date";
@@ -29,7 +42,7 @@ export function DatePicker({
   onChange: (v: string) => void;
   className?: string;
 }) {
-  const [y, m] = (value || "2026-01-01").split("-").map(Number);
+  const [y, m] = (value || `${NOW_YEAR}-01-01`).split("-").map(Number);
   const [view, setView] = useState({ year: y, month: m }); // month 1–12
   const cells = monthGrid(view.year, view.month);
   const shift = (n: number) => {
@@ -51,29 +64,41 @@ export function DatePicker({
       <Popover.Portal>
         <Popover.Content
           sideOffset={6}
+          // Keep the calendar open when interacting with the nested month/year Select popovers.
+          onInteractOutside={(e) => {
+            const target = e.target as Element | null;
+            if (target?.closest("[data-radix-popper-content-wrapper]")) e.preventDefault();
+          }}
           className="z-50 w-72 rounded-2xl border border-border bg-card p-3 shadow-[var(--shadow-card)]"
         >
-          <div className="mb-2 flex items-center justify-between">
+          <div className="mb-2 flex items-center gap-1.5">
             <button
               type="button"
               onClick={() => shift(-1)}
               aria-label="Previous month"
-              className="rounded-lg p-1 hover:bg-card-elevated"
+              className="shrink-0 rounded-lg p-1 hover:bg-card-elevated"
             >
               <ChevronLeft className="h-4 w-4" />
             </button>
-            <span className="text-sm font-semibold">
-              {new Date(Date.UTC(view.year, view.month - 1, 1)).toLocaleDateString("en-IN", {
-                month: "long",
-                year: "numeric",
-                timeZone: "UTC",
-              })}
-            </span>
+            <Select
+              value={String(view.month)}
+              onValueChange={(v) => setView((s) => ({ ...s, month: Number(v) }))}
+              options={MONTH_OPTIONS}
+              ariaLabel="Month"
+              className="h-8 flex-1 px-2.5 text-sm"
+            />
+            <Select
+              value={String(view.year)}
+              onValueChange={(v) => setView((s) => ({ ...s, year: Number(v) }))}
+              options={YEAR_OPTIONS}
+              ariaLabel="Year"
+              className="h-8 px-2.5 text-sm"
+            />
             <button
               type="button"
               onClick={() => shift(1)}
               aria-label="Next month"
-              className="rounded-lg p-1 hover:bg-card-elevated"
+              className="shrink-0 rounded-lg p-1 hover:bg-card-elevated"
             >
               <ChevronRight className="h-4 w-4" />
             </button>
