@@ -198,6 +198,5 @@ select:-webkit-autofill {
   -webkit-box-shadow: 0 0 0 1000px var(--card) inset;
   box-shadow: 0 0 0 1000px var(--card) inset;
   caret-color: var(--foreground);
-  border-radius: inherit;
   transition: background-color 9999s ease-in-out 0s;
 }
