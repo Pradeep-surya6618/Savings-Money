@@ -146,7 +146,6 @@ export function Sidebar({ name }: { name: string }) {
           {!isCollapsed && (
             <div className="min-w-0 leading-tight">
               <p className="truncate text-sm font-semibold">{name}</p>
-              <p className="text-xs text-muted-foreground">Premium Plan</p>
             </div>
           )}
         </div>
