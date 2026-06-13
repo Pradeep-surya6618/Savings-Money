@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -14,26 +14,31 @@ const inputCls = "h-11 w-full rounded-xl border border-border bg-card px-3.5 tex
 export function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
   const searchParams = useSearchParams();
   const oauthError = searchParams.get("error");
+  const signedOut = searchParams.get("signedout");
+  // Guard so the toast fires once, not twice under React Strict Mode's dev double-invoke.
+  const toasted = useRef(false);
   useEffect(() => {
+    if (toasted.current) return;
     if (oauthError === "oauth_failed") toast.error("Sign-in failed. Please try again.");
     else if (oauthError === "oauth_unavailable") toast.info("That sign-in option isn't set up yet.");
-  }, [oauthError]);
+    else if (signedOut) toast.success("You've been signed out.");
+    else return;
+    toasted.current = true;
+  }, [oauthError, signedOut]);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true);
-    setError(null);
     const res = await login({ email, password });
     if (!res.ok) {
-      setError(res.error);
+      toast.error(res.error);
       setBusy(false);
     }
-    // on success the action redirects; no further handling
+    // on success the action redirects; the navigation is the success signal
   }
 
   return (
@@ -53,7 +58,6 @@ export function LoginForm() {
         </div>
         <PasswordField value={password} onChange={setPassword} />
       </div>
-      {error && <p className="text-sm text-negative">{error}</p>}
       <Button type="submit" disabled={busy} className="h-11 w-full">{busy ? "Logging in…" : "Login"}</Button>
       <SocialButtons />
       <p className="text-center text-sm text-muted-foreground">

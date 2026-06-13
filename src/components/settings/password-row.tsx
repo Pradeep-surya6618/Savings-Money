@@ -16,22 +16,21 @@ export function PasswordRow({ hasPassword }: { hasPassword: boolean }) {
   const [password, setPasswordValue] = useState("");
   const [confirm, setConfirm] = useState("");
   const [busy, setBusy] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const rules = passwordRules(password);
   const canSubmit = rules.length && rules.numberOrSymbol && password === confirm && (!hasPassword || current.length > 0);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (password !== confirm) { setError("Passwords don't match"); return; }
-    setBusy(true); setError(null);
+    if (password !== confirm) { toast.error("Passwords don't match"); return; }
+    setBusy(true);
     const res = hasPassword ? await changePassword({ current, password }) : await setPassword({ password });
     setBusy(false);
     if (res.ok) {
       toast.success(hasPassword ? "Password changed" : "Password set");
       setOpen(false); setCurrent(""); setPasswordValue(""); setConfirm("");
     } else {
-      setError(res.error);
+      toast.error(res.error);
     }
   }
 
@@ -68,7 +67,6 @@ export function PasswordRow({ hasPassword }: { hasPassword: boolean }) {
             <span className="text-sm font-medium">Confirm password</span>
             <PasswordField value={confirm} onChange={setConfirm} placeholder="Confirm new password" ariaLabel="Confirm password" />
           </label>
-          {error && <p className="text-sm text-negative">{error}</p>}
           <Button type="submit" disabled={busy || !canSubmit} className="w-full">
             {busy ? "Saving…" : hasPassword ? "Change password" : "Set password"}
           </Button>

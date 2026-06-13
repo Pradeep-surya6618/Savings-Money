@@ -4,8 +4,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { PanelLeft, PanelLeftClose } from "lucide-react";
+import { PanelLeft, PanelLeftClose, LogOut } from "lucide-react";
 import { PRIMARY_NAV, SECONDARY_NAV, SETTINGS_NAV, isActive } from "@/lib/nav";
+import { logout } from "@/lib/actions/auth";
 import { cn } from "@/lib/utils";
 import { Tooltip } from "@/components/ui/tooltip";
 import { Logo } from "@/components/brand/logo";
@@ -34,6 +35,21 @@ export function Sidebar({ name }: { name: string }) {
 
   const isCollapsed = collapsed === true;
   const items = [...PRIMARY_NAV, ...SECONDARY_NAV, SETTINGS_NAV];
+
+  const logoutButton = (
+    <button
+      type="button"
+      onClick={() => logout()}
+      aria-label="Log out"
+      className={cn(
+        "flex cursor-pointer items-center gap-3 rounded-xl py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-negative/10 hover:text-negative",
+        isCollapsed ? "justify-center px-0" : "px-3",
+      )}
+    >
+      <LogOut className="h-5 w-5 shrink-0" />
+      {!isCollapsed && <span>Log out</span>}
+    </button>
+  );
 
   return (
     <aside
@@ -116,21 +132,30 @@ export function Sidebar({ name }: { name: string }) {
         })}
       </nav>
 
-      {/* User footer */}
-      <div
-        className={cn(
-          "mt-auto flex items-center gap-3 rounded-xl px-2 py-2",
-          isCollapsed && "justify-center px-0",
-        )}
-      >
-        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-semibold text-primary">
-          {name.charAt(0).toUpperCase()}
-        </span>
-        {!isCollapsed && (
-          <div className="min-w-0 leading-tight">
-            <p className="truncate text-sm font-semibold">{name}</p>
-            <p className="text-xs text-muted-foreground">Premium Plan</p>
-          </div>
+      {/* User footer + logout */}
+      <div className="mt-auto flex flex-col gap-1 border-t border-border/60 pt-3">
+        <div
+          className={cn(
+            "flex items-center gap-3 rounded-xl px-2 py-2",
+            isCollapsed && "justify-center px-0",
+          )}
+        >
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-semibold text-primary">
+            {name.charAt(0).toUpperCase()}
+          </span>
+          {!isCollapsed && (
+            <div className="min-w-0 leading-tight">
+              <p className="truncate text-sm font-semibold">{name}</p>
+              <p className="text-xs text-muted-foreground">Premium Plan</p>
+            </div>
+          )}
+        </div>
+        {isCollapsed ? (
+          <Tooltip content="Log out" side="right">
+            {logoutButton}
+          </Tooltip>
+        ) : (
+          logoutButton
         )}
       </div>
     </aside>

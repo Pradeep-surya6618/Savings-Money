@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { requestReset } from "@/lib/actions/auth";
+import { toast } from "@/lib/toast-store";
 
 const inputCls = "h-11 w-full rounded-xl border border-border bg-card px-3.5 text-sm outline-none transition focus:border-primary";
 
@@ -15,9 +16,14 @@ export function ForgotForm() {
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true);
-    await requestReset({ email });
+    const res = await requestReset({ email });
     setBusy(false);
-    setSent(true);
+    if (res.ok) {
+      toast.success("If an account exists, we've sent a reset link.");
+      setSent(true);
+    } else {
+      toast.error(res.error);
+    }
   }
 
   return (

@@ -155,12 +155,12 @@ export async function login(input: LoginInput): Promise<Result> {
     return { ok: false, error: "Something went wrong. Please try again." };
   }
   await createSession(userId);
-  redirect("/");
+  redirect("/?signedin=1");
 }
 
 export async function logout(): Promise<void> {
   await destroySession();
-  redirect("/login");
+  redirect("/login?signedout=1");
 }
 
 export async function requestReset(input: RequestResetInput): Promise<Result> {

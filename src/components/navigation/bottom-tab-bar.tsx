@@ -4,8 +4,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { AnimatePresence, MotionConfig, motion } from "framer-motion";
-import { Ellipsis } from "lucide-react";
+import { Ellipsis, LogOut } from "lucide-react";
 import { PRIMARY_NAV, SECONDARY_NAV, SETTINGS_NAV, isActive } from "@/lib/nav";
+import { logout } from "@/lib/actions/auth";
 import { cn } from "@/lib/utils";
 
 const SPRING = { type: "spring", stiffness: 420, damping: 36 } as const;
@@ -146,6 +147,20 @@ export function BottomTabBar() {
                     </Link>
                   );
                 })}
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMoreOpen(false);
+                    logout();
+                  }}
+                  className="mt-1 flex cursor-pointer items-center gap-3 rounded-2xl border border-border bg-card p-3 text-left transition hover:border-negative/40 hover:bg-negative/10"
+                >
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-negative/10 text-negative">
+                    <LogOut className="h-5 w-5" />
+                  </span>
+                  <span className="text-sm font-semibold text-negative">Log out</span>
+                </button>
               </div>
             </motion.div>
           </div>

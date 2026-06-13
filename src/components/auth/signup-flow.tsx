@@ -8,6 +8,7 @@ import { OtpInput } from "./otp-input";
 import { SocialButtons } from "./social-buttons";
 import { sendOtp, verifyOtp, completeSignup } from "@/lib/actions/auth";
 import { passwordRules } from "@/lib/auth/password";
+import { toast } from "@/lib/toast-store";
 import { AuthShell } from "./auth-shell";
 
 const inputCls = "h-11 w-full rounded-xl border border-border bg-card px-3.5 text-sm outline-none transition focus:border-primary";
@@ -26,33 +27,32 @@ export function SignupFlow() {
   const [code, setCode] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
-  const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
   async function submitEmail(e: React.FormEvent) {
     e.preventDefault();
-    setBusy(true); setError(null);
+    setBusy(true);
     const res = await sendOtp({ name, email });
     setBusy(false);
-    if (res.ok) setStep("otp");
-    else setError(res.error);
+    if (res.ok) { toast.success("Verification code sent to your email."); setStep("otp"); }
+    else toast.error(res.error);
   }
 
   async function submitOtp(e: React.FormEvent) {
     e.preventDefault();
-    setBusy(true); setError(null);
+    setBusy(true);
     const res = await verifyOtp({ email, code });
     setBusy(false);
-    if (res.ok) setStep("password");
-    else setError(res.error);
+    if (res.ok) { toast.success("Email verified."); setStep("password"); }
+    else toast.error(res.error);
   }
 
   async function submitPassword(e: React.FormEvent) {
     e.preventDefault();
-    if (password !== confirm) { setError("Passwords don't match"); return; }
-    setBusy(true); setError(null);
+    if (password !== confirm) { toast.error("Passwords don't match"); return; }
+    setBusy(true);
     const res = await completeSignup({ password });
-    if (!res.ok) { setError(res.error); setBusy(false); } // success redirects
+    if (!res.ok) { toast.error(res.error); setBusy(false); } // success redirects
   }
 
   const rules = passwordRules(password);
@@ -76,7 +76,6 @@ export function SignupFlow() {
             <span className="text-sm font-medium">Email</span>
             <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" autoComplete="email" className={inputCls} />
           </label>
-          {error && <p className="text-sm text-negative">{error}</p>}
           <Button type="submit" disabled={busy || !name.trim() || !email.trim()} className="h-11 w-full">{busy ? "Sending…" : "Send OTP"}</Button>
           <SocialButtons />
           <p className="text-center text-sm text-muted-foreground">
@@ -92,7 +91,6 @@ export function SignupFlow() {
             <p className="mt-1 text-sm text-muted-foreground">Enter the 6-digit code sent to <span className="font-medium text-foreground">{email}</span></p>
           </div>
           <OtpInput value={code} onChange={setCode} />
-          {error && <p className="text-sm text-negative">{error}</p>}
           <Button type="submit" disabled={busy || code.length !== 6} className="h-11 w-full">{busy ? "Verifying…" : "Verify & Continue"}</Button>
           <button type="button" onClick={() => setStep("email")} className="w-full text-center text-sm text-muted-foreground hover:text-foreground">Change email</button>
         </form>
@@ -112,7 +110,6 @@ export function SignupFlow() {
             <span className="text-sm font-medium">Confirm Password</span>
             <PasswordField value={confirm} onChange={setConfirm} placeholder="Confirm new password" ariaLabel="Confirm password" />
           </label>
-          {error && <p className="text-sm text-negative">{error}</p>}
           <Button type="submit" disabled={busy || !canSubmitPassword} className="h-11 w-full">{busy ? "Creating…" : "Create account"}</Button>
         </form>
       )}

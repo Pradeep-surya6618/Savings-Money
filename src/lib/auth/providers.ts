@@ -3,8 +3,10 @@ import type { OAuthProvider } from "@/lib/auth/oauth-link";
 
 export const OAUTH_SCOPES = ["openid", "profile", "email"];
 
-function appUrl(): string {
-  return process.env.APP_URL ?? "http://localhost:3000";
+/** The app's canonical origin. Used for OAuth redirect targets so they don't depend
+ *  on the request host (which is `0.0.0.0` when the dev server binds to all interfaces). */
+export function appUrl(): string {
+  return process.env.APP_URL ?? "http://localhost:3050";
 }
 
 function env(name: string): string {

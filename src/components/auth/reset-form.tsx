@@ -13,19 +13,18 @@ export function ResetForm({ token }: { token: string }) {
   const router = useRouter();
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
-  const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (password !== confirm) { setError("Passwords don't match"); return; }
-    setBusy(true); setError(null);
+    if (password !== confirm) { toast.error("Passwords don't match"); return; }
+    setBusy(true);
     const res = await resetPassword({ token, password });
     if (res.ok) {
       toast.success("Password reset. Please log in.");
       router.push("/login");
     } else {
-      setError(res.error);
+      toast.error(res.error);
       setBusy(false);
     }
   }
@@ -48,7 +47,6 @@ export function ResetForm({ token }: { token: string }) {
         <span className="text-sm font-medium">Confirm Password</span>
         <PasswordField value={confirm} onChange={setConfirm} placeholder="Confirm new password" ariaLabel="Confirm password" />
       </label>
-      {error && <p className="text-sm text-negative">{error}</p>}
       <Button type="submit" disabled={busy || !canSubmit} className="h-11 w-full">{busy ? "Resetting…" : "Reset Password"}</Button>
       <p className="text-center text-sm text-muted-foreground">
         Back to <Link href="/login" className="font-semibold text-primary hover:underline">Login</Link>

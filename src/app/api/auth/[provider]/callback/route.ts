@@ -1,16 +1,16 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { getGoogleClient, getMicrosoftClient } from "@/lib/auth/providers";
+import { appUrl, getGoogleClient } from "@/lib/auth/providers";
 import { fetchOAuthProfile } from "@/lib/auth/oauth-profile";
 import { linkOrCreateOAuthUser } from "@/services/oauth";
 import { createSessionToken, SESSION_COOKIE, sessionCookieOptions } from "@/lib/auth/session";
 import type { OAuthProvider } from "@/lib/auth/oauth-link";
 
-const PROVIDERS: OAuthProvider[] = ["google", "microsoft"];
+const PROVIDERS: OAuthProvider[] = ["google"];
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ provider: string }> }) {
   const { provider } = await params;
-  const origin = req.nextUrl.origin;
-  const fail = NextResponse.redirect(new URL("/login?error=oauth_failed", origin));
+  const base = appUrl();
+  const fail = NextResponse.redirect(new URL("/login?error=oauth_failed", base));
   // Always clear the short-lived OAuth handshake cookies, including on failure.
   fail.cookies.set("fufi_oauth_state", "", { path: "/", maxAge: 0 });
   fail.cookies.set("fufi_oauth_verifier", "", { path: "/", maxAge: 0 });
@@ -27,7 +27,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ prov
   if (!code || !state || !stateCookie || state !== stateCookie || !verifier) return fail;
 
   try {
-    const client = p === "google" ? getGoogleClient() : getMicrosoftClient();
+    const client = getGoogleClient();
     const tokens = await client.validateAuthorizationCode(code, verifier);
     let idToken: string | null = null;
     try {
@@ -39,7 +39,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ prov
     const userId = await linkOrCreateOAuthUser(profile, p);
     const { token, expiresAt } = await createSessionToken(userId);
 
-    const res = NextResponse.redirect(new URL("/", origin));
+    const res = NextResponse.redirect(new URL("/", base));
     res.cookies.set(SESSION_COOKIE, token, { ...sessionCookieOptions, expires: expiresAt });
     res.cookies.set("fufi_oauth_state", "", { path: "/", maxAge: 0 });
     res.cookies.set("fufi_oauth_verifier", "", { path: "/", maxAge: 0 });
