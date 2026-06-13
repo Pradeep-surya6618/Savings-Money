@@ -18,11 +18,6 @@ const monthArg = z.object({
 });
 
 export const assistantTools = {
-  get_today: tool({
-    description: "Current date and current month (YYYY-MM). Use to resolve relative dates like 'last month'.",
-    inputSchema: z.object({}),
-    execute: async () => ({ today: new Date().toISOString().slice(0, 10), currentMonth: currentMonth() }),
-  }),
   get_spending_summary: tool({
     description: "Income, expense totals and category breakdown for a month.",
     inputSchema: monthArg,

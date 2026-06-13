@@ -163,28 +163,34 @@ export function AssistantView({
                 </div>
               </div>
             ) : (
-              messages.map((m) => (
-                <div
-                  key={m.id}
-                  className={cn("flex items-end gap-2.5", m.role === "user" ? "justify-end" : "justify-start")}
-                >
-                  {m.role === "assistant" && (
-                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary-end text-white shadow-sm shadow-primary/30">
-                      <Sparkles className="h-4 w-4" />
-                    </span>
-                  )}
+              messages.map((m) => {
+                const text = textOf(m);
+                // Skip tool-only / in-progress assistant turns that have no text yet
+                // (the typing indicator below covers the streaming state).
+                if (m.role === "assistant" && !text.trim()) return null;
+                return (
                   <div
-                    className={cn(
-                      "max-w-[82%] px-4 py-2.5 text-sm leading-relaxed shadow-sm",
-                      m.role === "user"
-                        ? "rounded-3xl rounded-br-md bg-gradient-to-br from-primary to-primary-end text-white shadow-primary/25"
-                        : "rounded-3xl rounded-bl-md border border-border bg-card-elevated/60 text-foreground",
-                    )}
+                    key={m.id}
+                    className={cn("flex items-end gap-2.5", m.role === "user" ? "justify-end" : "justify-start")}
                   >
-                    <p className="whitespace-pre-wrap">{textOf(m)}</p>
+                    {m.role === "assistant" && (
+                      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary-end text-white shadow-sm shadow-primary/30">
+                        <Sparkles className="h-4 w-4" />
+                      </span>
+                    )}
+                    <div
+                      className={cn(
+                        "max-w-[82%] px-4 py-2.5 text-sm leading-relaxed shadow-sm",
+                        m.role === "user"
+                          ? "rounded-3xl rounded-br-md bg-gradient-to-br from-primary to-primary-end text-white shadow-primary/25"
+                          : "rounded-3xl rounded-bl-md border border-border bg-card-elevated/60 text-foreground",
+                      )}
+                    >
+                      <p className="whitespace-pre-wrap">{text}</p>
+                    </div>
                   </div>
-                </div>
-              ))
+                );
+              })
             )}
 
             {busy && (

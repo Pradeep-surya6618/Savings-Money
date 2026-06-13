@@ -1,4 +1,4 @@
-import { streamText, stepCountIs, convertToModelMessages, type UIMessage } from "ai";
+import { streamText, stepCountIs, convertToModelMessages, NoSuchToolError, type UIMessage } from "ai";
 import { getSession } from "@/lib/auth/session";
 import { getModel, isAiConfigured } from "@/lib/ai/model";
 import { buildSystemPrompt } from "@/lib/ai/system-prompt";
@@ -34,6 +34,14 @@ export async function POST(req: Request) {
     messages: modelMessages,
     tools: assistantTools,
     stopWhen: stepCountIs(6),
+    // Groq/Llama sometimes emits `null` / empty args for tool calls; our tools all
+    // have optional params, so coerce that to an empty object instead of erroring/looping.
+    experimental_repairToolCall: async ({ toolCall, error }) => {
+      if (NoSuchToolError.isInstance(error)) return null;
+      const input = toolCall.input?.trim();
+      if (!input || input === "null") return { ...toolCall, input: "{}" };
+      return null;
+    },
     onFinish: async ({ text }) => {
       if (text.trim() && convId) await appendTurn(convId, "assistant", text);
     },
