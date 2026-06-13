@@ -6,7 +6,9 @@ export async function GET() {
   const session = await getSession();
   if (!session) return new Response("Unauthorized", { status: 401 });
   await connectDB();
-  const doc = await Avatar.findOne({ userId: session.userId }).lean<{ data: Buffer; contentType: string } | null>();
+  // Hydrated doc (not .lean()) so Mongoose casts the BSON binary to a real Buffer —
+  // a lean read returns a driver Binary, which serializes to the wrong bytes.
+  const doc = await Avatar.findOne({ userId: session.userId });
   if (!doc) return new Response("Not found", { status: 404 });
   return new Response(new Uint8Array(doc.data), {
     headers: {

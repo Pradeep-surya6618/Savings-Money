@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { UserAvatar } from "@/components/ui/user-avatar";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { DatePicker } from "@/components/ui/date-picker";
 import { updateProfile, updateAvatar, removeAvatar } from "@/lib/actions/profile";
 import { isValidAvatar } from "@/validations/profile";
 import { toast } from "@/lib/toast-store";
@@ -148,16 +149,10 @@ export function ProfileView({ profile }: { profile: ProfileData }) {
           </label>
 
           {/* Date of birth */}
-          <label className="block space-y-1.5">
-            <span className="text-sm font-medium">Date of birth</span>
-            <input
-              type="date"
-              value={dob}
-              onChange={(e) => setDob(e.target.value)}
-              max={new Date().toISOString().slice(0, 10)}
-              className={inputCls}
-            />
-          </label>
+          <div className="space-y-1.5">
+            <span className="block text-sm font-medium">Date of birth</span>
+            <DatePicker value={dob} onChange={setDob} />
+          </div>
 
           {/* Bio */}
           <div className="space-y-1.5">
@@ -188,13 +183,15 @@ export function ProfileView({ profile }: { profile: ProfileData }) {
             <p className="text-xs text-muted-foreground">Your email address cannot be changed here.</p>
           </div>
 
-          <Button
-            type="submit"
-            disabled={busy || !name.trim()}
-            className="w-full cursor-pointer sm:w-auto"
-          >
-            {busy ? "Saving…" : "Save changes"}
-          </Button>
+          <div className="flex justify-end">
+            <Button
+              type="submit"
+              disabled={busy || !name.trim()}
+              className="w-full cursor-pointer sm:w-auto"
+            >
+              {busy ? "Saving…" : "Save changes"}
+            </Button>
+          </div>
         </form>
       </Card>
     </div>
