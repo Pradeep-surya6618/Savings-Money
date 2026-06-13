@@ -27,8 +27,8 @@ export function BrandPanel({
 }) {
   return (
     <div className="relative hidden h-full flex-col overflow-hidden bg-gradient-to-b from-[#eaf9ef] via-[#d8f1e2] to-[#b3e6c6] p-8 lg:flex xl:p-10">
-      {/* Brand lockup — centered */}
-      <div className="flex shrink-0 items-center justify-center gap-3.5">
+      {/* Brand lockup */}
+      <div className="flex shrink-0 items-center gap-3.5">
         <Image src="/Icons/FuFi-Logo-Transperent.png" alt="FuFi" width={72} height={72} priority className="h-[4.5rem] w-[4.5rem] object-contain" />
         <div className="leading-none">
           <p className="font-display text-[2.75rem] font-extrabold leading-none tracking-tight">
