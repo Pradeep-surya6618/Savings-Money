@@ -1,11 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { PasswordField } from "./password-field";
 import { SocialButtons } from "./social-buttons";
 import { login } from "@/lib/actions/auth";
+import { toast } from "@/lib/toast-store";
 
 const inputCls = "h-11 w-full rounded-xl border border-border bg-card px-3.5 text-sm outline-none transition focus:border-primary";
 
@@ -14,6 +16,13 @@ export function LoginForm() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+
+  const searchParams = useSearchParams();
+  const oauthError = searchParams.get("error");
+  useEffect(() => {
+    if (oauthError === "oauth_failed") toast.error("Sign-in failed. Please try again.");
+    else if (oauthError === "oauth_unavailable") toast.info("That sign-in option isn't set up yet.");
+  }, [oauthError]);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
