@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport, type UIMessage } from "ai";
 import { Sparkles, Send, Plus, Trash2, MessagesSquare } from "lucide-react";
-import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
@@ -51,14 +50,14 @@ export function AssistantView({
 
   if (!configured) {
     return (
-      <div className="mx-auto max-w-md py-16 text-center">
-        <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-          <Sparkles className="h-7 w-7" />
+      <div className="mx-auto max-w-md py-20 text-center">
+        <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-primary-end text-white shadow-lg shadow-primary/30">
+          <Sparkles className="h-8 w-8" />
         </span>
-        <h1 className="mt-4 text-xl font-bold">Connect an AI key</h1>
+        <h1 className="mt-5 font-display text-2xl font-extrabold tracking-tight">Connect an AI key</h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          Add a free <span className="font-medium">AI_API_KEY</span> (e.g. from console.groq.com) to{" "}
-          <code className="rounded bg-card-elevated px-1 py-0.5 text-xs">.env.local</code> and restart to enable the
+          Add a free <span className="font-medium text-foreground">AI_API_KEY</span> (e.g. from console.groq.com) to{" "}
+          <code className="rounded bg-card-elevated px-1.5 py-0.5 text-xs">.env.local</code> and restart to enable the
           assistant.
         </p>
       </div>
@@ -104,13 +103,14 @@ export function AssistantView({
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-5">
+      {/* Header */}
       <div className="flex items-center gap-3">
-        <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
+        <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-primary-end text-white shadow-lg shadow-primary/30">
           <Sparkles className="h-5 w-5" />
         </span>
         <div className="min-w-0">
-          <h1 className="text-xl font-bold tracking-tight">Assistant</h1>
+          <h1 className="font-display text-xl font-extrabold tracking-tight">Assistant</h1>
           <p className="text-xs text-muted-foreground">Ask about your money — grounded in your own data.</p>
         </div>
         <Button
@@ -123,37 +123,39 @@ export function AssistantView({
         </Button>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-[260px_1fr]">
-        {/* Conversation list — desktop sidebar */}
-        <Card className="hidden h-[calc(100dvh-13rem)] flex-col p-2 lg:flex lg:sticky lg:top-24">
-          <ConversationList
-            conversations={conversations}
-            activeId={conversationId}
-            onNew={newChat}
-            onOpen={openConversation}
-            onDelete={removeConversation}
-          />
-        </Card>
+      <div className="grid gap-5 lg:grid-cols-[280px_1fr] lg:items-start">
+        {/* Conversation list — sticky desktop sidebar */}
+        <aside className="hidden lg:sticky lg:top-24 lg:block">
+          <div className="flex h-[calc(100dvh-12rem)] flex-col rounded-3xl border border-border bg-card/60 p-3 shadow-sm backdrop-blur-xl">
+            <ConversationList
+              conversations={conversations}
+              activeId={conversationId}
+              onNew={newChat}
+              onOpen={openConversation}
+              onDelete={removeConversation}
+            />
+          </div>
+        </aside>
 
         {/* Chat column */}
-        <Card className="flex h-[calc(100dvh-13rem)] flex-col p-0">
-          <div className="flex-1 space-y-4 overflow-y-auto p-4">
+        <div className="flex h-[calc(100dvh-12rem)] flex-col overflow-hidden rounded-3xl border border-border bg-card shadow-sm">
+          <div className="flex-1 space-y-5 overflow-y-auto p-4 sm:p-6">
             {messages.length === 0 ? (
-              <div className="flex h-full flex-col items-center justify-center gap-5 text-center">
+              <div className="flex h-full flex-col items-center justify-center gap-6 text-center">
                 <div>
-                  <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-                    <Sparkles className="h-6 w-6" />
+                  <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-3xl bg-gradient-to-br from-primary to-primary-end text-white shadow-lg shadow-primary/30">
+                    <Sparkles className="h-8 w-8" />
                   </span>
-                  <p className="mt-3 text-sm font-medium">How can I help with your finances?</p>
-                  <p className="mt-1 text-xs text-muted-foreground">Pick a prompt or type your own.</p>
+                  <p className="mt-4 font-display text-lg font-bold tracking-tight">How can I help with your finances?</p>
+                  <p className="mt-1 text-sm text-muted-foreground">Pick a prompt or type your own.</p>
                 </div>
-                <div className="flex max-w-md flex-wrap justify-center gap-2">
+                <div className="flex max-w-lg flex-wrap justify-center gap-2.5">
                   {SUGGESTIONS.map((s) => (
                     <button
                       key={s}
                       type="button"
                       onClick={() => submit(s)}
-                      className="cursor-pointer rounded-full border border-border bg-card-elevated/50 px-3 py-1.5 text-xs text-muted-foreground transition hover:border-primary/40 hover:text-foreground"
+                      className="cursor-pointer rounded-full border border-border bg-card-elevated/60 px-4 py-2 text-xs font-medium text-muted-foreground shadow-sm transition hover:-translate-y-0.5 hover:border-primary/40 hover:text-foreground hover:shadow-md"
                     >
                       {s}
                     </button>
@@ -162,13 +164,21 @@ export function AssistantView({
               </div>
             ) : (
               messages.map((m) => (
-                <div key={m.id} className={cn("flex", m.role === "user" ? "justify-end" : "justify-start")}>
+                <div
+                  key={m.id}
+                  className={cn("flex items-end gap-2.5", m.role === "user" ? "justify-end" : "justify-start")}
+                >
+                  {m.role === "assistant" && (
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary-end text-white shadow-sm shadow-primary/30">
+                      <Sparkles className="h-4 w-4" />
+                    </span>
+                  )}
                   <div
                     className={cn(
-                      "max-w-[85%] rounded-2xl px-3.5 py-2.5 text-sm",
+                      "max-w-[82%] px-4 py-2.5 text-sm leading-relaxed shadow-sm",
                       m.role === "user"
-                        ? "bg-primary text-white"
-                        : "border border-border bg-card-elevated/50 text-foreground",
+                        ? "rounded-3xl rounded-br-md bg-gradient-to-br from-primary to-primary-end text-white shadow-primary/25"
+                        : "rounded-3xl rounded-bl-md border border-border bg-card-elevated/60 text-foreground",
                     )}
                   >
                     <p className="whitespace-pre-wrap">{textOf(m)}</p>
@@ -178,10 +188,14 @@ export function AssistantView({
             )}
 
             {busy && (
-              <div className="flex justify-start">
-                <div className="flex items-center gap-2 rounded-2xl border border-border bg-card-elevated/50 px-3.5 py-2.5 text-sm text-muted-foreground">
-                  <Sparkles className="h-4 w-4 animate-pulse text-primary" />
-                  Looking at your data…
+              <div className="flex items-end gap-2.5">
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary-end text-white shadow-sm shadow-primary/30">
+                  <Sparkles className="h-4 w-4 animate-pulse" />
+                </span>
+                <div className="flex items-center gap-1.5 rounded-3xl rounded-bl-md border border-border bg-card-elevated/60 px-4 py-3.5">
+                  <span className="h-2 w-2 animate-bounce rounded-full bg-primary/60 [animation-delay:-0.3s]" />
+                  <span className="h-2 w-2 animate-bounce rounded-full bg-primary/60 [animation-delay:-0.15s]" />
+                  <span className="h-2 w-2 animate-bounce rounded-full bg-primary/60" />
                 </div>
               </div>
             )}
@@ -196,13 +210,13 @@ export function AssistantView({
           </div>
 
           {/* Composer */}
-          <div className="border-t border-border p-3">
+          <div className="border-t border-border bg-card/80 p-3 sm:p-4">
             <form
               onSubmit={(e) => {
                 e.preventDefault();
                 void submit(input);
               }}
-              className="flex items-end gap-2"
+              className="flex items-end gap-2 rounded-2xl border border-border bg-card px-2 py-1.5 shadow-sm transition focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20"
             >
               <textarea
                 value={input}
@@ -216,23 +230,32 @@ export function AssistantView({
                 rows={1}
                 placeholder="Ask about your money…"
                 disabled={busy}
-                className="max-h-32 min-h-[2.5rem] flex-1 resize-none rounded-xl border border-border bg-card px-3 py-2 text-sm outline-none transition focus:border-primary disabled:opacity-60"
+                className="max-h-32 min-h-[2.25rem] flex-1 resize-none bg-transparent px-2 py-1.5 text-sm outline-none disabled:opacity-60"
               />
               {busy ? (
-                <Button type="button" variant="outline" onClick={() => stop()} className="h-10 shrink-0 px-3">
+                <button
+                  type="button"
+                  onClick={() => stop()}
+                  className="flex h-9 shrink-0 cursor-pointer items-center rounded-xl border border-border px-3 text-sm font-medium text-muted-foreground transition hover:bg-card-elevated hover:text-foreground"
+                >
                   Stop
-                </Button>
+                </button>
               ) : (
-                <Button type="submit" disabled={!input.trim()} className="h-10 shrink-0 px-3" aria-label="Send">
+                <button
+                  type="submit"
+                  disabled={!input.trim()}
+                  aria-label="Send"
+                  className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary-end text-white shadow-sm shadow-primary/30 transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
+                >
                   <Send className="h-4 w-4" />
-                </Button>
+                </button>
               )}
             </form>
-            <p className="mt-2 px-1 text-center text-[11px] text-muted-foreground">
+            <p className="mt-2.5 text-center text-[11px] text-muted-foreground">
               Insights, not professional financial advice.
             </p>
           </div>
-        </Card>
+        </div>
       </div>
 
       {/* Conversation list — mobile drawer */}
@@ -266,42 +289,53 @@ function ConversationList({
 }) {
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      <Button variant="outline" onClick={onNew} className="mb-2 w-full justify-start gap-2">
+      <button
+        type="button"
+        onClick={onNew}
+        className="mb-3 flex w-full cursor-pointer items-center justify-center gap-2 rounded-2xl bg-gradient-to-br from-primary to-primary-end px-3 py-2.5 text-sm font-semibold text-white shadow-md shadow-primary/30 transition hover:opacity-90"
+      >
         <Plus className="h-4 w-4" />
         New chat
-      </Button>
+      </button>
+      <p className="mb-1.5 px-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Chats</p>
       <div className="min-h-0 flex-1 space-y-0.5 overflow-y-auto">
         {conversations.length === 0 ? (
           <p className="px-2 py-3 text-xs text-muted-foreground">No conversations yet.</p>
         ) : (
-          conversations.map((c) => (
-            <div
-              key={c.id}
-              className={cn(
-                "group flex items-center gap-1 rounded-xl pr-1 transition",
-                c.id === activeId ? "bg-primary/10" : "hover:bg-card-elevated",
-              )}
-            >
-              <button
-                type="button"
-                onClick={() => onOpen(c.id)}
+          conversations.map((c) => {
+            const active = c.id === activeId;
+            return (
+              <div
+                key={c.id}
                 className={cn(
-                  "min-w-0 flex-1 cursor-pointer truncate px-3 py-2 text-left text-sm",
-                  c.id === activeId ? "font-semibold text-primary" : "text-foreground",
+                  "group relative flex items-center gap-1 rounded-xl pr-1 transition",
+                  active ? "bg-primary/10" : "hover:bg-card-elevated",
                 )}
               >
-                {c.title}
-              </button>
-              <button
-                type="button"
-                onClick={() => onDelete(c.id)}
-                aria-label="Delete conversation"
-                className="flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-lg text-muted-foreground opacity-0 transition hover:bg-negative/10 hover:text-negative group-hover:opacity-100"
-              >
-                <Trash2 className="h-3.5 w-3.5" />
-              </button>
-            </div>
-          ))
+                {active && (
+                  <span className="absolute left-0 top-1/2 h-5 w-1 -translate-y-1/2 rounded-r-full bg-primary" />
+                )}
+                <button
+                  type="button"
+                  onClick={() => onOpen(c.id)}
+                  className={cn(
+                    "min-w-0 flex-1 cursor-pointer truncate px-3 py-2 text-left text-sm",
+                    active ? "font-semibold text-primary" : "text-foreground",
+                  )}
+                >
+                  {c.title}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onDelete(c.id)}
+                  aria-label="Delete conversation"
+                  className="flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-lg text-muted-foreground opacity-0 transition hover:bg-negative/10 hover:text-negative group-hover:opacity-100"
+                >
+                  <Trash2 className="h-3.5 w-3.5" />
+                </button>
+              </div>
+            );
+          })
         )}
       </div>
     </div>
