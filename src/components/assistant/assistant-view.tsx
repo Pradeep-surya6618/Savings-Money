@@ -150,7 +150,7 @@ export function AssistantView({
       <div className="grid gap-5 lg:grid-cols-[280px_1fr] lg:items-start">
         {/* Conversation list — sticky desktop sidebar */}
         <aside className="hidden lg:sticky lg:top-24 lg:block">
-          <div className="flex h-[calc(100dvh-12rem)] flex-col rounded-3xl border border-border bg-card/60 p-3 shadow-sm backdrop-blur-xl">
+          <div className="flex h-[calc(100dvh-14rem)] flex-col rounded-3xl border border-border bg-card/60 p-3 shadow-sm backdrop-blur-xl">
             <ConversationList
               conversations={conversations}
               activeId={conversationId}
@@ -162,7 +162,7 @@ export function AssistantView({
         </aside>
 
         {/* Chat column */}
-        <div className="flex h-[calc(100dvh-12rem)] flex-col overflow-hidden rounded-3xl border border-border bg-card shadow-sm">
+        <div className="flex h-[calc(100dvh-14rem)] flex-col overflow-hidden rounded-3xl border border-border bg-card shadow-sm">
           <div className="flex-1 space-y-5 overflow-y-auto p-4 sm:p-6">
             {messages.length === 0 ? (
               <div className="flex h-full flex-col items-center justify-center gap-6 text-center">
