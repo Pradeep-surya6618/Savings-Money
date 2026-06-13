@@ -138,7 +138,11 @@ export async function login(input: LoginInput): Promise<Result> {
   try {
     await connectDB();
     const user = await User.findOne({ email: parsed.data.email });
-    if (!user || !(await bcrypt.compare(parsed.data.password, user.passwordHash))) {
+    if (!user) return { ok: false, error: "Invalid email or password" };
+    if (!user.passwordHash) {
+      return { ok: false, error: "This account uses social sign-in — continue with Google or Microsoft." };
+    }
+    if (!(await bcrypt.compare(parsed.data.password, user.passwordHash))) {
       return { ok: false, error: "Invalid email or password" };
     }
     userId = String(user._id);
