@@ -3,7 +3,7 @@ import { ForgotForm } from "@/components/auth/forgot-form";
 
 export default function ForgotPasswordPage() {
   return (
-    <AuthShell slot="lock">
+    <AuthShell slot="lock" title="No worries! Reset your password in a few simple steps.">
       <ForgotForm />
     </AuthShell>
   );

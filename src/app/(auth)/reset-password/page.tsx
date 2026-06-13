@@ -8,7 +8,7 @@ export default async function ResetPasswordPage({
 }) {
   const { token } = await searchParams;
   return (
-    <AuthShell slot="lock">
+    <AuthShell slot="lock" title="Almost there — set a new password to secure your account.">
       <ResetForm token={token ?? ""} />
     </AuthShell>
   );

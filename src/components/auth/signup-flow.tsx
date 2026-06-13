@@ -8,8 +8,16 @@ import { OtpInput } from "./otp-input";
 import { SocialButtons } from "./social-buttons";
 import { sendOtp, verifyOtp, completeSignup } from "@/lib/actions/auth";
 import { passwordRules } from "@/lib/auth/password";
+import { AuthShell } from "./auth-shell";
 
 const inputCls = "h-11 w-full rounded-xl border border-border bg-card px-3.5 text-sm outline-none transition focus:border-primary";
+
+// Left brand panel changes with the signup step.
+const PANEL: Record<"email" | "otp" | "password", { title: string; slot: "wallet" | "shield" | "lock" }> = {
+  email: { title: "Let's get started with your financial journey.", slot: "shield" },
+  otp: { title: "Verify your email to secure your account.", slot: "shield" },
+  password: { title: "Create a secure password to protect your account.", slot: "lock" },
+};
 
 export function SignupFlow() {
   const [step, setStep] = useState<"email" | "otp" | "password">("email");
@@ -49,8 +57,10 @@ export function SignupFlow() {
 
   const rules = passwordRules(password);
   const canSubmitPassword = rules.length && rules.numberOrSymbol && password === confirm;
+  const panel = PANEL[step];
 
   return (
+    <AuthShell title={panel.title} slot={panel.slot}>
     <div className="space-y-4">
       {step === "email" && (
         <form onSubmit={submitEmail} className="space-y-4">
@@ -107,5 +117,6 @@ export function SignupFlow() {
         </form>
       )}
     </div>
+    </AuthShell>
   );
 }

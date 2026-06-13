@@ -4,17 +4,23 @@ import { BrandPanel } from "./brand-panel";
 
 /** Full-screen auth layout: left brand panel (lg+) + right form half (full height). */
 export function AuthShell({
+  title,
   slot = "wallet",
+  showFeatures = false,
+  showFooter = false,
   children,
 }: {
+  title: string;
   slot?: "wallet" | "shield" | "lock";
+  showFeatures?: boolean;
+  showFooter?: boolean;
   children: ReactNode;
 }) {
   return (
     // Fixed to the viewport — the window itself never scrolls; only a column
     // scrolls internally (via min-h-full + justify-center) if its content is tall.
     <div className="grid h-dvh overflow-hidden lg:grid-cols-2">
-      <BrandPanel slot={slot} />
+      <BrandPanel title={title} slot={slot} showFeatures={showFeatures} showFooter={showFooter} />
       <div className="overflow-y-auto bg-background">
         <div className="flex min-h-full flex-col items-center justify-center px-6 py-10 sm:px-10">
           {/* Mobile brand header (the brand panel is desktop-only) */}
