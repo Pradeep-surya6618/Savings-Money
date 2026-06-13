@@ -18,10 +18,10 @@ Turn FuFi from a single implicit user into a real multi-user app: email + passwo
 
 - New **`(auth)` route group** (public): `/login`, `/signup`, `/forgot-password`, `/reset-password`. A shared auth layout renders the split-screen brand panel + form card (single column on mobile).
 - The existing **`(app)` route group becomes protected**. `getCurrentUser()` keeps its **name and `{ user, settings }` return shape** (so the ~10 callers don't change), but its body changes: instead of find-or-creating the implicit "You", it reads the session, returns the logged-in user (+ their Settings), or `redirect("/login")` when there's no valid session. Every existing service/action already filters by `user.id`; only the *source* of that id changes.
-- **Middleware** (`src/middleware.ts`) does an optimistic cookie-presence check: redirect unauthenticated requests for `(app)` routes to `/login`, and redirect authenticated requests away from `(auth)` pages to `/`. `requireUser()` remains the authoritative check (middleware can't validate the session against the DB cheaply).
+- **Proxy** (`src/proxy.ts` — Next 16's renamed `middleware`; exports `proxy(request)` + `config.matcher`) does an optimistic cookie-presence check: redirect unauthenticated requests for `(app)` routes to `/login`, and redirect authenticated requests away from `(auth)` pages to `/`. `getCurrentUser()` remains the authoritative check (the proxy can't validate the session against the DB cheaply).
 
 ```
-request ─▶ middleware (cookie present? optimistic redirect)
+request ─▶ proxy.ts (cookie present? optimistic redirect)
               │
         (app) page/layout ─▶ getCurrentUser() ─▶ getSession() ─▶ Session lookup by tokenHash
               │                                      └─ invalid/expired ⇒ redirect("/login")
@@ -42,8 +42,8 @@ request ─▶ middleware (cookie present? optimistic redirect)
   - `emailVerified`: Boolean, default false.
   - keeps `name`, `image`. The old `{ name: "You" }` default is removed.
 - **Session** (`src/models/Session.ts`, new): `{ userId (ref User, indexed), tokenHash (String, unique), expiresAt (Date) }`, timestamps. The cookie holds a random 32-byte token; only its SHA-256 hash is stored.
-- **VerificationToken** (`src/models/VerificationToken.ts`, new): `{ email (lowercased, indexed), purpose ("signup" | "reset"), secretHash (String), expiresAt (Date), attempts (Number, default 0) }`, timestamps.
-  - signup: `secretHash` = hash of a 6-digit OTP; expires 10 min; ≤5 verify attempts; supersedes prior signup tokens for the same email on resend.
+- **VerificationToken** (`src/models/VerificationToken.ts`, new): `{ email (lowercased, indexed), purpose ("signup" | "reset"), secretHash (String), verified (Boolean, default false), ticketHash (String, optional), expiresAt (Date), attempts (Number, default 0) }`, timestamps.
+  - signup: `secretHash` = hash of a 6-digit OTP; expires 10 min; ≤5 verify attempts; supersedes prior signup tokens for the same email on resend. After OTP success, `verified=true` and `ticketHash` = hash of a random ticket (the value the signup-ticket cookie carries).
   - reset: `secretHash` = hash of a 32-byte URL token; expires 1h; single-use (deleted on success); only created when an account exists.
 
 ## Pure logic (Vitest-tested) — `src/lib/auth/`
@@ -58,8 +58,8 @@ Hashing of *passwords* uses bcrypt in the action layer (not pure-tested). Hashin
 
 ### Signup (3 steps, one `/signup` route with step state)
 1. **Email step:** submit email. If a *verified* user already exists → error "This email is already registered. Log in instead." Otherwise create/replace a `VerificationToken(purpose="signup")` with a fresh OTP, email it, advance to OTP step. (`sendOtp` action.)
-2. **OTP step:** 6-box input + 25s resend timer. Submit code → `verifyOtp` action checks hash/expiry/attempts. On success, set a short-lived signed httpOnly **signup-ticket cookie** (`{ email, verified:true }`, ~15 min) and advance to password step. On failure, increment attempts / show error.
-3. **Password step:** new + confirm (live rules checklist). `completeSignup` action reads the signup-ticket, validates the password, creates the `User` (emailVerified=true, bcrypt hash) + their default Settings/Savings docs, clears the ticket + signup token, creates a Session, sets `fufi_session`, redirects to `/`.
+2. **OTP step:** 6-box input + 25s resend timer. Submit code → `verifyOtp` action checks hash/expiry/attempts. On success, mark the token `verified=true`, store `ticketHash` = hash(random ticket), and set a short-lived httpOnly **`fufi_signup` cookie** holding that opaque ticket (~15 min); advance to password step. On failure, increment attempts / show error. (No signing secret — the ticket is validated server-side by hash.)
+3. **Password step:** new + confirm (live rules checklist). `completeSignup` action reads the `fufi_signup` cookie, finds the verified, unexpired token by `ticketHash`, validates the password, creates the `User` (emailVerified=true, bcrypt hash) + their default Settings/Savings docs, deletes the token, clears the `fufi_signup` cookie, creates a Session, sets `fufi_session`, redirects to `/`.
 
 ### Login — `/login`
 Email + password → `login` action: find user by email, bcrypt compare; on success create Session + cookie, redirect to `/`. Generic "Invalid email or password" on any failure (no field-level leak).
@@ -83,7 +83,7 @@ Create New Password form. `resetPassword` action: look up reset token by hash, c
 ## Email — `src/lib/email/`
 - `mailer.ts` — lazy nodemailer transport from env (`SMTP_HOST/SMTP_PORT/SMTP_USER/SMTP_PASS/SMTP_FROM`). **Dev fallback:** if SMTP is unset, log the message (code/link) to the server console instead of sending, so the flows are testable without a mailbox.
 - `templates.ts` — `otpEmail(code)` and `resetEmail(link)` returning `{ subject, html, text }`, FuFi-green branded.
-- Env additions documented for `.env.local`: the `SMTP_*` vars + `AUTH_SECRET` (signs the signup-ticket cookie) + `APP_URL` (for building the reset link). User supplies real SMTP creds when ready.
+- Env additions documented for `.env.local`: the `SMTP_*` vars + `APP_URL` (for the reset-link origin; otherwise derived from the request host). Read directly from `process.env` (no change to `env.ts`, which only validates `MONGODB_URI`). No `AUTH_SECRET` is needed — sessions and the signup ticket are random opaque values validated by hash in the DB. User supplies real SMTP creds when ready.
 
 ## UI (matches `FuFi-UI.png`)
 - `src/app/(auth)/layout.tsx` — desktop split: left brand panel (logo + wordmark, "Smart way to manage your salary, savings & future.", four feature ticks, illustration, "Your data is 100% safe" footer); right = form card. Mobile = single column, illustration above the form.
@@ -106,7 +106,7 @@ Create New Password form. `resetPassword` action: look up reset token by hash, c
 - `src/lib/auth/password.ts` (+test), `src/lib/auth/tokens.ts` (+test), `src/lib/auth/email-schema.ts` (+test), `src/lib/auth/session.ts`
 - `src/lib/email/mailer.ts`, `src/lib/email/templates.ts`
 - `src/lib/actions/auth.ts` (sendOtp, verifyOtp, completeSignup, login, logout, requestReset, resetPassword)
-- `src/middleware.ts`
+- `src/proxy.ts` (Next 16 renamed middleware)
 - `src/app/(auth)/layout.tsx` + `login/`, `signup/`, `forgot-password/`, `reset-password/` pages
 - `src/components/auth/*` (AuthCard, BrandPanel, AuthIllustration, OtpInput, PasswordField, SocialButtons + the page client forms)
 
