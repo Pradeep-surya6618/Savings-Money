@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { PanelLeft, PanelLeftClose, LogOut } from "lucide-react";
 import { PRIMARY_NAV, SECONDARY_NAV, SETTINGS_NAV, isActive } from "@/lib/nav";
@@ -65,8 +65,7 @@ export function Sidebar({
     </button>
   );
 
-  function renderNavItem(item: (typeof items)[number], iconNode?: ReactNode) {
-    const { href, label, icon: Icon, color } = item;
+  function renderNavItem({ href, label, icon: Icon, color }: (typeof items)[number]) {
     const active = isActive(pathname, href);
     const link = (
       <Link
@@ -97,7 +96,7 @@ export function Sidebar({
             />
           </>
         )}
-        {iconNode ?? <Icon className="h-5 w-5 shrink-0" style={{ color: active ? "var(--primary)" : color }} />}
+        <Icon className="h-5 w-5 shrink-0" style={{ color: active ? "var(--primary)" : color }} />
         {!isCollapsed && <span className="truncate">{label}</span>}
       </Link>
     );
@@ -154,14 +153,7 @@ export function Sidebar({
             AI Assistant
           </p>
         )}
-        {aiItem &&
-          renderNavItem(
-            aiItem,
-            <span className="flex h-6 w-6 shrink-0 items-center justify-center overflow-hidden rounded-md bg-black">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/Icons/FuFi-AI.png" alt="" className="h-full w-full object-cover" />
-            </span>,
-          )}
+        {aiItem && renderNavItem(aiItem)}
         {onAssistant && !isCollapsed && <SidebarChats conversations={conversations} />}
       </nav>
 
