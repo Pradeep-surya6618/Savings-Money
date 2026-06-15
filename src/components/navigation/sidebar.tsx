@@ -119,7 +119,7 @@ export function Sidebar({ conversations }: { conversations: ConversationSummary[
         <p className="mb-2 px-3 text-xs font-medium uppercase tracking-wider text-muted-foreground">Menu</p>
       )}
 
-      <nav className="flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto scrollbar-hide">
+      <nav className="flex min-h-0 flex-1 flex-col gap-1">
         {mainItems.map((item) => renderNavItem(item))}
 
         {/* AI Assistant — its own section; chat list shows when the page is active */}
