@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { ArrowLeft } from "lucide-react";
 import { UserAvatar } from "@/components/ui/user-avatar";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -83,6 +84,14 @@ export function ProfileView({ profile }: { profile: ProfileData }) {
 
   return (
     <div className="space-y-5">
+      <button
+        type="button"
+        onClick={() => router.back()}
+        className="inline-flex cursor-pointer items-center gap-2 rounded-full border border-border bg-card px-3.5 py-2 text-sm font-medium transition hover:bg-card-elevated"
+      >
+        <ArrowLeft className="h-4 w-4" /> Back
+      </button>
+
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Profile</h1>
         <p className="mt-1 text-sm text-muted-foreground">Manage your personal information and avatar.</p>
