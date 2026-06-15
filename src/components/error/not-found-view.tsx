@@ -1,7 +1,6 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Home, Lightbulb, Rocket } from "lucide-react";
-import { Logo } from "@/components/brand/logo";
-import { Wordmark } from "@/components/brand/wordmark";
 import { GoBackButton } from "./go-back-button";
 
 /** Full-screen 404. `inside` = dashboard (logged-in) variant, `outside` = public. */
@@ -13,10 +12,23 @@ export function NotFoundView({ variant }: { variant: "inside" | "outside" }) {
   return (
     <div className="flex min-h-dvh flex-col bg-background text-foreground">
       {/* Top bar */}
-      <header className="flex items-center justify-between px-6 py-5 lg:px-10">
+      <header className="flex items-center justify-between border-b border-border/60 px-6 py-4 lg:px-10">
         <Link href="/" className="flex items-center gap-2.5" aria-label="FuFi home">
-          <Logo className="h-9 w-9" />
-          <Wordmark className="text-xl" />
+          <Image
+            src="/Icons/FuFi-Logo-Transperent.png"
+            alt="FuFi"
+            width={44}
+            height={44}
+            priority
+            className="h-11 w-11 object-contain"
+          />
+          <div className="leading-none">
+            <p className="font-display text-xl font-extrabold tracking-tight">
+              <span className="text-foreground">Fu</span>
+              <span className="text-primary">Fi</span>
+            </p>
+            <p className="mt-1 text-[11px] font-medium text-muted-foreground">Fund Your Future</p>
+          </div>
         </Link>
         <Link
           href={inside ? "/" : "/login"}
@@ -27,14 +39,14 @@ export function NotFoundView({ variant }: { variant: "inside" | "outside" }) {
       </header>
 
       {/* Hero — content + illustration; stacks on mobile (illustration on top). */}
-      <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col-reverse items-center justify-center gap-8 px-6 pb-12 lg:grid lg:grid-cols-2 lg:gap-12 lg:px-10">
+      <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col-reverse items-center justify-center gap-10 px-6 py-10 lg:grid lg:grid-cols-[1fr_1.1fr] lg:gap-10 lg:px-10">
         <div className="text-center lg:text-left">
           {inside && (
             <span className="mb-5 inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
               <span className="h-1.5 w-1.5 rounded-full bg-primary" /> 404 — Page Not Found
             </span>
           )}
-          <h1 className="font-display text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl">
+          <h1 className="font-display text-4xl font-extrabold leading-[1.1] tracking-tight sm:text-5xl">
             {inside ? (
               <>
                 Oops! This page took a <span className="text-primary">detour.</span>
@@ -73,7 +85,7 @@ export function NotFoundView({ variant }: { variant: "inside" | "outside" }) {
 
         <div className="flex justify-center">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={image} alt="404 — page not found" className="w-full max-w-md object-contain lg:max-w-xl" />
+          <img src={image} alt="404 — page not found" className="w-full max-w-md object-contain lg:max-w-none" />
         </div>
       </main>
     </div>
