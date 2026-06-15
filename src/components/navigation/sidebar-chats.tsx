@@ -3,16 +3,21 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Plus, Trash2 } from "lucide-react";
+import { History, Plus, Trash2 } from "lucide-react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { deleteConversation, type ConversationSummary } from "@/services/assistant";
 import { cn } from "@/lib/utils";
 
+const RECENT_LIMIT = 5;
+
 export function SidebarChats({ conversations }: { conversations: ConversationSummary[] }) {
   const router = useRouter();
   const activeId = useSearchParams().get("c");
   const [pendingDelete, setPendingDelete] = useState<string | null>(null);
+  const [showAll, setShowAll] = useState(false);
+
+  const visible = showAll ? conversations : conversations.slice(0, RECENT_LIMIT);
 
   async function confirmDelete() {
     const id = pendingDelete;
@@ -37,7 +42,7 @@ export function SidebarChats({ conversations }: { conversations: ConversationSum
         </p>
       )}
       <div className="space-y-0.5">
-        {conversations.map((c) => {
+        {visible.map((c) => {
           const active = c.id === activeId;
           return (
             <div
@@ -50,11 +55,12 @@ export function SidebarChats({ conversations }: { conversations: ConversationSum
               <Link
                 href={`/assistant?c=${c.id}`}
                 className={cn(
-                  "min-w-0 flex-1 truncate px-3 py-2 text-sm",
+                  "flex min-w-0 flex-1 items-center gap-2 px-3 py-2 text-sm",
                   active ? "font-semibold text-primary" : "text-muted-foreground",
                 )}
               >
-                {c.title}
+                <History className={cn("h-3.5 w-3.5 shrink-0", active ? "text-primary" : "text-muted-foreground/70")} />
+                <span className="truncate">{c.title}</span>
               </Link>
               <button
                 type="button"
@@ -68,6 +74,15 @@ export function SidebarChats({ conversations }: { conversations: ConversationSum
           );
         })}
       </div>
+      {conversations.length > RECENT_LIMIT && (
+        <button
+          type="button"
+          onClick={() => setShowAll((v) => !v)}
+          className="mt-1 cursor-pointer px-3 py-1.5 text-left text-xs font-semibold text-primary transition hover:underline"
+        >
+          {showAll ? "Show less" : "View all chats"}
+        </button>
+      )}
 
       <Dialog open={pendingDelete !== null} onOpenChange={(o) => { if (!o) setPendingDelete(null); }}>
         <DialogContent title="Delete chat?">
