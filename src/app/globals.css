@@ -201,6 +201,16 @@ main:has([data-full-bleed]) {
   max-width: none;
 }
 
+/* Indeterminate loading bar — a segment that sweeps across, forever. */
+@keyframes loading-sweep {
+  0% {
+    transform: translateX(-110%);
+  }
+  100% {
+    transform: translateX(320%);
+  }
+}
+
 /* Neutralize the browser autofill tint (no blue/yellow) — paint the input's own
    background via an inset shadow and keep the theme text color. */
 input:-webkit-autofill,

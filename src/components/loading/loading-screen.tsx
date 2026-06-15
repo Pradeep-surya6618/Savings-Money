@@ -2,21 +2,11 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
 
-/** Branded full-screen loading splash with a floating logo, pulsing glow and an
- *  easing progress bar. Used as the app's loading fallback. */
+/** Branded full-screen loading splash: a floating logo, a pulsing glow and an
+ *  indeterminate progress bar that sweeps continuously. Used as the app's
+ *  loading fallback (unknown duration → indeterminate bar, never freezes). */
 export function LoadingScreen() {
-  const [pct, setPct] = useState(0);
-  useEffect(() => {
-    const id = setInterval(() => {
-      // Ease toward ~92% (fast then slow) — a realistic "almost there" feel.
-      setPct((p) => (p >= 92 ? 92 : p + Math.max(0.5, (95 - p) * 0.04)));
-    }, 60);
-    return () => clearInterval(id);
-  }, []);
-  const value = Math.round(pct);
-
   return (
     <div className="relative flex min-h-dvh flex-col items-center justify-center overflow-hidden bg-background px-6 text-center">
       {/* Logo: pulsing glow behind + gentle float */}
@@ -39,18 +29,14 @@ export function LoadingScreen() {
         </motion.div>
       </div>
 
-      {/* Copy + progress */}
+      {/* Copy + indeterminate progress bar */}
       <div className="mt-6 w-full max-w-sm">
         <h1 className="font-display text-xl font-bold tracking-tight sm:text-2xl">Loading your future…</h1>
         <p className="mt-1.5 text-sm text-muted-foreground">Please wait while we get things ready</p>
 
-        <div className="mt-5 h-2 w-full overflow-hidden rounded-full bg-card-elevated">
-          <div
-            className="h-full rounded-full bg-gradient-to-r from-primary to-primary-end transition-[width] duration-100 ease-linear"
-            style={{ width: `${value}%` }}
-          />
+        <div className="relative mt-5 h-2 w-full overflow-hidden rounded-full bg-card-elevated">
+          <div className="absolute inset-y-0 left-0 w-1/3 rounded-full bg-gradient-to-r from-primary to-primary-end animate-[loading-sweep_1.3s_ease-in-out_infinite]" />
         </div>
-        <p className="mt-2.5 text-sm font-semibold text-primary">{value}%</p>
       </div>
 
       {/* Bottom green glow (the "wave" ambience) */}
