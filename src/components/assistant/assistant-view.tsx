@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport, type UIMessage } from "ai";
-import { Sparkles, Send, Plus, Trash2, MessagesSquare } from "lucide-react";
+import { Sparkles, Send, Plus, Trash2, MessagesSquare, Copy, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
@@ -27,6 +27,26 @@ function textOf(message: UIMessage): string {
     .filter((p): p is Extract<typeof p, { type: "text" }> => p.type === "text")
     .map((p) => p.text)
     .join("");
+}
+
+/** Copy a message — hover-revealed on desktop, always visible on mobile. */
+function CopyButton({ text }: { text: string }) {
+  const [copied, setCopied] = useState(false);
+  return (
+    <button
+      type="button"
+      aria-label="Copy message"
+      onClick={() => {
+        void navigator.clipboard.writeText(text).then(() => {
+          setCopied(true);
+          setTimeout(() => setCopied(false), 1500);
+        });
+      }}
+      className="flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center self-end rounded-lg text-muted-foreground opacity-100 transition hover:bg-card-elevated hover:text-foreground lg:opacity-0 lg:group-hover:opacity-100"
+    >
+      {copied ? <Check className="h-3.5 w-3.5 text-positive" /> : <Copy className="h-3.5 w-3.5" />}
+    </button>
+  );
 }
 
 export function AssistantView({
@@ -180,13 +200,14 @@ export function AssistantView({
                 return (
                   <div
                     key={m.id}
-                    className={cn("flex items-end gap-2.5", m.role === "user" ? "justify-end" : "justify-start")}
+                    className={cn("group flex items-end gap-2", m.role === "user" ? "justify-end" : "justify-start")}
                   >
                     {m.role === "assistant" && (
                       <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary-end text-white shadow-sm shadow-primary/30">
                         <Sparkles className="h-4 w-4" />
                       </span>
                     )}
+                    {m.role === "user" && <CopyButton text={text} />}
                     <div
                       className={cn(
                         "max-w-[82%] px-4 py-2.5 text-sm leading-relaxed shadow-sm",
@@ -197,6 +218,7 @@ export function AssistantView({
                     >
                       <p className="whitespace-pre-wrap">{text}</p>
                     </div>
+                    {m.role === "assistant" && <CopyButton text={text} />}
                   </div>
                 );
               })
