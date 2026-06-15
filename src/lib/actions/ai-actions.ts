@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { connectDB } from "@/lib/mongodb/connect";
 import { getCurrentUser } from "@/lib/user";
 import { AiAction } from "@/models/AiAction";
@@ -38,5 +39,6 @@ export async function undoAiAction(logId: string): Promise<{ ok: true } | { ok: 
   await applyInverse(log.inverse as Parameters<typeof applyInverse>[0]);
   log.status = "undone";
   await log.save();
+  revalidatePath("/", "layout");
   return { ok: true };
 }
