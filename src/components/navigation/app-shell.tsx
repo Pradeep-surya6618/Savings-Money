@@ -7,6 +7,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { SignInToast } from "@/components/auth/signin-toast";
 import { InstallBanner } from "@/components/pwa/install-banner";
 import type { NotificationsResult } from "@/services/notifications";
+import type { ConversationSummary } from "@/services/assistant";
 
 export function AppShell({
   children,
@@ -15,6 +16,7 @@ export function AppShell({
   image,
   notifications,
   savingsTotal,
+  conversations,
 }: {
   children: ReactNode;
   greeting: string;
@@ -22,10 +24,11 @@ export function AppShell({
   image: string | null;
   notifications: NotificationsResult;
   savingsTotal: number;
+  conversations: ConversationSummary[];
 }) {
   return (
     <div className="flex min-h-dvh">
-      <Sidebar name={name} image={image} />
+      <Sidebar name={name} image={image} conversations={conversations} />
       <div className="flex min-w-0 flex-1 flex-col">
         <MobileHeader greeting={greeting} name={name} image={image} notifications={notifications} />
         <TopBar greeting={greeting} name={name} notifications={notifications} savingsTotal={savingsTotal} />

@@ -3,6 +3,7 @@ import { AppShell } from "@/components/navigation/app-shell";
 import { getCurrentUser } from "@/lib/user";
 import { getNotifications } from "@/services/notifications";
 import { getSavings } from "@/services/savings";
+import { listConversations } from "@/services/assistant";
 
 function greetingFor(date: Date): string {
   const h = date.getHours();
@@ -14,6 +15,7 @@ function greetingFor(date: Date): string {
 export default async function AppLayout({ children }: { children: ReactNode }) {
   const { user } = await getCurrentUser();
   const [notifications, savings] = await Promise.all([getNotifications(), getSavings()]);
+  const conversations = await listConversations();
   return (
     <AppShell
       greeting={greetingFor(new Date())}
@@ -21,6 +23,7 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
       image={user.image}
       notifications={notifications}
       savingsTotal={savings.currentAmount}
+      conversations={conversations}
     >
       {children}
     </AppShell>
