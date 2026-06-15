@@ -126,7 +126,7 @@ export function AssistantView({
   }
 
   return (
-    <div className="space-y-5 lg:-mx-8 lg:-mt-8 lg:-mb-10 lg:h-[calc(100dvh-5.25rem)] lg:space-y-0">
+    <div data-full-bleed className="space-y-5 lg:-mx-8 lg:-mt-8 lg:-mb-10 lg:h-[calc(100dvh-5.25rem)] lg:space-y-0">
       {/* Header — mobile only; desktop shows the brand at the top of the sidebar */}
       <div className="flex items-center gap-3 lg:hidden">
         <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-primary-end text-white shadow-lg shadow-primary/30">

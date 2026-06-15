@@ -195,6 +195,12 @@ body {
   }
 }
 
+/* A full-bleed page (e.g. the AI chat) opts the centered <main> out of its
+   max-width so it can fill the whole content column. */
+main:has([data-full-bleed]) {
+  max-width: none;
+}
+
 /* Neutralize the browser autofill tint (no blue/yellow) — paint the input's own
    background via an inset shadow and keep the theme text color. */
 input:-webkit-autofill,
