@@ -78,9 +78,9 @@ export function ThemeToggle() {
       type="button"
       aria-label={`Switch to ${next} theme`}
       onClick={(e) => changeTheme(next, e)}
-      className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition hover:bg-card-elevated hover:text-foreground"
+      className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border border-border bg-card transition hover:bg-card-elevated"
     >
-      <Icon className="h-4 w-4" />
+      <Icon className={isDark ? "h-4 w-4 text-[#818cf8]" : "h-4 w-4 text-[#f59e0b]"} />
     </button>
   );
 }
