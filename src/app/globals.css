@@ -184,6 +184,15 @@ body {
   *::-webkit-scrollbar-thumb:hover {
     background-color: var(--scrollbar-thumb-hover);
   }
+  /* Opt-out elements (.scrollbar-hide) must stay hidden on desktop too. These are
+     unlayered like the rules above, so they beat the `*` selector by specificity
+     (a layered @utility would lose to the unlayered `*` rules). */
+  .scrollbar-hide {
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 /* Neutralize the browser autofill tint (no blue/yellow) — paint the input's own
