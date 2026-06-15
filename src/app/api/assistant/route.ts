@@ -3,7 +3,9 @@ import { getSession } from "@/lib/auth/session";
 import { getModel, isAiConfigured } from "@/lib/ai/model";
 import { buildSystemPrompt } from "@/lib/ai/system-prompt";
 import { assistantTools } from "@/lib/ai/tools";
+import { actionTools as writeTools } from "@/lib/ai/action-tools";
 import { appendTurn } from "@/services/assistant";
+import { getAiActionsEnabled } from "@/services/settings";
 
 function textOf(m: UIMessage): string {
   return m.parts
@@ -27,13 +29,15 @@ export async function POST(req: Request) {
   let convId = conversationId;
   if (userText) convId = await appendTurn(conversationId, "user", userText);
 
+  const actionsEnabled = await getAiActionsEnabled();
+
   const modelMessages = await convertToModelMessages(messages);
   const result = streamText({
     model: getModel(),
-    system: buildSystemPrompt(new Date().toISOString().slice(0, 10)),
+    system: buildSystemPrompt(new Date().toISOString().slice(0, 10), actionsEnabled),
     messages: modelMessages,
-    tools: assistantTools,
-    stopWhen: stepCountIs(6),
+    tools: actionsEnabled ? { ...assistantTools, ...writeTools } : assistantTools,
+    stopWhen: stepCountIs(8),
     // Groq/Llama sometimes emits `null` / empty args for tool calls; our tools all
     // have optional params, so coerce that to an empty object instead of erroring/looping.
     experimental_repairToolCall: async ({ toolCall, error }) => {
