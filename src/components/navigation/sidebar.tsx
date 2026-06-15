@@ -4,12 +4,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { PanelLeft, PanelLeftClose, LogOut } from "lucide-react";
+import { PanelLeft, PanelLeftClose } from "lucide-react";
 import { PRIMARY_NAV, SECONDARY_NAV, SETTINGS_NAV, isActive } from "@/lib/nav";
-import { logout } from "@/lib/actions/auth";
 import { cn } from "@/lib/utils";
 import { Tooltip } from "@/components/ui/tooltip";
-import { UserAvatar } from "@/components/ui/user-avatar";
 import { Logo } from "@/components/brand/logo";
 import { Wordmark } from "@/components/brand/wordmark";
 import { SidebarChats } from "./sidebar-chats";
@@ -18,15 +16,7 @@ import type { ConversationSummary } from "@/services/assistant";
 const STORAGE_KEY = "sidebar-collapsed";
 const SPRING = { type: "spring", stiffness: 420, damping: 34 } as const;
 
-export function Sidebar({
-  name,
-  image,
-  conversations,
-}: {
-  name: string;
-  image: string | null;
-  conversations: ConversationSummary[];
-}) {
+export function Sidebar({ conversations }: { conversations: ConversationSummary[] }) {
   const pathname = usePathname();
   // null = preference not read yet → SSR/first paint render expanded (no hydration mismatch).
   const [collapsed, setCollapsed] = useState<boolean | null>(null);
@@ -49,21 +39,6 @@ export function Sidebar({
   const aiItem = items.find((i) => i.href === "/assistant");
   const mainItems = items.filter((i) => i.href !== "/assistant");
   const onAssistant = pathname.startsWith("/assistant");
-
-  const logoutButton = (
-    <button
-      type="button"
-      onClick={() => logout()}
-      aria-label="Log out"
-      className={cn(
-        "flex cursor-pointer items-center gap-3 rounded-xl py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-negative/10 hover:text-negative",
-        isCollapsed ? "justify-center px-0" : "px-3",
-      )}
-    >
-      <LogOut className="h-5 w-5 shrink-0" />
-      {!isCollapsed && <span>Log out</span>}
-    </button>
-  );
 
   function renderNavItem({ href, label, icon: Icon, color }: (typeof items)[number]) {
     const active = isActive(pathname, href);
@@ -156,41 +131,6 @@ export function Sidebar({
         {aiItem && renderNavItem(aiItem)}
         {onAssistant && !isCollapsed && <SidebarChats conversations={conversations} />}
       </nav>
-
-      {/* User footer + logout */}
-      <div className="mt-auto flex flex-col gap-1 border-t border-border/60 pt-3">
-        {isCollapsed ? (
-          <Tooltip content="Profile" side="right">
-            <Link
-              href="/profile"
-              aria-label="Your profile"
-              className={cn(
-                "flex items-center justify-center rounded-xl py-2 transition-colors hover:bg-card-elevated",
-              )}
-            >
-              <UserAvatar name={name} imageUrl={image} className="h-9 w-9 text-sm" />
-            </Link>
-          </Tooltip>
-        ) : (
-          <Link
-            href="/profile"
-            aria-label="Your profile"
-            className="flex items-center gap-3 rounded-xl px-2 py-2 transition-colors hover:bg-card-elevated"
-          >
-            <UserAvatar name={name} imageUrl={image} className="h-9 w-9 text-sm" />
-            <div className="min-w-0 leading-tight">
-              <p className="truncate text-sm font-semibold">{name}</p>
-            </div>
-          </Link>
-        )}
-        {isCollapsed ? (
-          <Tooltip content="Log out" side="right">
-            {logoutButton}
-          </Tooltip>
-        ) : (
-          logoutButton
-        )}
-      </div>
     </aside>
   );
 }

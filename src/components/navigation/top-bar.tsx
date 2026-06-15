@@ -1,16 +1,19 @@
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { NotificationBell } from "@/components/notifications/notification-bell";
 import { SavingsChip } from "@/components/navigation/savings-chip";
+import { ProfileMenu } from "@/components/navigation/profile-menu";
 import type { NotificationsResult } from "@/services/notifications";
 
 export function TopBar({
   greeting,
   name,
+  image,
   notifications,
   savingsTotal,
 }: {
   greeting: string;
   name: string;
+  image: string | null;
   notifications: NotificationsResult;
   savingsTotal: number;
 }) {
@@ -26,6 +29,7 @@ export function TopBar({
         <SavingsChip amount={savingsTotal} />
         <NotificationBell items={notifications.items} />
         <ThemeToggle />
+        <ProfileMenu name={name} image={image} />
       </div>
     </header>
   );
