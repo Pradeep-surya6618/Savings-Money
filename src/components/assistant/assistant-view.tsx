@@ -71,7 +71,7 @@ export function AssistantView({
     return (
       <div className="mx-auto max-w-md py-20 text-center">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/Icons/FuFi-AI.png" alt="FuFi's AI" className="mx-auto h-24 w-24 rounded-2xl object-cover shadow-lg shadow-primary/20" />
+        <img src="/Icons/FuFi-AI.png" alt="FuFi's AI" className="mx-auto h-24 w-24 rounded-2xl bg-black object-cover shadow-lg shadow-primary/20" />
         <h1 className="mt-5 font-display text-2xl font-extrabold tracking-tight">Connect an AI key</h1>
         <p className="mt-2 text-sm text-muted-foreground">
           Add a free <span className="font-medium text-foreground">AI_API_KEY</span> (e.g. from console.groq.com) to{" "}
@@ -154,7 +154,7 @@ export function AssistantView({
               <div className="flex h-full flex-col items-center justify-center gap-6 text-center">
                 <div>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src="/Icons/FuFi-AI.png" alt="FuFi's AI" className="mx-auto h-24 w-24 rounded-3xl object-cover shadow-lg shadow-primary/20" />
+                  <img src="/Icons/FuFi-AI.png" alt="FuFi's AI" className="mx-auto h-24 w-24 rounded-3xl bg-black object-cover shadow-lg shadow-primary/20" />
                   <p className="mt-4 font-display text-lg font-bold tracking-tight">How can I help with your finances?</p>
                   <p className="mt-1 text-sm text-muted-foreground">Pick a prompt or type your own.</p>
                 </div>
