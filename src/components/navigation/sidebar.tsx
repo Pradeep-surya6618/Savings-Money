@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { PanelLeft, PanelLeftClose } from "lucide-react";
+import { PanelLeft, PanelLeftClose, Plus } from "lucide-react";
 import { PRIMARY_NAV, SECONDARY_NAV, SETTINGS_NAV, isActive } from "@/lib/nav";
 import { cn } from "@/lib/utils";
 import { Tooltip } from "@/components/ui/tooltip";
@@ -130,6 +130,17 @@ export function Sidebar({ conversations }: { conversations: ConversationSummary[
         )}
         {aiItem && renderNavItem(aiItem)}
         {onAssistant && !isCollapsed && <SidebarChats conversations={conversations} />}
+        {onAssistant && isCollapsed && (
+          <Tooltip content="New chat" side="right">
+            <Link
+              href="/assistant"
+              aria-label="New chat"
+              className="mt-1 flex h-9 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary-end text-white shadow-sm shadow-primary/30 transition hover:opacity-90"
+            >
+              <Plus className="h-5 w-5" />
+            </Link>
+          </Tooltip>
+        )}
       </nav>
     </aside>
   );
