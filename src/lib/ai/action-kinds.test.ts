@@ -51,3 +51,15 @@ describe("isLargeAmount", () => {
     expect(ACTION_KINDS).toHaveLength(8);
   });
 });
+
+describe("large-amount boundaries", () => {
+  it("flags set_loan at threshold via totalLoan", () => {
+    expect(isLargeAmount("set_loan", { totalLoan: AI_LARGE_AMOUNT, paidAmount: 0, emiAmount: 0, startDate: "2026-01-01" })).toBe(true);
+  });
+  it("flags set_savings_goal by targetAmount", () => {
+    expect(isLargeAmount("set_savings_goal", { targetAmount: AI_LARGE_AMOUNT, currentAmount: 0, monthlyContribution: 0 })).toBe(true);
+  });
+  it("does not flag a small contribution", () => {
+    expect(isLargeAmount("contribute_to_savings", { amount: 500 })).toBe(false);
+  });
+});
