@@ -62,11 +62,13 @@ export function SettingsView({
   hasPassword,
   settings,
   notifyPrefs,
+  aiActions,
 }: {
   name: string;
   hasPassword: boolean;
   settings: Prefs;
   notifyPrefs: NotifyPrefs;
+  aiActions?: React.ReactNode;
 }) {
   // Active section lives in the URL (?section=) so it's deep-linkable and survives refresh.
   const [active, setActive] = useTabParam("section", SECTION_KEYS, "general");
@@ -263,6 +265,7 @@ export function SettingsView({
                   icon={Upload}
                   button={<Button variant="outline" onClick={() => toast.info("Import arrives in a later update")}>Import</Button>}
                 />
+                {aiActions}
               </div>
             </Panel>
           )}

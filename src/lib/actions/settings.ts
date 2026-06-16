@@ -25,3 +25,11 @@ export async function updatePreferences(input: UpdatePreferencesInput): Promise<
   revalidatePath("/settings");
   return { ok: true };
 }
+
+export async function setAiActionsEnabled(enabled: boolean): Promise<void> {
+  await connectDB();
+  const { user } = await getCurrentUser();
+  await Settings.updateOne({ userId: user.id }, { $set: { aiActionsEnabled: enabled } }, { upsert: true });
+  revalidatePath("/settings");
+  revalidatePath("/assistant");
+}

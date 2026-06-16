@@ -3,11 +3,14 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useChat } from "@ai-sdk/react";
-import { DefaultChatTransport, type UIMessage } from "ai";
+import { DefaultChatTransport, lastAssistantMessageIsCompleteWithApprovalResponses, isToolUIPart, getToolName, type UIMessage } from "ai";
 import { Sparkles, Send, Plus, Trash2, MessagesSquare, Copy, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
+import { toast } from "@/lib/toast-store";
+import { ActionConfirmCard } from "./action-confirm-card";
+import type { AiActionKind } from "@/lib/ai/action-kinds";
 import {
   createConversation,
   deleteConversation,
@@ -63,8 +66,9 @@ export function AssistantView({
   const [listOpen, setListOpen] = useState(false);
   const [pendingDelete, setPendingDelete] = useState<string | null>(null);
 
-  const { messages, sendMessage, setMessages, status, stop } = useChat({
+  const { messages, sendMessage, setMessages, status, stop, addToolApprovalResponse } = useChat({
     transport: new DefaultChatTransport({ api: "/api/assistant" }),
+    sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithApprovalResponses,
     onFinish: () => router.refresh(),
   });
 
@@ -140,9 +144,16 @@ export function AssistantView({
     const id = pendingDelete;
     setPendingDelete(null);
     if (!id) return;
-    await deleteConversation(id);
-    if (id === conversationId) router.push("/assistant");
-    router.refresh();
+    const res = await deleteConversation(id);
+    if (!res.ok) {
+      toast.error(res.error);
+      return;
+    }
+    toast.success("Chat deleted");
+    // Deleting the open chat: replace the URL so the stale ?c= leaves it.
+    // (deleteConversation revalidates the list; a refresh here would race the navigation.)
+    if (id === conversationId) router.replace("/assistant");
+    else router.refresh();
   }
 
   return (
@@ -194,31 +205,57 @@ export function AssistantView({
             ) : (
               messages.map((m) => {
                 const text = textOf(m);
-                // Skip tool-only / in-progress assistant turns that have no text yet
-                // (the typing indicator below covers the streaming state).
-                if (m.role === "assistant" && !text.trim()) return null;
+                const toolParts = m.parts.filter(isToolUIPart);
+                if (m.role === "assistant" && !text.trim() && toolParts.length === 0) return null;
                 return (
-                  <div
-                    key={m.id}
-                    className={cn("group flex items-end gap-2", m.role === "user" ? "justify-end" : "justify-start")}
-                  >
-                    {m.role === "assistant" && (
-                      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary-end text-white shadow-sm shadow-primary/30">
-                        <Sparkles className="h-4 w-4" />
-                      </span>
+                  <div key={m.id} className="space-y-2">
+                    {(text.trim() || m.role === "user") && (
+                      <div className={cn("group flex items-end gap-2", m.role === "user" ? "justify-end" : "justify-start")}>
+                        {m.role === "assistant" && (
+                          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary-end text-white shadow-sm shadow-primary/30">
+                            <Sparkles className="h-4 w-4" />
+                          </span>
+                        )}
+                        {m.role === "user" && <CopyButton text={text} />}
+                        <div
+                          className={cn(
+                            "max-w-[82%] px-4 py-2.5 text-sm leading-relaxed shadow-sm",
+                            m.role === "user"
+                              ? "rounded-3xl rounded-br-md bg-gradient-to-br from-primary to-primary-end text-white shadow-primary/25"
+                              : "rounded-3xl rounded-bl-md border border-border bg-card-elevated/60 text-foreground",
+                          )}
+                        >
+                          <p className="whitespace-pre-wrap">{text}</p>
+                        </div>
+                        {m.role === "assistant" && text.trim() && <CopyButton text={text} />}
+                      </div>
                     )}
-                    {m.role === "user" && <CopyButton text={text} />}
-                    <div
-                      className={cn(
-                        "max-w-[82%] px-4 py-2.5 text-sm leading-relaxed shadow-sm",
-                        m.role === "user"
-                          ? "rounded-3xl rounded-br-md bg-gradient-to-br from-primary to-primary-end text-white shadow-primary/25"
-                          : "rounded-3xl rounded-bl-md border border-border bg-card-elevated/60 text-foreground",
-                      )}
-                    >
-                      <p className="whitespace-pre-wrap">{text}</p>
-                    </div>
-                    {m.role === "assistant" && <CopyButton text={text} />}
+                    {toolParts.map((part) => {
+                      const name = getToolName(part) as string;
+                      if (
+                        !name.startsWith("add_") && !name.startsWith("edit_") && !name.startsWith("delete_") &&
+                        !name.startsWith("set_") && !name.startsWith("contribute_") && !name.startsWith("record_")
+                      ) {
+                        return null;
+                      }
+                      const out =
+                        part.state === "output-available"
+                          ? (part.output as { ok: boolean; logId?: string; summary?: string; error?: string })
+                          : undefined;
+                      return (
+                        <div key={part.toolCallId} className="flex justify-start pl-10">
+                          <ActionConfirmCard
+                            kind={name as AiActionKind}
+                            state={part.state}
+                            input={part.input}
+                            output={out}
+                            errorText={part.state === "output-error" ? part.errorText : undefined}
+                            approvalId={part.approval?.id}
+                            respond={addToolApprovalResponse}
+                          />
+                        </div>
+                      );
+                    })}
                   </div>
                 );
               })

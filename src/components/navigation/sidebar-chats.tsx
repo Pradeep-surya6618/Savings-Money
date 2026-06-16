@@ -7,6 +7,7 @@ import { History, Plus, Trash2 } from "lucide-react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { deleteConversation, type ConversationSummary } from "@/services/assistant";
+import { toast } from "@/lib/toast-store";
 import { cn } from "@/lib/utils";
 
 const RECENT_LIMIT = 5;
@@ -23,9 +24,16 @@ export function SidebarChats({ conversations }: { conversations: ConversationSum
     const id = pendingDelete;
     setPendingDelete(null);
     if (!id) return;
-    await deleteConversation(id);
-    if (id === activeId) router.push("/assistant");
-    router.refresh();
+    const res = await deleteConversation(id);
+    if (!res.ok) {
+      toast.error(res.error);
+      return;
+    }
+    toast.success("Chat deleted");
+    // Deleting the open chat: replace the URL so the stale ?c= leaves it.
+    // (deleteConversation revalidates the list; a refresh here would race the navigation.)
+    if (id === activeId) router.replace("/assistant");
+    else router.refresh();
   }
 
   return (

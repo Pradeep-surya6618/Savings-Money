@@ -9,17 +9,19 @@ import { saveTransactionSchema, type SaveTransactionInput } from "@/validations/
 
 type Result = { ok: true } | { ok: false; error: string };
 
-export async function createTransaction(input: SaveTransactionInput): Promise<Result> {
+export async function createTransaction(
+  input: SaveTransactionInput,
+): Promise<{ ok: true; id: string } | { ok: false; error: string }> {
   const parsed = saveTransactionSchema.safeParse(input);
   if (!parsed.success) return { ok: false, error: parsed.error.issues[0]?.message ?? "Invalid input" };
   const { date, ...rest } = parsed.data;
 
   await connectDB();
   const { user } = await getCurrentUser();
-  await Transaction.create({ userId: user.id, ...rest, date: new Date(date) });
+  const doc = await Transaction.create({ userId: user.id, ...rest, date: new Date(date) });
 
   revalidatePath("/transactions");
-  return { ok: true };
+  return { ok: true, id: String(doc._id) };
 }
 
 export async function updateTransaction(id: string, input: SaveTransactionInput): Promise<Result> {
