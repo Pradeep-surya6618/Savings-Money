@@ -8,6 +8,7 @@ import { Sparkles, Send, Plus, Trash2, MessagesSquare, Copy, Check } from "lucid
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
+import { toast } from "@/lib/toast-store";
 import { ActionConfirmCard } from "./action-confirm-card";
 import type { AiActionKind } from "@/lib/ai/action-kinds";
 import {
@@ -143,7 +144,12 @@ export function AssistantView({
     const id = pendingDelete;
     setPendingDelete(null);
     if (!id) return;
-    await deleteConversation(id);
+    const res = await deleteConversation(id);
+    if (!res.ok) {
+      toast.error(res.error);
+      return;
+    }
+    toast.success("Chat deleted");
     // Deleting the open chat: replace the URL so the stale ?c= leaves it.
     // (deleteConversation revalidates the list; a refresh here would race the navigation.)
     if (id === conversationId) router.replace("/assistant");

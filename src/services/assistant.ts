@@ -70,15 +70,18 @@ export async function createConversation(firstMessage: string): Promise<string> 
   return String(convo._id);
 }
 
-export async function deleteConversation(conversationId: string): Promise<void> {
+export async function deleteConversation(
+  conversationId: string,
+): Promise<{ ok: true } | { ok: false; error: string }> {
   const userId = await requireUserId();
-  if (!userId) return;
+  if (!userId) return { ok: false, error: "You're signed out" };
   await connectDB();
   const convo = await Conversation.findOne({ _id: conversationId, userId });
-  if (!convo) return;
+  if (!convo) return { ok: false, error: "Chat not found" };
   await Message.deleteMany({ conversationId: convo._id, userId });
   await Conversation.deleteOne({ _id: convo._id });
   // Refresh the sidebar chat list (rendered in the (app) layout) so the deleted
   // chat disappears without the caller racing a manual router.refresh().
   revalidatePath("/assistant", "layout");
+  return { ok: true };
 }
