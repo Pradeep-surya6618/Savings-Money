@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { ACTION_KINDS, parseActionInput, summarizeAction, isLargeAmount, AI_LARGE_AMOUNT } from "./action-kinds";
+import { z } from "zod";
+import { ACTION_KINDS, ACTION_SCHEMAS, parseActionInput, summarizeAction, isLargeAmount, AI_LARGE_AMOUNT } from "./action-kinds";
 
 describe("parseActionInput", () => {
   it("accepts a valid add_transaction", () => {
@@ -61,5 +62,17 @@ describe("large-amount boundaries", () => {
   });
   it("does not flag a small contribution", () => {
     expect(isLargeAmount("contribute_to_savings", { amount: 500 })).toBe(false);
+  });
+});
+
+describe("tool schemas are JSON-Schema serializable (Groq function-calling)", () => {
+  it("every action schema converts to a root object schema without throwing", () => {
+    for (const kind of ACTION_KINDS) {
+      const convert = () => z.toJSONSchema(ACTION_SCHEMAS[kind]);
+      expect(convert, `${kind} should convert`).not.toThrow();
+      const js = convert() as { type?: string; allOf?: unknown };
+      // Groq needs a plain object schema at the root (no allOf / non-object root).
+      expect(js.type, `${kind} root should be an object`).toBe("object");
+    }
   });
 });

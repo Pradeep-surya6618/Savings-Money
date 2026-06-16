@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { saveTransactionSchema } from "@/validations/transaction";
 import { saveSavingsSchema, saveLoanSchema, quickAmountSchema } from "@/validations/tracker";
-import { saveSalarySchema } from "@/validations/salary";
+import { CATEGORY_KEYS } from "@/lib/categories";
 import { TXN_CATEGORY_MAP, type TxnCategoryKey } from "@/lib/transaction-categories";
 
 /** ₹ threshold (and any delete) that triggers the large-amount warning. */
@@ -21,7 +21,35 @@ export const ACTION_KINDS = [
 export type AiActionKind = (typeof ACTION_KINDS)[number];
 
 const idSchema = z.object({ id: z.string().min(1, "Missing record id") });
-const editTransactionSchema = idSchema.and(saveTransactionSchema);
+
+// Flat (JSON-Schema-safe) edit schema — the gateway's updateTransaction re-validates
+// the fields strictly (incl. the category↔type rule) via saveTransactionSchema.
+const editTransactionSchema = z.object({
+  id: z.string().min(1, "Missing record id"),
+  title: z.string().trim().min(1).max(80),
+  amount: z.number().positive(),
+  type: z.enum(["income", "expense"]),
+  category: z.string().min(1),
+  date: z.string().min(1).describe("YYYY-MM-DD"),
+  notes: z.string().trim().max(300).optional(),
+});
+
+// Flat (JSON-Schema-safe) budget schema — no z.coerce.date() (which can't serialize to
+// JSON Schema). receivedDate is a plain string; saveSalaryAllocations coerces + re-validates
+// (allocations ≤ salary, no duplicate categories) when the gateway applies it.
+const setBudgetSchema = z.object({
+  month: z.string().describe("Month as YYYY-MM"),
+  amount: z.number().min(0),
+  receivedDate: z.string().optional().describe("YYYY-MM-DD"),
+  allocations: z
+    .array(
+      z.object({
+        category: z.enum(CATEGORY_KEYS as readonly [string, ...string[]]),
+        amount: z.number().min(0),
+      }),
+    )
+    .optional(),
+});
 
 /** Per-kind Zod schemas — reuse the existing app validations so AI writes obey the
  *  same rules as the manual UI (category↔type, paid≤total, allocations≤salary, …). */
@@ -33,7 +61,7 @@ export const ACTION_SCHEMAS = {
   set_savings_goal: saveSavingsSchema,
   record_loan_payment: quickAmountSchema,
   set_loan: saveLoanSchema,
-  set_budget: saveSalarySchema,
+  set_budget: setBudgetSchema,
 } as const satisfies Record<AiActionKind, z.ZodTypeAny>;
 
 export function parseActionInput(kind: AiActionKind, input: unknown) {
