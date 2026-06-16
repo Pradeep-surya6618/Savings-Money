@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { connectDB } from "@/lib/mongodb/connect";
 import { getSession } from "@/lib/auth/session";
 import { Conversation } from "@/models/Conversation";
@@ -77,4 +78,7 @@ export async function deleteConversation(conversationId: string): Promise<void> 
   if (!convo) return;
   await Message.deleteMany({ conversationId: convo._id, userId });
   await Conversation.deleteOne({ _id: convo._id });
+  // Refresh the sidebar chat list (rendered in the (app) layout) so the deleted
+  // chat disappears without the caller racing a manual router.refresh().
+  revalidatePath("/assistant", "layout");
 }

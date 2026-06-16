@@ -144,8 +144,10 @@ export function AssistantView({
     setPendingDelete(null);
     if (!id) return;
     await deleteConversation(id);
-    if (id === conversationId) router.push("/assistant");
-    router.refresh();
+    // Deleting the open chat: replace the URL so the stale ?c= leaves it.
+    // (deleteConversation revalidates the list; a refresh here would race the navigation.)
+    if (id === conversationId) router.replace("/assistant");
+    else router.refresh();
   }
 
   return (
