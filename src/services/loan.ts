@@ -4,31 +4,6 @@ import { Loan } from "@/models/Loan";
 import { loanStats, type LoanStats, loanSummary, type LoanSummary } from "@/lib/tracker-math";
 import { loanTypeLabel, type LoanTypeKey } from "@/lib/loan-types";
 
-export type LoanDTO = {
-  totalLoan: number;
-  paidAmount: number;
-  emiAmount: number;
-  startDate: string | null; // ISO, or null when unset
-  stats: LoanStats;
-};
-
-export async function getLoan(): Promise<LoanDTO> {
-  await connectDB();
-  const { user } = await getCurrentUser();
-  const doc = await Loan.findOneAndUpdate(
-    { userId: user.id },
-    { $setOnInsert: { userId: user.id } },
-    { upsert: true, returnDocument: "after", setDefaultsOnInsert: true },
-  ).lean();
-  if (!doc) throw new Error("Failed to resolve loan");
-  return {
-    totalLoan: doc.totalLoan,
-    paidAmount: doc.paidAmount,
-    emiAmount: doc.emiAmount,
-    startDate: doc.startDate ? new Date(doc.startDate).toISOString() : null,
-    stats: loanStats(doc.totalLoan, doc.paidAmount, doc.emiAmount),
-  };
-}
 
 export type LoanItemDTO = {
   id: string;
