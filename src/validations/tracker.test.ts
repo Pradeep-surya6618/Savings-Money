@@ -42,8 +42,14 @@ describe("saveLoanSchema (multi-loan)", () => {
     expect(saveLoanSchema.safeParse(ok).success).toBe(true);
   });
   it("accepts a missing name (optional)", () => {
-    const { name, ...rest } = ok;
-    expect(saveLoanSchema.safeParse(rest).success).toBe(true);
+    const noName = {
+      type: ok.type,
+      totalLoan: ok.totalLoan,
+      paidAmount: ok.paidAmount,
+      emiAmount: ok.emiAmount,
+      startDate: ok.startDate,
+    };
+    expect(saveLoanSchema.safeParse(noName).success).toBe(true);
   });
   it("rejects an unknown type", () => {
     expect(saveLoanSchema.safeParse({ ...ok, type: "spaceship" }).success).toBe(false);
