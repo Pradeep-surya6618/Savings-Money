@@ -15,7 +15,7 @@ describe("saveSavingsSchema", () => {
 });
 
 describe("saveLoanSchema", () => {
-  const base = { totalLoan: 500000, paidAmount: 100000, emiAmount: 25000, startDate: "2026-01-15" };
+  const base = { type: "personal", totalLoan: 500000, paidAmount: 100000, emiAmount: 25000, startDate: "2026-01-15" };
   it("accepts a valid loan", () => {
     expect(saveLoanSchema.safeParse(base).success).toBe(true);
   });
@@ -33,5 +33,22 @@ describe("quickAmountSchema", () => {
   it("requires a positive amount", () => {
     expect(quickAmountSchema.safeParse({ amount: 0 }).success).toBe(false);
     expect(quickAmountSchema.safeParse({ amount: 500 }).success).toBe(true);
+  });
+});
+
+describe("saveLoanSchema (multi-loan)", () => {
+  const ok = { type: "vehicle", name: "Car loan", totalLoan: 500000, paidAmount: 100000, emiAmount: 25000, startDate: "2026-01-15" };
+  it("accepts a valid typed loan", () => {
+    expect(saveLoanSchema.safeParse(ok).success).toBe(true);
+  });
+  it("accepts a missing name (optional)", () => {
+    const { name, ...rest } = ok;
+    expect(saveLoanSchema.safeParse(rest).success).toBe(true);
+  });
+  it("rejects an unknown type", () => {
+    expect(saveLoanSchema.safeParse({ ...ok, type: "spaceship" }).success).toBe(false);
+  });
+  it("rejects paid > total", () => {
+    expect(saveLoanSchema.safeParse({ ...ok, paidAmount: 600000 }).success).toBe(false);
   });
 });
