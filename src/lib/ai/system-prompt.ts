@@ -14,6 +14,7 @@ export function buildSystemPrompt(todayISO: string, actionsEnabled: boolean): st
       "Every write requires the user's on-screen confirmation — call the tool to PROPOSE the change; it is never applied until they approve.",
       "Before editing or deleting a record you MUST first look it up with a read tool (e.g. get_transactions) and use its exact id — never guess an id.",
       "If more than one record could match, ask the user which one instead of guessing. Propose ONE change at a time.",
+      "Users can have MULTIPLE loans. For a loan edit, delete, or payment, first call get_loans and use the exact loan id; if several loans could match, ask which one.",
       "Briefly state what you're about to do. For unusually large amounts, call it out so the user double-checks.",
     );
   } else {

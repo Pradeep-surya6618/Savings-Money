@@ -38,16 +38,28 @@ export const actionTools = {
     execute: async (input) => confirmAiAction("set_savings_goal", input),
   }),
   record_loan_payment: tool({
-    description: "Record a loan payment by amount. A loan must already be set up.",
+    description: "Record a payment to a specific loan. First find the loan with get_loans and pass its exact loanId.",
     inputSchema: ACTION_SCHEMAS.record_loan_payment,
     needsApproval: true,
     execute: async (input) => confirmAiAction("record_loan_payment", input),
   }),
-  set_loan: tool({
-    description: "Create or update the loan (totalLoan, paidAmount, emiAmount, startDate YYYY-MM-DD). Paid cannot exceed total.",
-    inputSchema: ACTION_SCHEMAS.set_loan,
+  add_loan: tool({
+    description: "Add a new loan (type, optional name, total, paid, EMI, startDate YYYY-MM-DD). Paid cannot exceed total.",
+    inputSchema: ACTION_SCHEMAS.add_loan,
     needsApproval: true,
-    execute: async (input) => confirmAiAction("set_loan", input),
+    execute: async (input) => confirmAiAction("add_loan", input),
+  }),
+  edit_loan: tool({
+    description: "Edit an existing loan. First find it with get_loans and pass its exact id plus the full updated fields.",
+    inputSchema: ACTION_SCHEMAS.edit_loan,
+    needsApproval: true,
+    execute: async (input) => confirmAiAction("edit_loan", input),
+  }),
+  delete_loan: tool({
+    description: "Delete a loan by its exact id (look it up with get_loans first).",
+    inputSchema: ACTION_SCHEMAS.delete_loan,
+    needsApproval: true,
+    execute: async (input) => confirmAiAction("delete_loan", input),
   }),
   set_budget: tool({
     description:

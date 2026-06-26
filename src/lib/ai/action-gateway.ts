@@ -4,9 +4,10 @@ import { Transaction } from "@/models/Transaction";
 import { Savings } from "@/models/Savings";
 import { Loan } from "@/models/Loan";
 import { Salary } from "@/models/Salary";
+import type { LoanTypeKey } from "@/lib/loan-types";
 import { createTransaction, updateTransaction, deleteTransaction } from "@/lib/actions/transactions";
 import { saveSavings, addToSavings } from "@/lib/actions/savings";
-import { saveLoan, recordLoanPayment } from "@/lib/actions/loan";
+import { createLoan, updateLoan, deleteLoan, recordLoanPayment } from "@/lib/actions/loan";
 import { saveSalaryAllocations } from "@/lib/actions/salary";
 import { type AiActionKind, parseActionInput, summarizeAction } from "./action-kinds";
 import {
@@ -14,6 +15,7 @@ import {
   type AiActionInverse,
   type InverseContext,
   type TxnSnapshot,
+  type LoanSnapshot,
 } from "./action-inverse";
 
 type ApplyResult =
@@ -29,6 +31,18 @@ function txnSnapshot(d: any): TxnSnapshot {
     category: d.category,
     date: new Date(d.date).toISOString().slice(0, 10),
     notes: d.notes ?? null,
+  };
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function loanSnapshot(d: any): LoanSnapshot {
+  return {
+    type: d.type ?? "other",
+    name: d.name ?? null,
+    totalLoan: d.totalLoan,
+    paidAmount: d.paidAmount,
+    emiAmount: d.emiAmount,
+    startDate: d.startDate ? new Date(d.startDate).toISOString().slice(0, 10) : null,
   };
 }
 
@@ -83,22 +97,33 @@ export async function applyAiAction(kind: AiActionKind, rawInput: unknown): Prom
       break;
     }
     case "record_loan_payment": {
-      const prev = await Loan.findOne({ userId: user.id }).lean();
-      if (!prev) return { ok: false, error: "Set up your loan first" };
+      const prev = await Loan.findOne({ _id: input.loanId, userId: user.id }).lean();
+      if (!prev) return { ok: false, error: "Loan not found" };
       ctx.before!.loanPaid = prev.paidAmount;
-      const res = await recordLoanPayment(input);
+      const res = await recordLoanPayment(input.loanId, input.amount);
       if (!res.ok) return res;
       break;
     }
-    case "set_loan": {
-      const prev = await Loan.findOne({ userId: user.id }).lean();
-      ctx.before!.loan = prev
-        ? {
-            totalLoan: prev.totalLoan, paidAmount: prev.paidAmount, emiAmount: prev.emiAmount,
-            startDate: prev.startDate ? new Date(prev.startDate).toISOString().slice(0, 10) : null,
-          }
-        : null;
-      const res = await saveLoan(input);
+    case "add_loan": {
+      const res = await createLoan(input);
+      if (!res.ok) return res;
+      ctx.createdId = res.id;
+      break;
+    }
+    case "edit_loan": {
+      const prev = await Loan.findOne({ _id: input.id, userId: user.id }).lean();
+      if (!prev) return { ok: false, error: "Loan not found" };
+      ctx.before!.loan = loanSnapshot(prev);
+      const { id, ...fields } = input;
+      const res = await updateLoan(id, fields);
+      if (!res.ok) return res;
+      break;
+    }
+    case "delete_loan": {
+      const prev = await Loan.findOne({ _id: input.id, userId: user.id }).lean();
+      if (!prev) return { ok: false, error: "Loan not found" };
+      ctx.before!.loan = loanSnapshot(prev);
+      const res = await deleteLoan(input.id);
       if (!res.ok) return res;
       break;
     }
@@ -151,16 +176,31 @@ export async function applyInverse(inverse: AiActionInverse): Promise<void> {
       else await Savings.deleteOne({ userId: user.id });
       break;
     case "set_loan_paid":
-      await Loan.updateOne({ userId: user.id }, { $set: { paidAmount: inverse.paidAmount } });
+      await Loan.updateOne({ _id: inverse.id, userId: user.id }, { $set: { paidAmount: inverse.paidAmount } });
       break;
-    case "set_loan_doc":
-      if (inverse.doc)
-        await Loan.updateOne(
-          { userId: user.id },
-          { $set: { ...inverse.doc, startDate: inverse.doc.startDate ? new Date(inverse.doc.startDate) : null } },
-          { upsert: true },
-        );
-      else await Loan.deleteOne({ userId: user.id });
+    case "create_loan":
+      await Loan.create({
+        userId: user.id,
+        type: inverse.doc.type as LoanTypeKey,
+        name: inverse.doc.name ?? null,
+        totalLoan: inverse.doc.totalLoan,
+        paidAmount: inverse.doc.paidAmount,
+        emiAmount: inverse.doc.emiAmount,
+        startDate: inverse.doc.startDate ? new Date(inverse.doc.startDate) : null,
+      });
+      break;
+    case "update_loan":
+      await Loan.updateOne(
+        { _id: inverse.id, userId: user.id },
+        { $set: {
+            type: inverse.doc.type, name: inverse.doc.name ?? null,
+            totalLoan: inverse.doc.totalLoan, paidAmount: inverse.doc.paidAmount, emiAmount: inverse.doc.emiAmount,
+            startDate: inverse.doc.startDate ? new Date(inverse.doc.startDate) : null,
+          } },
+      );
+      break;
+    case "delete_loan_doc":
+      await Loan.deleteOne({ _id: inverse.id, userId: user.id });
       break;
     case "set_salary":
       if (inverse.doc)
