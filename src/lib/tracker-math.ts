@@ -39,3 +39,25 @@ export function loanStats(total: number, paid: number, emi: number): LoanStats {
   const paidOff = total > 0 && paid >= total;
   return { pct, remaining, monthsLeft, paidOff };
 }
+
+export type LoanSummary = {
+  count: number;
+  totalBorrowed: number;
+  totalPaid: number;
+  totalRemaining: number;
+  totalMonthlyEmi: number;
+  overallPct: number;
+  allPaidOff: boolean;
+};
+
+export function loanSummary(
+  loans: { totalLoan: number; paidAmount: number; emiAmount: number }[],
+): LoanSummary {
+  const totalBorrowed = loans.reduce((s, l) => s + l.totalLoan, 0);
+  const totalPaid = loans.reduce((s, l) => s + l.paidAmount, 0);
+  const totalMonthlyEmi = loans.reduce((s, l) => s + l.emiAmount, 0);
+  const totalRemaining = Math.max(0, totalBorrowed - totalPaid);
+  const overallPct = totalBorrowed > 0 ? clampPct((totalPaid / totalBorrowed) * 100) : 0;
+  const allPaidOff = loans.length > 0 && loans.every((l) => l.totalLoan > 0 && l.paidAmount >= l.totalLoan);
+  return { count: loans.length, totalBorrowed, totalPaid, totalRemaining, totalMonthlyEmi, overallPct, allPaidOff };
+}

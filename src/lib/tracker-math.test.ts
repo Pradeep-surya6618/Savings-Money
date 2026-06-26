@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { savingsStats, loanStats } from "./tracker-math";
+import { savingsStats, loanStats, loanSummary } from "./tracker-math";
 
 describe("savingsStats", () => {
   it("computes pct, remaining, monthsToGoal and milestones", () => {
@@ -66,5 +66,37 @@ describe("loanStats", () => {
 
   it("returns null monthsLeft when there is no EMI", () => {
     expect(loanStats(500000, 0, 0).monthsLeft).toBeNull();
+  });
+});
+
+describe("loanSummary", () => {
+  it("is all-zero for no loans", () => {
+    expect(loanSummary([])).toEqual({
+      count: 0, totalBorrowed: 0, totalPaid: 0, totalRemaining: 0,
+      totalMonthlyEmi: 0, overallPct: 0, allPaidOff: false,
+    });
+  });
+  it("aggregates multiple loans", () => {
+    const s = loanSummary([
+      { totalLoan: 100000, paidAmount: 25000, emiAmount: 5000 },
+      { totalLoan: 50000, paidAmount: 25000, emiAmount: 2000 },
+    ]);
+    expect(s.count).toBe(2);
+    expect(s.totalBorrowed).toBe(150000);
+    expect(s.totalPaid).toBe(50000);
+    expect(s.totalRemaining).toBe(100000);
+    expect(s.totalMonthlyEmi).toBe(7000);
+    expect(Math.round(s.overallPct)).toBe(33);
+    expect(s.allPaidOff).toBe(false);
+  });
+  it("flags allPaidOff only when every loan is fully paid", () => {
+    expect(loanSummary([{ totalLoan: 100, paidAmount: 100, emiAmount: 0 }]).allPaidOff).toBe(true);
+    expect(loanSummary([
+      { totalLoan: 100, paidAmount: 100, emiAmount: 0 },
+      { totalLoan: 100, paidAmount: 50, emiAmount: 0 },
+    ]).allPaidOff).toBe(false);
+  });
+  it("clamps overallPct and treats zero borrowed as 0%", () => {
+    expect(loanSummary([{ totalLoan: 0, paidAmount: 0, emiAmount: 0 }]).overallPct).toBe(0);
   });
 });
