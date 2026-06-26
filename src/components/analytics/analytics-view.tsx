@@ -19,7 +19,7 @@ import { useTabParam } from "@/lib/use-tab-param";
 import { LOAN_COLOR } from "@/lib/nav";
 import type { HealthBand } from "@/lib/health-score";
 import type { AnalyticsDTO } from "@/services/analytics";
-import type { LoanDTO } from "@/services/loan";
+import type { getLoans } from "@/services/loan";
 
 const TABS = [
   { key: "overview", label: "Overview" },
@@ -55,7 +55,7 @@ export function AnalyticsView({
   data: AnalyticsDTO;
   month: string;
   health: { score: number; band: HealthBand };
-  loan: LoanDTO;
+  loan: Awaited<ReturnType<typeof getLoans>>;
 }) {
   // Active analytics tab lives in the URL (?tab=) so it's deep-linkable.
   const [tab, setTab] = useTabParam("tab", TAB_KEYS, "overview");
@@ -140,24 +140,20 @@ export function AnalyticsView({
       {tab === "loan" && (
         <Card className="flex flex-col items-center gap-4 py-8">
           <h2 className="self-start font-semibold">Loan Repayment</h2>
-          {loan.totalLoan > 0 ? (
+          {loan.summary.count > 0 ? (
             <>
               <RingStat
-                pct={loan.stats.pct}
+                pct={loan.summary.overallPct}
                 color={LOAN_COLOR}
-                caption="of loan repaid"
-                sub={
-                  <>
-                    {formatCurrency(loan.paidAmount)} of {formatCurrency(loan.totalLoan)}
-                  </>
-                }
+                caption="of all loans repaid"
+                sub={<>{formatCurrency(loan.summary.totalPaid)} of {formatCurrency(loan.summary.totalBorrowed)}</>}
               />
               <Link href="/loan">
                 <Button variant="outline">View loan details</Button>
               </Link>
             </>
           ) : (
-            <p className="py-6 text-sm text-muted-foreground">No loan set up yet.</p>
+            <p className="py-6 text-sm text-muted-foreground">No loans set up yet.</p>
           )}
         </Card>
       )}

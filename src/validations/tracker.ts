@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { LOAN_TYPE_KEYS } from "@/lib/loan-types";
 
 export const saveSavingsSchema = z.object({
   targetAmount: z.number().min(0, "Can't be negative"),
@@ -8,6 +9,8 @@ export const saveSavingsSchema = z.object({
 
 export const saveLoanSchema = z
   .object({
+    type: z.enum(LOAN_TYPE_KEYS),
+    name: z.string().trim().max(60, "Name is too long").optional(),
     totalLoan: z.number().min(0, "Can't be negative"),
     paidAmount: z.number().min(0, "Can't be negative"),
     emiAmount: z.number().min(0, "Can't be negative"),

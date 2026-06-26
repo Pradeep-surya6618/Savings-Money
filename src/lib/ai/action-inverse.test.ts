@@ -4,6 +4,7 @@ import { computeInverse } from "./action-inverse";
 const txnSnap = {
   title: "Coffee", amount: 120, type: "expense" as const, category: "food", date: "2026-06-14", notes: null,
 };
+const loanSnap = { type: "vehicle" as const, name: "Car", totalLoan: 100000, paidAmount: 20000, emiAmount: 5000, startDate: "2026-01-01" };
 
 describe("computeInverse", () => {
   it("add → delete the created id", () => {
@@ -26,13 +27,17 @@ describe("computeInverse", () => {
     expect(computeInverse("set_savings_goal", { input: {}, before: { savings: null } }))
       .toEqual({ op: "set_savings", doc: null });
   });
-  it("loan payment → restore prior paidAmount", () => {
-    expect(computeInverse("record_loan_payment", { input: { amount: 1000 }, before: { loanPaid: 4000 } }))
-      .toEqual({ op: "set_loan_paid", paidAmount: 4000 });
+  it("add_loan → delete created id", () => {
+    expect(computeInverse("add_loan", { input: {}, createdId: "L1" })).toEqual({ op: "delete_loan_doc", id: "L1" });
   });
-  it("set loan → restore prior loan doc", () => {
-    expect(computeInverse("set_loan", { input: {}, before: { loan: null } }))
-      .toEqual({ op: "set_loan_doc", doc: null });
+  it("edit_loan → restore prior snapshot", () => {
+    expect(computeInverse("edit_loan", { input: { id: "L1" }, before: { loan: loanSnap } })).toEqual({ op: "update_loan", id: "L1", doc: loanSnap });
+  });
+  it("delete_loan → recreate snapshot", () => {
+    expect(computeInverse("delete_loan", { input: { id: "L1" }, before: { loan: loanSnap } })).toEqual({ op: "create_loan", doc: loanSnap });
+  });
+  it("record_loan_payment → restore that loan's paidAmount", () => {
+    expect(computeInverse("record_loan_payment", { input: { loanId: "L1", amount: 1000 }, before: { loanPaid: 4000 } })).toEqual({ op: "set_loan_paid", id: "L1", paidAmount: 4000 });
   });
   it("set budget → restore prior salary doc for the month", () => {
     expect(computeInverse("set_budget", { input: { month: "2026-06" }, before: { salary: null } }))

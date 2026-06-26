@@ -1,51 +1,77 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { Types } from "mongoose";
 import { connectDB } from "@/lib/mongodb/connect";
 import { getCurrentUser } from "@/lib/user";
 import { Loan } from "@/models/Loan";
-import {
-  saveLoanSchema,
-  quickAmountSchema,
-  type SaveLoanInput,
-  type QuickAmountInput,
-} from "@/validations/tracker";
+import { saveLoanSchema, quickAmountSchema, type SaveLoanInput } from "@/validations/tracker";
 
 type Result = { ok: true } | { ok: false; error: string };
 
-export async function saveLoan(input: SaveLoanInput): Promise<Result> {
+function revalidateLoan() {
+  revalidatePath("/loan");
+  revalidatePath("/");
+  revalidatePath("/analytics");
+}
+
+export async function createLoan(
+  input: SaveLoanInput,
+): Promise<{ ok: true; id: string } | { ok: false; error: string }> {
   const parsed = saveLoanSchema.safeParse(input);
   if (!parsed.success) return { ok: false, error: parsed.error.issues[0]?.message ?? "Invalid input" };
-  const { startDate, ...rest } = parsed.data;
+  const { startDate, name, ...rest } = parsed.data;
 
   await connectDB();
   const { user } = await getCurrentUser();
-  await Loan.updateOne(
-    { userId: user.id },
-    { $set: { ...rest, startDate: new Date(startDate) } },
-    { upsert: true },
-  );
+  const doc = await Loan.create({
+    userId: user.id,
+    ...rest,
+    name: name ?? null,
+    startDate: new Date(startDate),
+  });
+  revalidateLoan();
+  return { ok: true, id: String(doc._id) };
+}
 
-  revalidatePath("/loan");
-  revalidatePath("/");
+export async function updateLoan(id: string, input: SaveLoanInput): Promise<Result> {
+  if (!Types.ObjectId.isValid(id)) return { ok: false, error: "Invalid loan" };
+  const parsed = saveLoanSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, error: parsed.error.issues[0]?.message ?? "Invalid input" };
+  const { startDate, name, ...rest } = parsed.data;
+
+  await connectDB();
+  const { user } = await getCurrentUser();
+  const res = await Loan.updateOne(
+    { _id: id, userId: user.id },
+    { $set: { ...rest, name: name ?? null, startDate: new Date(startDate) } },
+  );
+  if (res.matchedCount === 0) return { ok: false, error: "Loan not found" };
+  revalidateLoan();
   return { ok: true };
 }
 
-export async function recordLoanPayment(input: QuickAmountInput): Promise<Result> {
-  const parsed = quickAmountSchema.safeParse(input);
-  if (!parsed.success) return { ok: false, error: parsed.error.issues[0]?.message ?? "Invalid input" };
+export async function deleteLoan(id: string): Promise<Result> {
+  if (!Types.ObjectId.isValid(id)) return { ok: false, error: "Invalid loan" };
+  await connectDB();
+  const { user } = await getCurrentUser();
+  const res = await Loan.deleteOne({ _id: id, userId: user.id });
+  if (res.deletedCount === 0) return { ok: false, error: "Loan not found" };
+  revalidateLoan();
+  return { ok: true };
+}
+
+export async function recordLoanPayment(id: string, amount: number): Promise<Result> {
+  if (!Types.ObjectId.isValid(id)) return { ok: false, error: "Invalid loan" };
+  const parsed = quickAmountSchema.safeParse({ amount });
+  if (!parsed.success) return { ok: false, error: parsed.error.issues[0]?.message ?? "Invalid amount" };
 
   await connectDB();
   const { user } = await getCurrentUser();
-  const loan = await Loan.findOne({ userId: user.id }).lean();
-  // Defense-in-depth: the UI hides "Record payment" until a loan is set up, but
-  // never silently accept (and discard) a payment against a non-existent loan.
-  if (!loan || loan.totalLoan <= 0) return { ok: false, error: "Set up your loan first" };
-  // Clamp so a payment never pushes paid past the loan total.
+  const loan = await Loan.findOne({ _id: id, userId: user.id }).lean();
+  if (!loan || loan.totalLoan <= 0) return { ok: false, error: "Loan not found" };
   const newPaid = Math.min(loan.totalLoan, loan.paidAmount + parsed.data.amount);
-  await Loan.updateOne({ userId: user.id }, { $set: { paidAmount: newPaid } }, { upsert: true });
-
-  revalidatePath("/loan");
-  revalidatePath("/");
+  await Loan.updateOne({ _id: id, userId: user.id }, { $set: { paidAmount: newPaid } });
+  revalidateLoan();
   return { ok: true };
 }

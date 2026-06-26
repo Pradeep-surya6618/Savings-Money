@@ -4,7 +4,7 @@ import { getAnalytics } from "@/services/analytics";
 import { listTransactions } from "@/services/transactions";
 import { getBudget } from "@/services/budget";
 import { getSavings } from "@/services/savings";
-import { getLoan } from "@/services/loan";
+import { getLoans } from "@/services/loan";
 import { getMonthSummary } from "@/services/salary";
 import { getBalance } from "@/services/balance";
 import { currentMonth } from "@/lib/month";
@@ -48,9 +48,9 @@ export const assistantTools = {
     execute: async () => getSavings(),
   }),
   get_loans: tool({
-    description: "Loans/EMIs: outstanding amounts and schedule.",
+    description: "All of the user's loans (each with type, name, totals, EMI, progress) plus an aggregate summary.",
     inputSchema: z.object({}),
-    execute: async () => getLoan(),
+    execute: async () => getLoans(),
   }),
   get_salary_allocation: tool({
     description: "Salary and how it is allocated for a month.",

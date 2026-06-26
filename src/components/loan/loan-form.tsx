@@ -4,18 +4,22 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { saveLoanSchema, type SaveLoanInput } from "@/validations/tracker";
-import { saveLoan } from "@/lib/actions/loan";
+import { createLoan, updateLoan } from "@/lib/actions/loan";
+import { LOAN_TYPES } from "@/lib/loan-types";
 import { toast } from "@/lib/toast-store";
 import { Field } from "@/components/trackers/field";
 import { Button } from "@/components/ui/button";
+import { Select } from "@/components/ui/select";
 import { DatePicker } from "@/components/ui/date-picker";
 import { cn } from "@/lib/utils";
-import type { LoanDTO } from "@/services/loan";
+import type { LoanItemDTO } from "@/services/loan";
 
 const fieldCls =
   "w-full rounded-xl border border-border bg-card px-3 py-2 text-sm outline-none focus:border-primary";
 
-export function LoanForm({ initial, onDone }: { initial: LoanDTO; onDone: () => void }) {
+const TYPE_OPTIONS = LOAN_TYPES.map((t) => ({ value: t.key, label: t.label }));
+
+export function LoanForm({ initial, onDone }: { initial?: LoanItemDTO; onDone: () => void }) {
   const [serverError, setServerError] = useState<string | null>(null);
   const {
     register,
@@ -26,21 +30,24 @@ export function LoanForm({ initial, onDone }: { initial: LoanDTO; onDone: () => 
   } = useForm<SaveLoanInput>({
     resolver: zodResolver(saveLoanSchema),
     defaultValues: {
-      totalLoan: initial.totalLoan,
-      paidAmount: initial.paidAmount,
-      emiAmount: initial.emiAmount,
-      startDate: (initial.startDate ?? new Date().toISOString()).slice(0, 10),
+      type: initial?.type ?? "personal",
+      name: initial?.name ?? "",
+      totalLoan: initial?.totalLoan ?? 0,
+      paidAmount: initial?.paidAmount ?? 0,
+      emiAmount: initial?.emiAmount ?? 0,
+      startDate: (initial?.startDate ?? new Date().toISOString()).slice(0, 10),
     },
   });
 
-  // eslint-disable-next-line react-hooks/incompatible-library -- RHF watch() opts this form out of React Compiler memoization; fine for a low-frequency form.
+  // eslint-disable-next-line react-hooks/incompatible-library -- RHF watch() opts this low-frequency form out of React Compiler memoization.
+  const type = watch("type");
   const startDate = watch("startDate");
 
   async function onSubmit(values: SaveLoanInput) {
     setServerError(null);
-    const res = await saveLoan(values);
+    const res = initial ? await updateLoan(initial.id, values) : await createLoan(values);
     if (res.ok) {
-      toast.success("Loan details saved");
+      toast.success(initial ? "Loan updated" : "Loan added");
       onDone();
     } else {
       setServerError(res.error);
@@ -50,42 +57,33 @@ export function LoanForm({ initial, onDone }: { initial: LoanDTO; onDone: () => 
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
-      <Field label="Total loan (₹)" error={errors.totalLoan?.message}>
-        <input
-          type="number"
-          inputMode="decimal"
-          step="any"
-          min={0}
-          {...register("totalLoan", { valueAsNumber: true })}
-          className={cn(fieldCls, "tabular-nums")}
+      <Field label="Loan type" error={errors.type?.message}>
+        <Select
+          value={type}
+          onValueChange={(v) => setValue("type", v as SaveLoanInput["type"])}
+          options={TYPE_OPTIONS}
+          ariaLabel="Loan type"
+          className="w-full"
         />
+      </Field>
+      <Field label="Name / lender (optional)" error={errors.name?.message}>
+        <input type="text" maxLength={60} placeholder="e.g. HDFC Car Loan" {...register("name")} className={fieldCls} />
+      </Field>
+      <Field label="Total loan (₹)" error={errors.totalLoan?.message}>
+        <input type="number" inputMode="decimal" step="any" min={0} {...register("totalLoan", { valueAsNumber: true })} className={cn(fieldCls, "tabular-nums")} />
       </Field>
       <Field label="Already paid (₹)" error={errors.paidAmount?.message}>
-        <input
-          type="number"
-          inputMode="decimal"
-          step="any"
-          min={0}
-          {...register("paidAmount", { valueAsNumber: true })}
-          className={cn(fieldCls, "tabular-nums")}
-        />
+        <input type="number" inputMode="decimal" step="any" min={0} {...register("paidAmount", { valueAsNumber: true })} className={cn(fieldCls, "tabular-nums")} />
       </Field>
       <Field label="Monthly EMI (₹)" error={errors.emiAmount?.message}>
-        <input
-          type="number"
-          inputMode="decimal"
-          step="any"
-          min={0}
-          {...register("emiAmount", { valueAsNumber: true })}
-          className={cn(fieldCls, "tabular-nums")}
-        />
+        <input type="number" inputMode="decimal" step="any" min={0} {...register("emiAmount", { valueAsNumber: true })} className={cn(fieldCls, "tabular-nums")} />
       </Field>
       <Field label="Start date" error={errors.startDate?.message}>
         <DatePicker value={startDate} onChange={(v) => setValue("startDate", v)} />
       </Field>
       {serverError && <p className="text-sm text-negative">{serverError}</p>}
       <Button type="submit" disabled={isSubmitting} className="w-full">
-        {isSubmitting ? "Saving…" : "Save loan"}
+        {isSubmitting ? "Saving…" : initial ? "Save changes" : "Add loan"}
       </Button>
     </form>
   );
