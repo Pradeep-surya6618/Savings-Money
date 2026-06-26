@@ -4,7 +4,9 @@ export type TxnSnapshot = {
   title: string; amount: number; type: "income" | "expense"; category: string; date: string; notes?: string | null;
 };
 export type SavingsSnapshot = { currentAmount: number; targetAmount: number; monthlyContribution: number };
-export type LoanSnapshot = { totalLoan: number; paidAmount: number; emiAmount: number; startDate: string | null };
+export type LoanSnapshot = {
+  type: string; name?: string | null; totalLoan: number; paidAmount: number; emiAmount: number; startDate: string | null;
+};
 export type SalarySnapshot = {
   month: string; amount: number; receivedDate: string | null;
   allocations: { category: string; amount: number }[];
@@ -17,8 +19,10 @@ export type AiActionInverse =
   | { op: "create_txn"; doc: TxnSnapshot }
   | { op: "inc_savings"; amount: number }
   | { op: "set_savings"; doc: SavingsSnapshot | null }
-  | { op: "set_loan_paid"; paidAmount: number }
-  | { op: "set_loan_doc"; doc: LoanSnapshot | null }
+  | { op: "set_loan_paid"; id: string; paidAmount: number }
+  | { op: "create_loan"; doc: LoanSnapshot }
+  | { op: "update_loan"; id: string; doc: LoanSnapshot }
+  | { op: "delete_loan_doc"; id: string }
   | { op: "set_salary"; month: string; doc: SalarySnapshot | null };
 
 /** "before"/"after" context the gateway gathers around the write. */
@@ -48,9 +52,13 @@ export function computeInverse(kind: AiActionKind, ctx: InverseContext): AiActio
     case "set_savings_goal":
       return { op: "set_savings", doc: ctx.before!.savings ?? null };
     case "record_loan_payment":
-      return { op: "set_loan_paid", paidAmount: ctx.before!.loanPaid! };
-    case "set_loan":
-      return { op: "set_loan_doc", doc: ctx.before!.loan ?? null };
+      return { op: "set_loan_paid", id: ctx.input.loanId, paidAmount: ctx.before!.loanPaid! };
+    case "add_loan":
+      return { op: "delete_loan_doc", id: ctx.createdId! };
+    case "edit_loan":
+      return { op: "update_loan", id: ctx.input.id, doc: ctx.before!.loan! };
+    case "delete_loan":
+      return { op: "create_loan", doc: ctx.before!.loan! };
     case "set_budget":
       return { op: "set_salary", month: ctx.input.month, doc: ctx.before!.salary ?? null };
   }

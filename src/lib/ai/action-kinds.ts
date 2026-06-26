@@ -2,6 +2,7 @@ import { z } from "zod";
 import { saveTransactionSchema } from "@/validations/transaction";
 import { saveSavingsSchema, saveLoanSchema, quickAmountSchema } from "@/validations/tracker";
 import { CATEGORY_KEYS } from "@/lib/categories";
+import { LOAN_TYPE_KEYS } from "@/lib/loan-types";
 import { TXN_CATEGORY_MAP, type TxnCategoryKey } from "@/lib/transaction-categories";
 
 /** ₹ threshold (and any delete) that triggers the large-amount warning. */
@@ -14,7 +15,9 @@ export const ACTION_KINDS = [
   "contribute_to_savings",
   "set_savings_goal",
   "record_loan_payment",
-  "set_loan",
+  "add_loan",
+  "edit_loan",
+  "delete_loan",
   "set_budget",
 ] as const;
 
@@ -32,6 +35,23 @@ const editTransactionSchema = z.object({
   category: z.string().min(1),
   date: z.string().min(1).describe("YYYY-MM-DD"),
   notes: z.string().trim().max(300).optional(),
+});
+
+// Flat (JSON-Schema-safe) edit-loan schema — the gateway re-validates strictly
+// (incl. paid≤total) via saveLoanSchema. startDate stays a plain string (no z.coerce.date()).
+const editLoanSchema = z.object({
+  id: z.string().min(1, "Missing record id"),
+  type: z.enum(LOAN_TYPE_KEYS),
+  name: z.string().trim().max(60).optional(),
+  totalLoan: z.number().min(0),
+  paidAmount: z.number().min(0),
+  emiAmount: z.number().min(0),
+  startDate: z.string().min(1).describe("YYYY-MM-DD"),
+});
+
+const loanPaymentSchema = z.object({
+  loanId: z.string().min(1, "Missing loan id"),
+  amount: z.number().positive(),
 });
 
 // Flat (JSON-Schema-safe) budget schema — no z.coerce.date() (which can't serialize to
@@ -59,8 +79,10 @@ export const ACTION_SCHEMAS = {
   delete_transaction: idSchema,
   contribute_to_savings: quickAmountSchema,
   set_savings_goal: saveSavingsSchema,
-  record_loan_payment: quickAmountSchema,
-  set_loan: saveLoanSchema,
+  record_loan_payment: loanPaymentSchema,
+  add_loan: saveLoanSchema,
+  edit_loan: editLoanSchema,
+  delete_loan: idSchema,
   set_budget: setBudgetSchema,
 } as const satisfies Record<AiActionKind, z.ZodTypeAny>;
 
@@ -91,8 +113,12 @@ export function summarizeAction(kind: AiActionKind, input: any): string {
       return `Set savings goal — target ${rupees(input.targetAmount)}, ${rupees(input.monthlyContribution)}/mo`;
     case "record_loan_payment":
       return `Record a loan payment of ${rupees(input.amount)}`;
-    case "set_loan":
-      return `Set loan — total ${rupees(input.totalLoan)}, paid ${rupees(input.paidAmount)}, EMI ${rupees(input.emiAmount)}`;
+    case "add_loan":
+      return `Add loan — ${input.name || input.type} · total ${rupees(input.totalLoan)}, EMI ${rupees(input.emiAmount)}`;
+    case "edit_loan":
+      return `Update loan — ${input.name || input.type} · total ${rupees(input.totalLoan)}, EMI ${rupees(input.emiAmount)}`;
+    case "delete_loan":
+      return `Delete this loan`;
     case "set_budget":
       return `Set ${input.month} budget — salary ${rupees(input.amount)}, ${input.allocations?.length ?? 0} allocations`;
   }
@@ -101,7 +127,7 @@ export function summarizeAction(kind: AiActionKind, input: any): string {
 /** High-risk: any delete, or any write whose primary amount ≥ AI_LARGE_AMOUNT. */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function isLargeAmount(kind: AiActionKind, input: any): boolean {
-  if (kind === "delete_transaction") return true;
+  if (kind === "delete_transaction" || kind === "delete_loan") return true;
   const amount =
     input?.amount ?? input?.totalLoan ?? input?.targetAmount ?? 0;
   return typeof amount === "number" && amount >= AI_LARGE_AMOUNT;

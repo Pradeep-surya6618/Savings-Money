@@ -48,14 +48,31 @@ describe("isLargeAmount", () => {
   it("always flags deletes", () => {
     expect(isLargeAmount("delete_transaction", { id: "abc" })).toBe(true);
   });
-  it("lists all eight kinds", () => {
-    expect(ACTION_KINDS).toHaveLength(8);
+  it("lists all ten kinds", () => {
+    expect(ACTION_KINDS).toHaveLength(10);
+    expect(ACTION_KINDS).toContain("add_loan");
+    expect(ACTION_KINDS).toContain("edit_loan");
+    expect(ACTION_KINDS).toContain("delete_loan");
+    expect(ACTION_KINDS).not.toContain("set_loan");
+  });
+  it("accepts a valid add_loan and rejects a bad type", () => {
+    const ok = { type: "vehicle", name: "Car", totalLoan: 100000, paidAmount: 0, emiAmount: 5000, startDate: "2026-01-01" };
+    expect(parseActionInput("add_loan", ok).success).toBe(true);
+    expect(parseActionInput("add_loan", { ...ok, type: "nope" }).success).toBe(false);
+  });
+  it("requires loanId for record_loan_payment", () => {
+    expect(parseActionInput("record_loan_payment", { amount: 100 }).success).toBe(false);
+    expect(parseActionInput("record_loan_payment", { loanId: "abc", amount: 100 }).success).toBe(true);
+  });
+  it("requires id for edit_loan / delete_loan", () => {
+    expect(parseActionInput("delete_loan", {}).success).toBe(false);
+    expect(parseActionInput("delete_loan", { id: "abc" }).success).toBe(true);
   });
 });
 
 describe("large-amount boundaries", () => {
-  it("flags set_loan at threshold via totalLoan", () => {
-    expect(isLargeAmount("set_loan", { totalLoan: AI_LARGE_AMOUNT, paidAmount: 0, emiAmount: 0, startDate: "2026-01-01" })).toBe(true);
+  it("flags add_loan at threshold via totalLoan", () => {
+    expect(isLargeAmount("add_loan", { totalLoan: AI_LARGE_AMOUNT, paidAmount: 0, emiAmount: 0, startDate: "2026-01-01" })).toBe(true);
   });
   it("flags set_savings_goal by targetAmount", () => {
     expect(isLargeAmount("set_savings_goal", { targetAmount: AI_LARGE_AMOUNT, currentAmount: 0, monthlyContribution: 0 })).toBe(true);
