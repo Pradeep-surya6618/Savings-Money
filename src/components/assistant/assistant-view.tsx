@@ -97,6 +97,35 @@ export function AssistantView({
     });
   }, [urlChat, setMessages]);
 
+  // Keep the full-screen mobile shell aligned to the visual viewport so the app bar
+  // stays pinned at the top (and the composer above the keyboard) when the soft
+  // keyboard opens. No-op on desktop (the shell is statically positioned there).
+  const shellRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const vv = window.visualViewport;
+    if (!vv) return;
+    const apply = () => {
+      const el = shellRef.current;
+      if (!el) return;
+      if (window.innerWidth >= 1024) {
+        el.style.height = "";
+        el.style.transform = "";
+        return;
+      }
+      el.style.height = `${vv.height}px`;
+      el.style.transform = `translateY(${vv.offsetTop}px)`;
+    };
+    apply();
+    vv.addEventListener("resize", apply);
+    vv.addEventListener("scroll", apply);
+    window.addEventListener("resize", apply);
+    return () => {
+      vv.removeEventListener("resize", apply);
+      vv.removeEventListener("scroll", apply);
+      window.removeEventListener("resize", apply);
+    };
+  }, []);
+
   if (!configured) {
     return (
       <div className="mx-auto max-w-md py-20 text-center">
@@ -164,8 +193,9 @@ export function AssistantView({
 
   return (
     <div
+      ref={shellRef}
       data-full-bleed
-      className="fixed inset-0 z-40 flex flex-col bg-background lg:static lg:z-auto lg:-mx-8 lg:-mt-8 lg:-mb-10 lg:h-[calc(100dvh-5.25rem)]"
+      className="fixed inset-x-0 top-0 z-40 flex h-[100dvh] flex-col overflow-hidden bg-background lg:static lg:z-auto lg:h-[calc(100dvh-5.25rem)] lg:-mx-8 lg:-mt-8 lg:-mb-10 lg:overflow-visible"
     >
       {/* Mobile app bar — full-screen takeover (desktop shows the brand in the sidebar) */}
       <header className="flex shrink-0 items-center justify-between gap-3 border-b border-border bg-background/80 px-4 py-2.5 backdrop-blur-xl lg:hidden">
