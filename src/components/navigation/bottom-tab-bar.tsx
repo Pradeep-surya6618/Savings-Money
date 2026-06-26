@@ -64,16 +64,34 @@ export function BottomTabBar() {
     <MotionConfig reducedMotion="user">
       <nav className="fixed inset-x-0 bottom-0 z-30 flex justify-center px-4 pb-[max(1rem,env(safe-area-inset-bottom))] lg:hidden">
         <div className="relative w-full max-w-sm">
-          {/* Floating AI button — cradled in the bar's concave notch, hovering above it */}
-          <Link
-            href={AI.href}
-            aria-label={AI.label}
-            className={cn(
-              "absolute -top-6 left-1/2 z-10 flex h-14 w-14 -translate-x-1/2 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary-end text-white shadow-lg shadow-primary/40 transition active:scale-95",
-              aiActive && "ring-2 ring-white/50",
-            )}
-          >
-            <AI.icon className="h-6 w-6" />
+          {/* Floating AI button — cradled in the bar's concave notch, hovering above it.
+              Animations auto-disable under prefers-reduced-motion via the MotionConfig wrapper. */}
+          <Link href={AI.href} aria-label={AI.label} className="absolute -top-6 left-1/2 z-10 -translate-x-1/2">
+            {/* breathing glow halo */}
+            <motion.span
+              aria-hidden
+              className="absolute inset-0 -z-10 rounded-full bg-primary/50 blur-md"
+              animate={{ opacity: [0.3, 0.65, 0.3], scale: [1, 1.28, 1] }}
+              transition={{ duration: 2.6, repeat: Infinity, ease: "easeInOut" }}
+            />
+            {/* button face — gentle pulse + press feedback */}
+            <motion.span
+              className={cn(
+                "relative flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary-end text-white shadow-lg shadow-primary/40",
+                aiActive && "ring-2 ring-white/50",
+              )}
+              animate={{ scale: [1, 1.06, 1] }}
+              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+              whileTap={{ scale: 0.9 }}
+            >
+              {/* occasional friendly wiggle of the bot icon */}
+              <motion.span
+                animate={{ rotate: [0, -10, 10, -6, 0] }}
+                transition={{ duration: 1.2, repeat: Infinity, repeatDelay: 3.5, ease: "easeInOut" }}
+              >
+                <AI.icon className="h-6 w-6" />
+              </motion.span>
+            </motion.span>
           </Link>
 
           {/* The bar — a rounded rectangle with a concave notch (SVG so the border curves around the FAB) */}
