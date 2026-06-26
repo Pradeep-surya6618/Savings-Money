@@ -36,6 +36,32 @@ function textOf(message: UIMessage): string {
     .join("");
 }
 
+/** Copy text, with a fallback for non-secure contexts (http on a LAN IP / phone),
+ *  where navigator.clipboard is undefined. Returns whether the copy succeeded. */
+async function copyText(text: string): Promise<boolean> {
+  try {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
+  } catch {
+    /* fall through to the legacy path */
+  }
+  try {
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.style.position = "fixed";
+    ta.style.opacity = "0";
+    document.body.appendChild(ta);
+    ta.select();
+    const ok = document.execCommand("copy");
+    document.body.removeChild(ta);
+    return ok;
+  } catch {
+    return false;
+  }
+}
+
 /** Copy a message — hover-revealed on desktop, always visible on mobile. */
 function CopyButton({ text }: { text: string }) {
   const [copied, setCopied] = useState(false);
@@ -44,9 +70,13 @@ function CopyButton({ text }: { text: string }) {
       type="button"
       aria-label="Copy message"
       onClick={() => {
-        void navigator.clipboard.writeText(text).then(() => {
-          setCopied(true);
-          setTimeout(() => setCopied(false), 1500);
+        void copyText(text).then((ok) => {
+          if (ok) {
+            setCopied(true);
+            setTimeout(() => setCopied(false), 1500);
+          } else {
+            toast.error("Couldn't copy");
+          }
         });
       }}
       className="flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center self-end rounded-lg text-muted-foreground opacity-100 transition hover:bg-card-elevated hover:text-foreground lg:opacity-0 lg:group-hover:opacity-100"
