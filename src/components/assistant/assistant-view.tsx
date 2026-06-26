@@ -221,13 +221,14 @@ export function AssistantView({
 
       {/* Chat column — fills the screen (mobile) / the content column (desktop) */}
       <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
-        <div className="flex-1 space-y-5 overflow-y-auto p-4 sm:p-6">
+        <div className="flex-1 space-y-5 overflow-y-auto p-4 scrollbar-hide sm:p-6">
             {messages.length === 0 ? (
               <div
                 className={cn(
-                  "flex h-full flex-col items-center justify-center gap-6 text-center",
-                  // New-chat: when the keyboard is open (input focused) hide the prompts on mobile, like ChatGPT/Gemini.
-                  composerFocused && "hidden lg:flex",
+                  "flex h-full flex-col items-center justify-center gap-6 text-center transition-[opacity,transform] duration-300 ease-out",
+                  // New-chat: fade the prompts out while the keyboard is open (input focused) on mobile, like
+                  // ChatGPT/Gemini — opacity/transform (not display) so the reappear animates smoothly.
+                  composerFocused && "pointer-events-none -translate-y-2 opacity-0 lg:pointer-events-auto lg:translate-y-0 lg:opacity-100",
                 )}
               >
                 <div>
