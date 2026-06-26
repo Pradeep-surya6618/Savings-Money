@@ -173,7 +173,7 @@ export function BottomTabBar() {
                     setMoreOpen(false);
                     logout();
                   }}
-                  className="col-span-2 mt-1 flex cursor-pointer items-center gap-3 rounded-2xl border border-border bg-card p-3 text-left transition hover:border-negative/40 hover:bg-negative/10"
+                  className="flex cursor-pointer items-center gap-3 rounded-2xl border border-border bg-card p-3 text-left transition hover:border-negative/40 hover:bg-negative/10"
                 >
                   <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-negative/10 text-negative">
                     <LogOut className="h-5 w-5" />
