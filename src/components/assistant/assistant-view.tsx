@@ -20,12 +20,14 @@ import {
   type ConversationSummary,
 } from "@/services/assistant";
 
-const SUGGESTIONS = [
-  "How much did I spend last month?",
-  "Can I afford a ₹40,000 trip in March?",
-  "Where can I cut back?",
-  "Summarise my finances this month",
-];
+function suggestionsFor(tripMonth: string): string[] {
+  return [
+    "How much did I spend last month?",
+    `Can I afford a ₹40,000 trip in ${tripMonth}?`,
+    "Where can I cut back?",
+    "Summarise my finances this month",
+  ];
+}
 
 function textOf(message: UIMessage): string {
   return message.parts
@@ -59,12 +61,15 @@ export function AssistantView({
   configured,
   name,
   image,
+  tripMonth,
 }: {
   conversations: ConversationSummary[];
   configured: boolean;
   name: string;
   image: string | null;
+  tripMonth: string;
 }) {
+  const suggestions = suggestionsFor(tripMonth);
   const router = useRouter();
   const urlChat = useSearchParams().get("c");
   const [conversationId, setConversationId] = useState<string | null>(null);
@@ -237,13 +242,13 @@ export function AssistantView({
                   <p className="mt-4 font-display text-lg font-bold tracking-tight">How can I help with your finances?</p>
                   <p className="mt-1 text-sm text-muted-foreground">Pick a prompt or type your own.</p>
                 </div>
-                <div className="flex max-w-lg flex-wrap justify-center gap-2.5">
-                  {SUGGESTIONS.map((s) => (
+                <div className="grid w-full max-w-md grid-cols-2 gap-2.5">
+                  {suggestions.map((s) => (
                     <button
                       key={s}
                       type="button"
                       onClick={() => submit(s)}
-                      className="cursor-pointer rounded-full border border-border bg-card-elevated/60 px-4 py-2 text-xs font-medium text-muted-foreground shadow-sm transition hover:-translate-y-0.5 hover:border-primary/40 hover:text-foreground hover:shadow-md"
+                      className="flex cursor-pointer items-center rounded-2xl border border-border bg-card-elevated/60 px-4 py-3 text-left text-xs font-medium text-muted-foreground shadow-sm transition hover:-translate-y-0.5 hover:border-primary/40 hover:text-foreground hover:shadow-md"
                     >
                       {s}
                     </button>
