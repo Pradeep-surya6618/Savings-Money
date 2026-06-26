@@ -9,7 +9,9 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 import { toast } from "@/lib/toast-store";
+import { Logo } from "@/components/brand/logo";
 import { ActionConfirmCard } from "./action-confirm-card";
+import { AssistantProfileMenu } from "./assistant-profile-menu";
 import type { AiActionKind } from "@/lib/ai/action-kinds";
 import {
   createConversation,
@@ -55,9 +57,13 @@ function CopyButton({ text }: { text: string }) {
 export function AssistantView({
   conversations,
   configured,
+  name,
+  image,
 }: {
   conversations: ConversationSummary[];
   configured: boolean;
+  name: string;
+  image: string | null;
 }) {
   const router = useRouter();
   const urlChat = useSearchParams().get("c");
@@ -157,30 +163,34 @@ export function AssistantView({
   }
 
   return (
-    <div data-full-bleed className="space-y-5 lg:-mx-8 lg:-mt-8 lg:-mb-10 lg:h-[calc(100dvh-5.25rem)] lg:space-y-0">
-      {/* Header — mobile only; desktop shows the brand at the top of the sidebar */}
-      <div className="flex items-center gap-3 lg:hidden">
-        <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-primary-end text-white shadow-lg shadow-primary/30">
-          <Sparkles className="h-5 w-5" />
-        </span>
-        <div className="min-w-0">
-          <h1 className="font-display text-xl font-extrabold tracking-tight">FuFi&rsquo;s AI</h1>
-          <p className="text-xs text-muted-foreground">Ask about your money — grounded in your own data.</p>
+    <div
+      data-full-bleed
+      className="fixed inset-0 z-40 flex flex-col bg-background lg:static lg:z-auto lg:-mx-8 lg:-mt-8 lg:-mb-10 lg:h-[calc(100dvh-5.25rem)]"
+    >
+      {/* Mobile app bar — full-screen takeover (desktop shows the brand in the sidebar) */}
+      <header className="flex shrink-0 items-center justify-between gap-3 border-b border-border bg-background/80 px-4 py-2.5 backdrop-blur-xl lg:hidden">
+        <div className="flex min-w-0 items-center gap-2.5">
+          <Logo className="h-8 w-8" />
+          <span className="font-display text-base font-extrabold tracking-tight">
+            Fu<span className="text-primary">Fi</span>&rsquo;s AI
+          </span>
         </div>
-        <Button
-          variant="outline"
-          onClick={() => setListOpen(true)}
-          className="ml-auto h-9 px-3"
-          aria-label="Conversations"
-        >
-          <MessagesSquare className="h-4 w-4" />
-        </Button>
-      </div>
+        <div className="flex items-center gap-1.5">
+          <button
+            type="button"
+            onClick={() => setListOpen(true)}
+            aria-label="Chat history"
+            className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border border-border bg-card transition hover:bg-card-elevated"
+          >
+            <MessagesSquare className="h-4 w-4 text-muted-foreground" />
+          </button>
+          <AssistantProfileMenu name={name} image={image} />
+        </div>
+      </header>
 
-      <div className="lg:h-full">
-        {/* Chat column — full width (conversation list now lives in the app sidebar) */}
-        <div className="flex h-[calc(100dvh-14rem)] flex-col overflow-hidden rounded-3xl border border-border bg-card shadow-sm lg:h-full lg:rounded-none lg:border-0 lg:shadow-none">
-          <div className="flex-1 space-y-5 overflow-y-auto p-4 sm:p-6">
+      {/* Chat column — fills the screen (mobile) / the content column (desktop) */}
+      <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
+        <div className="flex-1 space-y-5 overflow-y-auto p-4 sm:p-6">
             {messages.length === 0 ? (
               <div className="flex h-full flex-col items-center justify-center gap-6 text-center">
                 <div>
@@ -284,7 +294,7 @@ export function AssistantView({
           </div>
 
           {/* Composer */}
-          <div className="border-t border-border bg-card/80 p-3 sm:p-4">
+          <div className="border-t border-border bg-card/80 p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:p-4 sm:pb-[max(1rem,env(safe-area-inset-bottom))] lg:pb-4">
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -330,9 +340,8 @@ export function AssistantView({
             </p>
           </div>
         </div>
-      </div>
 
-      {/* Conversation list — mobile drawer */}
+      {/* Conversation list — mobile drawer (also opened from the app-bar history button) */}
       <Dialog open={listOpen} onOpenChange={setListOpen}>
         <DialogContent title="Conversations" className="lg:hidden">
           <ConversationList
