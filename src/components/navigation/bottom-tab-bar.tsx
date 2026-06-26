@@ -64,44 +64,58 @@ export function BottomTabBar() {
     <MotionConfig reducedMotion="user">
       <nav className="fixed inset-x-0 bottom-0 z-30 flex justify-center px-4 pb-[max(1rem,env(safe-area-inset-bottom))] lg:hidden">
         <div className="relative w-full max-w-sm">
-          {/* Floating AI button — hovers above the bar, separated by a background-colored ring */}
+          {/* Floating AI button — cradled in the bar's concave notch, hovering above it */}
           <Link
             href={AI.href}
             aria-label={AI.label}
             className={cn(
-              "absolute -top-6 left-1/2 z-10 flex h-14 w-14 -translate-x-1/2 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary-end text-white shadow-lg shadow-primary/40 ring-4 ring-background transition active:scale-95",
-              aiActive && "ring-primary/30",
+              "absolute -top-6 left-1/2 z-10 flex h-14 w-14 -translate-x-1/2 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary-end text-white shadow-lg shadow-primary/40 transition active:scale-95",
+              aiActive && "ring-2 ring-white/50",
             )}
           >
             <AI.icon className="h-6 w-6" />
           </Link>
 
-          {/* The bar: 2 left, center gap (for the FAB), 2 right */}
-          <div className="flex items-center rounded-full border border-border bg-card/90 px-2 py-1.5 shadow-lg shadow-black/10 backdrop-blur-xl">
-            {LEFT.map((item) => (
-              <TabItem key={item.href} item={item} active={isActive(pathname, item.href)} />
-            ))}
-
-            {/* Center spacer so flat items don't sit under the floating AI button */}
-            <span aria-hidden className="w-14 shrink-0" />
-
-            {RIGHT.map((item) => (
-              <TabItem key={item.href} item={item} active={isActive(pathname, item.href)} />
-            ))}
-
-            {/* More — opens the sheet with the remaining menus */}
-            <button
-              type="button"
-              onClick={() => setMoreOpen(true)}
-              aria-label="More"
-              aria-haspopup="dialog"
-              className="flex flex-1 flex-col items-center justify-center gap-1 py-1"
+          {/* The bar — a rounded rectangle with a concave notch (SVG so the border curves around the FAB) */}
+          <div className="relative h-16">
+            <svg
+              viewBox="0 0 360 64"
+              preserveAspectRatio="none"
+              aria-hidden
+              className="absolute inset-0 h-full w-full drop-shadow-[0_-3px_12px_rgba(0,0,0,0.12)]"
             >
-              <Ellipsis
-                className={cn("h-5 w-5 transition-colors", moreActive ? "text-primary" : "text-muted-foreground")}
+              <path
+                d="M0 26 Q0 0 26 0 L134 0 C140 0 143 4 146 9 A36 36 0 0 0 214 9 C217 4 220 0 226 0 L334 0 Q360 0 360 26 L360 38 Q360 64 334 64 L26 64 Q0 64 0 38 Z"
+                style={{ fill: "var(--card)", stroke: "var(--border)", strokeWidth: 1 }}
               />
-              <span className={cn("h-1 w-1 rounded-full transition", moreActive ? "bg-primary" : "bg-transparent")} />
-            </button>
+            </svg>
+
+            {/* Items over the bar: 2 left, center gap (notch/FAB), 2 right */}
+            <div className="relative flex h-full items-center px-2">
+              {LEFT.map((item) => (
+                <TabItem key={item.href} item={item} active={isActive(pathname, item.href)} />
+              ))}
+
+              <span aria-hidden className="w-14 shrink-0" />
+
+              {RIGHT.map((item) => (
+                <TabItem key={item.href} item={item} active={isActive(pathname, item.href)} />
+              ))}
+
+              {/* More — opens the sheet with the remaining menus */}
+              <button
+                type="button"
+                onClick={() => setMoreOpen(true)}
+                aria-label="More"
+                aria-haspopup="dialog"
+                className="flex flex-1 flex-col items-center justify-center gap-1 py-1"
+              >
+                <Ellipsis
+                  className={cn("h-5 w-5 transition-colors", moreActive ? "text-primary" : "text-muted-foreground")}
+                />
+                <span className={cn("h-1 w-1 rounded-full transition", moreActive ? "bg-primary" : "bg-transparent")} />
+              </button>
+            </div>
           </div>
         </div>
       </nav>
