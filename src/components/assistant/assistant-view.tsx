@@ -336,14 +336,14 @@ export function AssistantView({
             )}
           </div>
 
-          {/* Composer — bare on mobile (just the input pill + note, like ChatGPT/Gemini); carded on desktop. */}
-          <div className="bg-transparent p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:p-4 sm:pb-[max(1rem,env(safe-area-inset-bottom))] lg:border-t lg:border-border lg:bg-card/80 lg:pb-4">
+          {/* Composer — bare on every breakpoint: just the input pill + note on the page background. */}
+          <div className="bg-transparent p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:p-4 sm:pb-[max(1rem,env(safe-area-inset-bottom))] lg:pb-4">
             <form
               onSubmit={(e) => {
                 e.preventDefault();
                 void submit(input);
               }}
-              className="flex items-end gap-2 rounded-2xl border border-border bg-card px-2 py-1.5 shadow-sm transition focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20"
+              className="mx-auto flex w-full max-w-2xl items-end gap-2 rounded-2xl border border-border bg-card px-2 py-1.5 shadow-sm transition focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20"
             >
               <textarea
                 value={input}
