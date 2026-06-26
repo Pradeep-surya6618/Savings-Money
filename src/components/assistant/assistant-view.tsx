@@ -343,7 +343,7 @@ export function AssistantView({
                 e.preventDefault();
                 void submit(input);
               }}
-              className="mx-auto flex w-full max-w-2xl items-end gap-2 rounded-2xl border border-border bg-card px-2 py-1.5 shadow-sm transition focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20"
+              className="mx-auto flex w-full max-w-2xl items-end gap-2 rounded-2xl border border-border bg-transparent px-2 py-1.5 transition focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20"
             >
               <textarea
                 value={input}
