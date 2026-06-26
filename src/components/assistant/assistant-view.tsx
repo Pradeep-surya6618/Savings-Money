@@ -71,6 +71,7 @@ export function AssistantView({
   const [input, setInput] = useState("");
   const [listOpen, setListOpen] = useState(false);
   const [pendingDelete, setPendingDelete] = useState<string | null>(null);
+  const [composerFocused, setComposerFocused] = useState(false);
 
   const { messages, sendMessage, setMessages, status, stop, addToolApprovalResponse } = useChat({
     transport: new DefaultChatTransport({ api: "/api/assistant" }),
@@ -222,7 +223,13 @@ export function AssistantView({
       <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
         <div className="flex-1 space-y-5 overflow-y-auto p-4 sm:p-6">
             {messages.length === 0 ? (
-              <div className="flex h-full flex-col items-center justify-center gap-6 text-center">
+              <div
+                className={cn(
+                  "flex h-full flex-col items-center justify-center gap-6 text-center",
+                  // New-chat: when the keyboard is open (input focused) hide the prompts on mobile, like ChatGPT/Gemini.
+                  composerFocused && "hidden lg:flex",
+                )}
+              >
                 <div>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src="/Icons/FuFi-AI.png" alt="FuFi's AI" className="mx-auto h-24 w-24 rounded-3xl bg-black object-cover shadow-lg shadow-primary/20" />
@@ -323,8 +330,8 @@ export function AssistantView({
             )}
           </div>
 
-          {/* Composer */}
-          <div className="border-t border-border bg-card/80 p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:p-4 sm:pb-[max(1rem,env(safe-area-inset-bottom))] lg:pb-4">
+          {/* Composer — bare on mobile (just the input pill + note, like ChatGPT/Gemini); carded on desktop. */}
+          <div className="bg-transparent p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:p-4 sm:pb-[max(1rem,env(safe-area-inset-bottom))] lg:border-t lg:border-border lg:bg-card/80 lg:pb-4">
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -341,6 +348,8 @@ export function AssistantView({
                     void submit(input);
                   }
                 }}
+                onFocus={() => setComposerFocused(true)}
+                onBlur={() => setComposerFocused(false)}
                 rows={1}
                 placeholder="Ask about your money…"
                 disabled={busy}
