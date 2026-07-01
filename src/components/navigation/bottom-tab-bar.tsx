@@ -142,22 +142,25 @@ export function BottomTabBar() {
       <AnimatePresence>
         {moreOpen && (
           <div className="fixed inset-0 z-50 lg:hidden">
+            {/* Plain dim overlay — no backdrop-blur (animating backdrop-filter is very janky on mobile). */}
             <motion.div
-              className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+              className="absolute inset-0 bg-black/50"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
+              transition={{ duration: 0.2, ease: "linear" }}
               onClick={() => setMoreOpen(false)}
             />
+            {/* Panel slides on transform only (compositor-friendly) with a short tween instead of a spring. */}
             <motion.div
               role="dialog"
               aria-modal="true"
               aria-label="More menu"
-              className="absolute inset-x-0 bottom-0 rounded-t-3xl border-t border-border bg-card p-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] shadow-2xl"
+              className="absolute inset-x-0 bottom-0 rounded-t-3xl border-t border-border bg-card p-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] shadow-2xl will-change-transform"
               initial={{ y: "100%" }}
               animate={{ y: 0 }}
               exit={{ y: "100%" }}
-              transition={{ type: "spring", stiffness: 380, damping: 38 }}
+              transition={{ duration: 0.28, ease: [0.32, 0.72, 0, 1] }}
             >
               <div className="mx-auto mb-4 h-1.5 w-10 rounded-full bg-card-elevated" />
               <p className="px-1 text-sm font-semibold">More</p>
